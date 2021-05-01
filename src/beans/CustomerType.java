@@ -2,7 +2,7 @@ package beans;
 
 public class CustomerType {
 
-	private String typeName;
+	private CustomerKind typeName;
 	private double discount;
 	private int requiredPoints;
 
@@ -10,18 +10,18 @@ public class CustomerType {
 		super();
 	}
 
-	public CustomerType(String typeName, double discount, int requiredPoints) {
+	public CustomerType(CustomerKind typeName, double discount, int requiredPoints) {
 		super();
 		this.typeName = typeName;
 		this.discount = discount;
 		this.requiredPoints = requiredPoints;
 	}
 
-	public String getTypeName() {
+	public CustomerKind getTypeName() {
 		return typeName;
 	}
 
-	public void setTypeName(String typeName) {
+	public void setTypeName(CustomerKind typeName) {
 		this.typeName = typeName;
 	}
 
