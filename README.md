@@ -1,2 +1,2 @@
-# WebProgramiranje
-Projektni zadatak - sistem za rezervaciju ulaznica za koncerte
+Putanja do servise poèinje sa /rest
+Servise stavljati u "services" paket
