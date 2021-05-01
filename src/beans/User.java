@@ -1,38 +1,31 @@
 package beans;
 
-import java.util.List;
+import java.time.LocalDate;
 
 public class User {
 	private String username;
 	private String password;
-	private String name;
+	private String firstName;
 	private String lastName;
-	private String gender;
-	private String birthDay;
-	private String role;
-	private List<Ticket> tickets;
-	private List<Manifestation> manifestations;
-	private int points;
-	private CustomerType customerType;
+	private Gender gender;
+	private LocalDate birthday;
+	private UserRole role;
+	private CustomerKind customerType;
 
 	public User() {
 		super();
 	}
 
-	public User(String username, String password, String name, String lastName, String gender, String birthDay,
-			String role, List<Ticket> tickets, List<Manifestation> manifestations, int points,
-			CustomerType customerType) {
+	public User(String username, String password, String firstName, String lastName, Gender gender, LocalDate birthday,
+			UserRole role, CustomerKind customerType) {
 		super();
 		this.username = username;
 		this.password = password;
-		this.name = name;
+		this.firstName = firstName;
 		this.lastName = lastName;
 		this.gender = gender;
-		this.birthDay = birthDay;
+		this.birthday = birthday;
 		this.role = role;
-		this.tickets = tickets;
-		this.manifestations = manifestations;
-		this.points = points;
 		this.customerType = customerType;
 	}
 
@@ -52,12 +45,12 @@ public class User {
 		this.password = password;
 	}
 
-	public String getName() {
-		return name;
+	public String getFirstName() {
+		return firstName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
 
 	public String getLastName() {
@@ -68,65 +61,41 @@ public class User {
 		this.lastName = lastName;
 	}
 
-	public String getGender() {
+	public Gender getGender() {
 		return gender;
 	}
 
-	public void setGender(String gender) {
+	public void setGender(Gender gender) {
 		this.gender = gender;
 	}
 
-	public String getBirthDay() {
-		return birthDay;
+	public LocalDate getBirthday() {
+		return birthday;
 	}
 
-	public void setBirthDay(String birthDay) {
-		this.birthDay = birthDay;
+	public void setBirthday(LocalDate birthday) {
+		this.birthday = birthday;
 	}
 
-	public String getRole() {
+	public UserRole getRole() {
 		return role;
 	}
 
-	public void setRole(String role) {
+	public void setRole(UserRole role) {
 		this.role = role;
 	}
 
-	public List<Ticket> getTickets() {
-		return tickets;
-	}
-
-	public void setTickets(List<Ticket> tickets) {
-		this.tickets = tickets;
-	}
-
-	public List<Manifestation> getManifestations() {
-		return manifestations;
-	}
-
-	public void setManifestations(List<Manifestation> manifestations) {
-		this.manifestations = manifestations;
-	}
-
-	public int getPoints() {
-		return points;
-	}
-
-	public void setPoints(int points) {
-		this.points = points;
-	}
-
-	public CustomerType getCustomerType() {
+	public CustomerKind getCustomerType() {
 		return customerType;
 	}
 
-	public void setCustomerType(CustomerType customerType) {
+	public void setCustomerType(CustomerKind customerType) {
 		this.customerType = customerType;
 	}
 
 	@Override
 	public String toString() {
-		return "User [username=" + username + ", password=" + password + ", name=" + name + ", lastName=" + lastName
+		return "User [username=" + username + ", password=" + password + ", name=" + firstName + ", lastName=" + lastName
 				+ "]";
 	}
 
