@@ -1,6 +1,7 @@
 package services;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +37,8 @@ public class RegistrationService {
 	@PostConstruct
 	public void init() {
 		if (ctx.getAttribute("registeredUserDAO") == null) {
-			ctx.setAttribute("registeredUserDAO", new RegisteredUserDAO());
+			String contextPath = ctx.getRealPath("");
+			ctx.setAttribute("registeredUserDAO", new RegisteredUserDAO(contextPath));
 		}
 		List<Ticket> tickets = new ArrayList<Ticket>();
 		User u = new RegisteredUser("cao", "cao", "cao", "cao", Gender.FEMALE, LocalDate.now(), UserRole.USER, CustomerKind.CHAMP, tickets, 0 , false); 
@@ -53,16 +55,24 @@ public class RegistrationService {
 		RegisteredUserDAO dao = (RegisteredUserDAO) ctx.getAttribute("registeredUserDAO");
 		if (dao.findByUsername(registrationDTO.getUsername()) != null)
 			return null;
-		String username = registrationDTO.getUsername();
-		String name = registrationDTO.getName();
-		String surname = registrationDTO.getLastName();
-		String password = registrationDTO.getPassword();
-
+		String username = registrationDTO.getUsername().trim();
+		String name = registrationDTO.getName().trim();
+		String surname = registrationDTO.getLastName().trim();
+		String password = registrationDTO.getPassword().trim();
+		LocalDate date = null;
 		if (name.equals("") || surname.equals("") || username.equals("") || password.equals("")
 				|| registrationDTO.getBirthday().equals("") || registrationDTO.getGender().equals(""))
 			return null;
 
-		LocalDate date = LocalDate.parse(registrationDTO.getBirthday());
+		try {
+			
+			date = LocalDate.parse(registrationDTO.getBirthday());
+			
+		} catch ( DateTimeParseException e){
+			
+			throw e;
+		}
+
 		if (date.isEqual(LocalDate.now()) || date.isAfter(LocalDate.now()))
 			return null;
 
@@ -71,7 +81,6 @@ public class RegistrationService {
 		RegisteredUser user = new RegisteredUser(username, password, name, surname, gender, date, UserRole.USER,
 				CustomerKind.NEWBIE, tickets, 0, false);
 
-		// TODO - save user to csv
 		return dao.addRegisteredUser(user);
 
 	}
