@@ -56,7 +56,7 @@ public class RegisteredUser extends User{
 			ticketList += ticket.getId() + ";";
 		}
 		ticketList = ticketList.substring(0, ticketList.length() - 1);
-		return super.toFileString() + ", " + ticketList + "," + points + "," + deleted;
+		return super.toCSVString() + ", " + ticketList + "," + points + "," + deleted;
 	}
 	
 	
