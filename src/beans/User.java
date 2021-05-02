@@ -15,6 +15,7 @@ public class User {
 	public User() {
 		super();
 	}
+	
 
 	public User(String username, String password, String firstName, String lastName, Gender gender, LocalDate birthday,
 			UserRole role, CustomerKind customerType) {
@@ -28,6 +29,7 @@ public class User {
 		this.role = role;
 		this.customerType = customerType;
 	}
+
 
 	public String getUsername() {
 		return username;
@@ -95,8 +97,16 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [username=" + username + ", password=" + password + ", name=" + firstName + ", lastName=" + lastName
-				+ "]";
+		return "User [username=" + username + ", password=" + password + ", firstName=" + firstName + ", lastName="
+				+ lastName + ", gender=" + gender + ", birthday=" + birthday + ", role=" + role + ", customerType="
+				+ customerType + "]";
 	}
+	
+	public String toCSVString() {
+		return username + "," + password + "," + firstName + "," + lastName + "," + gender + "," + birthday + "," + role + "," + customerType;
+	}
+
+
+	
 
 }

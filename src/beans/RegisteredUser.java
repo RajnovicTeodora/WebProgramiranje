@@ -13,14 +13,18 @@ public class RegisteredUser extends User{
 		super();
 	}
 
-	public RegisteredUser(String username, String password, String name, String lastName, Gender gender,
+	
+
+	public RegisteredUser(String username, String password, String firstName, String lastName, Gender gender,
 			LocalDate birthday, UserRole role, CustomerKind customerType, List<Ticket> tickets, int points,
 			Boolean deleted) {
-		super(username, password, name, lastName, gender, birthday, role, customerType);
-		this.tickets = tickets;
-		this.points = points;
+		super(username, password, firstName, lastName, gender, birthday, role, customerType);
 		this.deleted = deleted;
+		this.points = points;
+		this.tickets = tickets;	
 	}
+
+
 
 	public List<Ticket> getTickets() {
 		return tickets;
@@ -46,4 +50,18 @@ public class RegisteredUser extends User{
 		this.deleted = deleted;
 	}
 
+	public String toCSVString() {
+		String ticketList = "";
+		for (Ticket ticket : this.tickets) {
+			ticketList += ticket.getId() + ";";
+		}
+		ticketList = ticketList.substring(0, ticketList.length() - 1);
+		return super.toFileString() + ", " + ticketList + "," + points + "," + deleted;
+	}
+	
+	
+
+	
+	
+	
 }
