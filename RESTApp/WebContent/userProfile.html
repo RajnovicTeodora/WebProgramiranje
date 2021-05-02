@@ -1,0 +1,124 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+<head>
+<title>Wellome</title>
+<!--Import Google Icon Font-->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+	rel="stylesheet">
+<!--Import materialize.css-->
+<link type="text/css" rel="stylesheet" href="css/materialize.min.css"
+	media="screen,projection" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<base href="http://localhost:8080/RESTApp/rest">
+</head>
+
+<body>
+
+	<ul id="dropdown1" class="dropdown-content">
+		<li><a href="#!">one</a></li>
+		<li><a href="#!">two</a></li>
+		<li class="divider"></li>
+		<li><a href="#!">three</a></li>
+	</ul>
+	<nav class="nav-extended">
+	<div class="nav-wrapper teal darken-2">
+		<a href="#" class="brand-logo"> <img
+			style="width: 12%; height: 12%;" src="Resources/images/ticket.png"
+			alt="Titi" />
+		</a>
+		<ul id="nav-mobile" class="right hide-on-med-and-down">
+			<li><a href="http://localhost:8080/RESTApp/registration.html">Registration</a></li>
+			<li><a href="#">Components</a></li>
+			<li><a class="dropdown-trigger" href="#!"
+				data-target="dropdown1">Dropdown<i class="material-icons right">arrow_drop_down</i></a></li>
+		</ul>
+	</div>
+	<div class="nav-content">
+		<ul class="tabs tabs-transparent">
+			<li class="tab"><a href="#">Test 1</a></li>
+			<li class="tab"><a class="active" href="#">Test 2</a></li>
+			<li class="tab disabled"><a href="#">Disabled Tab</a></li>
+			<li class="tab"><a href="#">Test 4</a></li>
+		</ul>
+	</div>
+	</nav>
+
+	<div class="container center" id="userProfile">
+		<div class="card teal darken-2 center">
+			<div class="card-contet teal darken-2 center">
+				<form class="col s12 center" id="profile_form">
+					<div class="row">
+						<div class="input-field col s6">
+							<i class="material-icons prefix">account_circle</i> <input
+								placeholder="Username" id="username" name="username" type="text"
+								required readonly /> <label for="username">Username</label>
+						</div>
+						<div class="input-field col s6">
+							<label for="password">Password</label> <input id="password"
+								type="password" placeholder="Password" name="password" required
+								readonly />
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="input-field col s6">
+							<input placeholder="Name" id="name" name="name" type="text"
+								required readonly /> <label for="name">Name</label>
+						</div>
+						<div class="input-field col s6">
+							<label for="surname">Surname</label> <input id="surname"
+								type="text" placeholder="Surname" name="surname" required
+								readonly />
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="input-field col s4">
+							<input placeholder="Gender" id="gender" name="gender" type="text"
+								readonly /> <label for="gender">Gender</label>
+						</div>
+						<div class="input-field col s4">
+							<label for="birthday">Date of Birth</label> <input id="birthday"
+								type="text" placeholder="Date of Birth" name="birthday" readonly />
+						</div>
+						<div class="input-field col s4" hidden id="points_field">
+							<label for="points">Points</label> <input type="text" id="points"
+								placeholder="Points" name="points" readonly />
+						</div>
+					</div>
+
+					<button class="btn waves-effect waves-purple right" type="submit"
+						name="action">
+						Edit <i class="material-icons right">send</i>
+					</button>
+
+				</form>
+			</div>
+
+		</div>
+		<table class="highlight centered" id="tickets">
+			<thead style="background-color: #ED6D71;">
+				<tr style="color: white;">
+					<th>Manifestation</th>
+					<th>Date</th>
+					<th>Time</th>
+					<th>Price</th>
+					<th>Status</th>
+					<th>Type</th>
+				</tr>
+			</thead>
+			<tbody class=" orange accent-1">
+			</tbody>
+		</table>
+	</div>
+
+
+	<script type="text/javascript" src="js/materialize.min.js"></script>
+	<script src="jquery-3.3.1.min.js"></script>
+	<script type="text/javascript" src="js/profile.js">
+		
+	</script>
+</body>
+
+</html>
