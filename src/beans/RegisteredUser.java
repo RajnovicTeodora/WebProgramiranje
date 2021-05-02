@@ -3,7 +3,7 @@ package beans;
 import java.time.LocalDate;
 import java.util.List;
 
-public class RegisteredUser extends User{
+public class RegisteredUser extends User {
 
 	private List<Ticket> tickets;
 	private int points;
@@ -13,18 +13,14 @@ public class RegisteredUser extends User{
 		super();
 	}
 
-	
-
 	public RegisteredUser(String username, String password, String firstName, String lastName, Gender gender,
 			LocalDate birthday, UserRole role, CustomerKind customerType, List<Ticket> tickets, int points,
 			Boolean deleted) {
 		super(username, password, firstName, lastName, gender, birthday, role, customerType);
 		this.deleted = deleted;
 		this.points = points;
-		this.tickets = tickets;	
+		this.tickets = tickets;
 	}
-
-
 
 	public List<Ticket> getTickets() {
 		return tickets;
@@ -52,16 +48,15 @@ public class RegisteredUser extends User{
 
 	public String toCSVString() {
 		String ticketList = "";
-		for (Ticket ticket : this.tickets) {
-			ticketList += ticket.getId() + ";";
+
+		if (this.tickets != null && this.tickets.size() > 0) {
+
+			for (Ticket ticket : this.tickets) {
+				ticketList += ticket.getId() + ";";
+			}
 		}
 		ticketList = ticketList.substring(0, ticketList.length() - 1);
 		return super.toCSVString() + ", " + ticketList + "," + points + "," + deleted;
 	}
-	
-	
 
-	
-	
-	
 }
