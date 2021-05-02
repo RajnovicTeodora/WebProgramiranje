@@ -3,6 +3,8 @@ package dao;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,12 +22,14 @@ import beans.UserRole;
 public class RegisteredUserDAO {
 	private Map<String, RegisteredUser> registeredUsers = new HashMap<>();
 
+	private String contextPath;
+
 	public RegisteredUserDAO() {
 
 	}
 
 	public RegisteredUserDAO(String contextPath) {
-		loadRegisteredUsers(contextPath);
+		this.contextPath = contextPath;
 	}
 
 	public RegisteredUser find(String username, String password) {
@@ -58,7 +62,7 @@ public class RegisteredUserDAO {
 	private void loadRegisteredUsers(String contextPath) {
 		BufferedReader in = null;
 		try {
-			File file = new File(contextPath + "/registeredUsers.txt");
+			File file = new File(contextPath + "/user.csv");
 			in = new BufferedReader(new FileReader(file));
 			String line;
 			StringTokenizer st;
@@ -76,7 +80,7 @@ public class RegisteredUserDAO {
 					LocalDate date = LocalDate.parse(st.nextToken().trim());
 					List<Ticket> tickets = new ArrayList<Ticket>();
 
-					// TODO load 
+					// TODO load
 					registeredUsers.put(username, new RegisteredUser(username, password, firstName, lastName, gender,
 							date, UserRole.USER, CustomerKind.NEWBIE, tickets, 0, false));
 				}
