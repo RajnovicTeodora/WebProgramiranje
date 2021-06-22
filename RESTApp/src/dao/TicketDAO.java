@@ -1,0 +1,93 @@
+package dao;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import beans.Location;
+import beans.Manifestation;
+import beans.ManifestationStatus;
+import beans.ManifestationType;
+import beans.RegisteredUser;
+import beans.Ticket;
+import beans.TicketStatus;
+import beans.TicketType;
+import beans.User;
+
+
+public class TicketDAO {
+	private Map<String, Ticket> tickets = new HashMap<String, Ticket>();
+
+	private String contextPath;
+
+	public TicketDAO() {
+
+	}
+
+	public TicketDAO(String contextPath) {
+		this.contextPath = contextPath;
+		loadTickets(contextPath);
+	}
+
+	public Ticket findById(String id) {
+		if (!tickets.containsKey(id)) {
+			return null;
+		}
+		return tickets.get(id);
+	}
+
+	public Ticket addTicket(Ticket ticket) {
+		if(findById(ticket.getId()) != null)
+			return null;
+		tickets.put(ticket.getId(), ticket);
+		return ticket;
+	}
+	
+	public Ticket updateTicket(Ticket ticket) {
+		tickets.replace(ticket.getId(), ticket);
+		return ticket;
+	}
+
+	public Collection<Ticket> findAll() {
+		return tickets.values();
+	}
+	
+	public ArrayList<Ticket> findAllList(){
+		ArrayList<Ticket> ticketList = new ArrayList<Ticket>();
+		for (Ticket ticket : findAll()) {
+			ticketList.add(ticket);
+		}
+		return ticketList;
+	}
+
+	public String findId() {
+		int i = 1000000000;
+		
+		while(true) {
+			if(tickets.containsKey(Integer.toString(i))) {
+				i++;
+			}else {
+				return Integer.toString(i);
+			}
+		}
+	}
+	
+	private void loadTickets(String contextPath) {
+		Manifestation m1 = new Manifestation("Manifestation1", ManifestationType.FESTIVAL, 20, LocalDateTime.now().plusDays(1), 10 , ManifestationStatus.ACTIVE, new Location(), "ticket.png");
+		Manifestation m2 = new Manifestation("Manifestation2", ManifestationType.FESTIVAL, 20, LocalDateTime.now().plusDays(3), 10 , ManifestationStatus.ACTIVE, new Location(), "ticket.png");
+		Manifestation m3 = new Manifestation("Manifestation3", ManifestationType.FESTIVAL, 20, LocalDateTime.now(), 10 , ManifestationStatus.ACTIVE, new Location(), "ticket.png");
+		m1.setId(1);
+		m2.setId(2);
+		m3.setId(3);
+		
+		Ticket t1 = new Ticket("1", m1 , LocalDateTime.now().plusDays(20), 11, "Mika Mikic", TicketStatus.RESERVED, TicketType.REGULAR);
+		Ticket t2 = new Ticket("2", m2 , LocalDateTime.now().plusDays(30), 11, "Pera Peric", TicketStatus.RESERVED, TicketType.REGULAR);
+		Ticket t3 = new Ticket("3", m3 , LocalDateTime.now(), 11, "Laza Lazic", TicketStatus.RESERVED, TicketType.REGULAR);
+		
+		addTicket(t1);
+		addTicket(t2);
+		addTicket(t3);
+	}
+}
