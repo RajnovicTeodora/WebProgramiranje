@@ -1,8 +1,6 @@
-
-var registration_url = ".../services/rest/registration/add";
-
-var lon = 4.35247
-var lat = 50.84673
+var lon;
+var lat;
+var layer;
 
 var attribution = new ol.control.Attribution({
 	collapsible: false
@@ -17,12 +15,11 @@ var map = new ol.Map({
 		})
 	],
 	view: new ol.View({
-		center: ol.proj.fromLonLat([lon, lat]),
-		zoom: 4
+		center: ol.proj.fromLonLat([0, 0]),
+		zoom: 2
 	})
 });
 
-var layer;
 
 function readURL(input) {
 	if (input.files && input.files[0]) {
@@ -36,6 +33,7 @@ function readURL(input) {
 		};
 
 		reader.readAsDataURL(input.files[0]);
+
 	}
 }
 
@@ -45,46 +43,61 @@ $("#manifestation_form").submit(function(event) {
 	event.preventDefault();
 	console.log("Registration...");
 
-	let username = $('input[name="username"]').val();
-	let password = $('input[name="password"]').val();
+	let file = $('input[name="file"]').val();
 	let name = $('input[name="name"]').val();
-	let surname = $('input[name="surname"]').val();
-	let gender = document.querySelector('input[name="gender"]:checked').value;
-	let birthday = $('input[name="date"]').val();
+	let date = $('input[name="date"]').val();
+	let type = document.getElementById('typeSelect').value; // 
+	let numSeats = $('input[name="numSeats"]').val();
+	let price = $('input[name="price"]').val();
 
-	if (!username || !password || !name || !surname || !gender || !birthday) {
+	let street = $('input[name="street"]').val();
+	let number = $('input[name="number"]').val();
+	let city = $('input[name="city"]').val();
+	let country = $('input[name="country"]').val();
+
+	if (!file || !name || !date || !type || !numSeats || !price || !street || !number || !city || !country) {
 		$('#error').text('All fields must be filled!');
 		$("#error").show().delay(3000).fadeOut();
 		return;
 	}
 
-	var today = new Date().toISOString().split("T")[0];;
-	if (birthday >= today) {
-		$('#error').text('Date of birth must be before today\'s date');
-		$("#error").show().delay(3000).fadeOut();
-		return;
-	}
+	var address = street + " " + number + " " + city + " " + country;
+	$.ajax({
+		type: 'GET',
+		url: 'https://nominatim.openstreetmap.org/search/' + encodeURIComponent(address) + '?format=json&addressdetails=1&limit=1&polygon_svg=1',
+		contentType: 'application/json',
+		success: function(result) {
+			if (result.length <= 0) {
+				M.toast({ html: 'Address not found', classes: 'rounded', panning: 'center' });
+				return;
+			}
+			lon = result[0].lon * 1
+			lat = result[0].lat * 1
+		}
+	});
+
 	$.ajax({
 		type: 'POST',
-		url: "rest/registration/add",
+		url: "rest/manifestations/add",
 		data: JSON.stringify({
-			username: username,
-			password: password,
 			name: name,
-			surname: surname,
-			gender: gender,
-			birthday: birthday
-
+			type: type,
+			numSeats: numSeats,
+			date: date,
+			regularPrice: price,
+			location: street + " " + number + ", " + city + ", " + country,
+			lat: lat,
+			lon: lon,
+			poster: file
 		}),
 		contentType: 'application/json',
 		success: function(result) {
 			console.log(result);
-			M.toast({ html: 'Successfully registered', classes: 'rounded', panning: 'center' });
+			M.toast({ html: 'Successfully created a new manifestation', classes: 'rounded', panning: 'center' });
 
 		},
 		error: function() {
-			$('#error').text("Invalid input!");
-			$("#error").show().delay(2000).fadeOut();
+			M.toast({ html: 'Failed to create a new manifestation', classes: 'rounded', panning: 'center' });
 		}
 	});
 });
@@ -110,7 +123,8 @@ function changed() {
 		url: 'https://nominatim.openstreetmap.org/search/' + encodeURIComponent(address) + '?format=json&addressdetails=1&limit=1&polygon_svg=1',
 		contentType: 'application/json',
 		success: function(result) {
-
+			if (result.length <= 0)
+				return;
 			lon = result[0].lon * 1
 			lat = result[0].lat * 1
 
