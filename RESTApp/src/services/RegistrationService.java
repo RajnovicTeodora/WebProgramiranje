@@ -68,7 +68,7 @@ public class RegistrationService {
 
 			// --------------
 
-			ctx.setAttribute("registeredUser", u);
+			ctx.setAttribute("registeredUser", a);
 		}
 
 	}
@@ -107,7 +107,14 @@ public class RegistrationService {
 
 		Gender gender = Gender.valueOf(registrationDTO.getGender().toUpperCase());
 		List<Ticket> tickets = new ArrayList<Ticket>();
-		RegisteredUser user = new RegisteredUser(username, password, name, surname, gender, date, UserRole.USER,
+		
+		User maybeAdmin = (User) ctx.getAttribute("registeredUser");
+		UserRole userRole = UserRole.USER;
+		
+		if(maybeAdmin != null && maybeAdmin.getRole() == UserRole.ADMINISTRATOR)
+			userRole = UserRole.VENDOR;
+
+		RegisteredUser user = new RegisteredUser(username, password, name, surname, gender, date, userRole,
 				CustomerKind.NEWBIE, tickets, 0, false);
 
 		return (RegisteredUser) dao.addRegisteredUser(user);
