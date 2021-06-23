@@ -1,5 +1,4 @@
 
-var registration_url = ".../services/rest/registration/add";
 
 $("#registration_form").submit(function(event) {
 
@@ -42,7 +41,16 @@ $("#registration_form").submit(function(event) {
 		success: function(result) {
 			console.log(result);
 			M.toast({ html: 'Successfully registered', classes: 'rounded', panning: 'center' });
-			window.location.href = "http://localhost:8080/RESTApp/index.html";
+
+			$.get({
+				url: 'rest/registration/registeredUser',
+				success: function(user) {
+					if(user.role == "ADMINISTRATOR")
+						window.location.href = "http://localhost:8080/RESTApp/adminUsers.html";
+					else
+						window.location.href = "http://localhost:8080/RESTApp/index.html";
+				}
+			});
 
 		},
 		error: function() {
