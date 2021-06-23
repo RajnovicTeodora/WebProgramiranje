@@ -53,76 +53,65 @@ div {
 	<div class="container">
 		<form id="manifestation_form">
 			<div class="row">
-				<div class="col s6 center">
+				<div class="col center s6 offset-s1">
 					<div class="row">
-						<img id="blah" src="Resources/images/3237447.png"
-							alt="Manifestation Image" />
+						<img class="responsive-img" id="blah"
+							src="Resources/images/3237447.png" alt="Manifestation Poster" />
 					</div>
 					<div class="row">
-						<input type='file' onchange="readURL(this);" />
+						<input type='file' onchange="readURL(this);" required name="file" id="file"/>
 					</div>
-				</div>
-				<div class="col s6">
 					<div class="input-field row">
 						<input placeholder="Name" id="name" name="name" type="text"
 							required /> <label for="name">Name</label>
 					</div>
 					<div class="input-field row">
-						<div>
+						<div class="col s6">
 							<label for="date">Date</label> <input id="date" name="date"
 								type="datetime-local" required />
 						</div>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col s6">
-					<div class="row">
-						<label for="typeSelect">Manifestation Type</label>
-						<div class="input-field">
-							<select class="browser-default" id="typeSelect">
-								<option value="CONCERT">Concert</option>
-								<option value="FESTIVAL">Festival</option>
-								<option value="THEATER">Theater</option>
-							</select>
+						<div class="col s6">
+							<label for="typeSelect">Manifestation Type</label>
+							<div class="input-field">
+								<select class="browser-default" id="typeSelect">
+									<option value="CONCERT">Concert</option>
+									<option value="FESTIVAL">Festival</option>
+									<option value="THEATER">Theater</option>
+								</select>
+							</div>
 						</div>
 					</div>
+
 					<div class="row">
-						<div class="input-field">
+						<div class="input-field col s6">
 							<input placeholder="Number of seats" id="numSeats"
 								name="numSeats" type="number" min="1" step="1" required /> <label
 								for="numSeats">Number of seats</label>
 						</div>
-					</div>
-
-					<div class="row">
-						<div class="input-field">
+						<div class="input-field col s6">
 							<input placeholder="Price" id="price" name="price" type="number"
 								min="1" step="0.1" required /> <label for="price">Price</label>
 						</div>
 					</div>
+
 				</div>
-				<div class="col s6">
-					<label for="street">Street </label> <input placeholder="Street"
-						id="street" name="street" type="text" required onmouseup="changed()"/> <label
-						for="number" onmouseup="changed()">Number</label> <input
-						placeholder="Number" id="number" name="number" type="text"
-						required onmouseup="changed()" /> <label for="city">City</label>
-					<input placeholder="City" id="city" name="city" type="text"
-						required onmouseup="changed()" /> <label for="name">Country</label>
-					<input placeholder="Country" id="country" name="country"
-						type="text" required onmouseup="changed()"/>
+				<div class="col s4 offset-s1">
+					<div class="row card">
+						<label for="street">Street </label> <input placeholder="Street"
+							id="street" name="street" type="text" required
+							onchange="changed()" /> <label for="number" onchange="changed()">Number</label>
+						<input placeholder="Number" id="number" name="number" type="text"
+							required onchange="changed()" /> <label for="city">City</label>
+						<input placeholder="City" id="city" name="city" type="text"
+							required onchange="changed()" /> <label for="name">Country</label>
+						<input placeholder="Country" id="country" name="country"
+							type="text" required onchange="changed()" />
 
-					<button class="btn waves-effect waves-purple right" type="submit"
-						name="action">
-						Submit <i class="material-icons right">send</i>
-					</button>
-
-					<div id="map" style="max-width: 100%; height: auto;"></div>
+						<div id="map" style="max-width: 100%; height: auto;"></div>
+					</div>
 
 				</div>
 			</div>
-
 			<div class="row">
 
 				<button class="btn waves-effect waves-purple right" type="submit"
