@@ -1,96 +1,145 @@
 package services;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
+import java.util.Random;
 
 import javax.annotation.PostConstruct;
+import javax.imageio.ImageIO;
 import javax.servlet.ServletContext;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import beans.CustomerKind;
+import beans.Gender;
+import beans.Location;
 import beans.Manifestation;
+import beans.ManifestationStatus;
+import beans.ManifestationType;
+import beans.RegisteredUser;
+import beans.Ticket;
+import beans.User;
+import beans.UserRole;
+import beans.Vendor;
 import dao.ManifestationDAO;
+import dao.RegisteredUserDAO;
+import dto.NewManifestationDTO;
+import dto.RegistrationDTO;
+import exception.InvalidInputException;
+import exception.ManifestationExistsException;
 import exception.ManifestationNotFoundException;
+import exception.UserExistsException;
+import exception.UserNotFoundException;
 
 @Path("/manifestations")
 public class ManifestationService {
 
-  @Context
-  ServletContext ctx;
+	@Context
+	ServletContext ctx;
 
-  public ManifestationService() {
+	public ManifestationService() {
 
-  }
+	}
 
-  @PostConstruct
-  public void init() {
-    if (ctx.getAttribute("manifestationDAO") == null) {
-      String contextPath = ctx.getRealPath("");
-      ctx.setAttribute("manifestationDAO", new ManifestationDAO(contextPath));
-    }
+	@PostConstruct
+	public void init() {
+		if (ctx.getAttribute("manifestationDAO") == null) {
+			String contextPath = ctx.getRealPath("");
+			ctx.setAttribute("manifestationDAO", new ManifestationDAO(contextPath));
+		}
 
-  }
+	}
 
-  @GET
-  @Path("/list")
-  @Produces(MediaType.APPLICATION_JSON)
-  public ArrayList<Manifestation> getManifestations() {
-    ManifestationDAO dao = (ManifestationDAO) ctx.getAttribute("manifestationDAO");
-    ArrayList<Manifestation> manifestations = dao.findAllList();
-    manifestations.sort(new Comparator<Manifestation>() {
-      @Override
-      public int compare(Manifestation o1, Manifestation o2) {
-        return o2.getDate().compareTo(o1.getDate());
-      }
-    });
-    // TODO: sort should be most recent
-    return manifestations;
+	@GET
+	@Path("/list")
+	@Produces(MediaType.APPLICATION_JSON)
+	public ArrayList<Manifestation> getManifestations() {
+		ManifestationDAO dao = (ManifestationDAO) ctx.getAttribute("manifestationDAO");
+		ArrayList<Manifestation> manifestations = dao.findAllList();
+		manifestations.sort(new Comparator<Manifestation>() {
+			@Override
+			public int compare(Manifestation o1, Manifestation o2) {
+				return o2.getDate().compareTo(o1.getDate());
+			}
+		});
+		// TODO: sort should be most recent
+		return manifestations;
 
-  }
+	}
 
-  @GET
-  @Path("/{id}")
-  @Produces(MediaType.APPLICATION_JSON)
-  public Manifestation findOne(@PathParam("id") String id) {
-    ManifestationDAO dao = (ManifestationDAO) ctx.getAttribute("manifestationDAO");
-    int intId = -1;
-    try {
+	@GET
+	@Path("/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Manifestation findOne(@PathParam("id") String id) {
+		ManifestationDAO dao = (ManifestationDAO) ctx.getAttribute("manifestationDAO");
+		int intId = -1;
+		try {
 
-      intId = Integer.parseInt(id);
+			intId = Integer.parseInt(id);
 
-    } catch (NumberFormatException e) {
-      System.out.println(id + " is not a valid integer number");
-      return null;
-    }
+		} catch (NumberFormatException e) {
+			System.out.println(id + " is not a valid integer number");
+			return null;
+		}
 
-    Manifestation manifestation = dao.findById(intId);
-    if(manifestation == null)
-    	throw new ManifestationNotFoundException("Manifestation with the id " + id + " not found");
-    return manifestation;
-  }
-  
+		Manifestation manifestation = dao.findById(intId);
+		if (manifestation == null)
+			throw new ManifestationNotFoundException("Manifestation with the id " + id + " not found");
+		return manifestation;
+	}
 
+	// Add new manifestation
+	@POST
+	@Path("/add")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Manifestation addRegisteredUser(NewManifestationDTO newManifestationDTO) {
 
-  /*
-   * @GET
-   * 
-   * @Path("/{name}/{location}/{dateFrom}/{dateTo}/{priceFrom}/{priceTo}")
-   * 
-   * @Produces(MediaType.APPLICATION_JSON) public ArrayList<Manifestation>
-   * findBySearchCriteria(@PathParam("name") String name,
-   * 
-   * @PathParam("location") String location, @PathParam("dateFrom") String
-   * dateFrom, @PathParam("dateTo") String dateTo,
-   * 
-   * @PathParam("priceFrom") String priceFrom, @PathParam("priceTo") String
-   * priceTo) { System.out.println("cao"); ManifestationDAO dao =
-   * (ManifestationDAO) ctx.getAttribute("manifestationDAO");
-   * ArrayList<Manifestation> manifestations = new ArrayList<Manifestation>();
-   * System.out.println("cao"); System.out.println(name + " - " + location + " - "
-   * + priceFrom + " - " + priceTo); return manifestations; }
-   */
+		Vendor user = (Vendor) ctx.getAttribute("registeredUser");
+		if (user == null)
+			throw new UserNotFoundException("No user registered");
+		
+		ManifestationDAO dao = (ManifestationDAO) ctx.getAttribute("manifestationDAO");
+		
+		Location location = new Location(newManifestationDTO.getLat(), newManifestationDTO.getLon(), newManifestationDTO.getLocation());
+		if(dao.isManifestationOverlapping(newManifestationDTO.getDate(), location)) {
+			throw new ManifestationExistsException("Manifestation for that date and location exists");
+		}
+		
+		ManifestationType type = ManifestationType.valueOf(newManifestationDTO.getType());
+		// TODO download image
+		Manifestation manifestation = new Manifestation(newManifestationDTO.getName(), type, newManifestationDTO.getNumSeats(), newManifestationDTO.getDate(), newManifestationDTO.getRegularPrice(), ManifestationStatus.UNACTIVE, location,"ticket.png");
+		return dao.addManifestation(manifestation);
+	}
+
+	/*
+	 * @GET
+	 * 
+	 * @Path("/{name}/{location}/{dateFrom}/{dateTo}/{priceFrom}/{priceTo}")
+	 * 
+	 * @Produces(MediaType.APPLICATION_JSON) public ArrayList<Manifestation>
+	 * findBySearchCriteria(@PathParam("name") String name,
+	 * 
+	 * @PathParam("location") String location, @PathParam("dateFrom") String
+	 * dateFrom, @PathParam("dateTo") String dateTo,
+	 * 
+	 * @PathParam("priceFrom") String priceFrom, @PathParam("priceTo") String
+	 * priceTo) { System.out.println("cao"); ManifestationDAO dao =
+	 * (ManifestationDAO) ctx.getAttribute("manifestationDAO");
+	 * ArrayList<Manifestation> manifestations = new ArrayList<Manifestation>();
+	 * System.out.println("cao"); System.out.println(name + " - " + location + " - "
+	 * + priceFrom + " - " + priceTo); return manifestations; }
+	 */
 }
