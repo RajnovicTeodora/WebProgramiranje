@@ -1,7 +1,6 @@
 package services;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,23 +18,21 @@ import javax.ws.rs.core.MediaType;
 import beans.Administrator;
 import beans.CustomerKind;
 import beans.Gender;
-import beans.Location;
-import beans.Manifestation;
-import beans.ManifestationStatus;
-import beans.ManifestationType;
 import beans.RegisteredUser;
 import beans.Ticket;
 import beans.TicketStatus;
-import beans.TicketType;
 import beans.User;
 import beans.UserRole;
+import beans.Vendor;
 import dao.RegisteredUserDAO;
 import dao.TicketDAO;
+import dto.EditProfileDTO;
 import dto.RegistrationDTO;
 import dto.TicketDTO;
 import dto.UserProfileDTO;
 import exception.InvalidInputException;
 import exception.UserExistsException;
+import exception.UserNotFoundException;
 
 @Path("/registration")
 public class RegistrationService {
@@ -63,7 +60,7 @@ public class RegistrationService {
 
 			Administrator a = (Administrator) dao.findByUsername("admin");
 			RegisteredUser u = (RegisteredUser) dao.findByUsername("cao");
-
+			Vendor v = (Vendor) dao.findByUsername("vendor");
 			List<Ticket> tickets = u.getTickets();
 			tickets.add(daoT.findById("1"));
 			tickets.add(daoT.findById("2"));
@@ -85,7 +82,8 @@ public class RegistrationService {
 
 		RegisteredUserDAO dao = (RegisteredUserDAO) ctx.getAttribute("registeredUserDAO");
 		if (dao.findByUsername(registrationDTO.getUsername()) != null)
-			throw new UserExistsException("User with the username: " + registrationDTO.getUsername() + " already exists");
+			throw new UserExistsException(
+					"User with the username: " + registrationDTO.getUsername() + " already exists");
 		String username = registrationDTO.getUsername().trim();
 		String name = registrationDTO.getName().trim();
 		String surname = registrationDTO.getLastName().trim();
@@ -123,6 +121,49 @@ public class RegistrationService {
 	public UserProfileDTO getRegisteredUser() {
 		User user = (User) ctx.getAttribute("registeredUser");
 
+		List<TicketDTO> tickets = generateTickets(user);
+
+		UserProfileDTO userDAO = new UserProfileDTO(user, tickets);
+		return userDAO;
+
+	}
+
+	// Edit user profile
+	@POST
+	@Path("/edit")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public UserProfileDTO editRegisteredUser(EditProfileDTO editDTO) {
+
+		User user = (User) ctx.getAttribute("registeredUser");
+		if (user == null)
+			throw new UserNotFoundException("No user registered");
+
+		RegisteredUserDAO dao = (RegisteredUserDAO) ctx.getAttribute("registeredUserDAO");
+
+		String name = editDTO.getName().trim();
+		String surname = editDTO.getSurname().trim();
+		String password = editDTO.getPassword().trim();
+
+		if (name.equals("") || surname.equals("") || password.equals(""))
+			throw new InvalidInputException("Input is invalid");
+
+		User foundUser = dao.findByUsername(user.getUsername());
+		if (foundUser == null)
+			throw new UserNotFoundException("User not found");
+
+		foundUser.setFirstName(name);
+		foundUser.setLastName(surname);
+		foundUser.setPassword(password);
+
+		ctx.setAttribute("registeredUser", foundUser);
+
+		List<TicketDTO> tickets = generateTickets(user);
+		return new UserProfileDTO(foundUser, tickets);
+
+	}
+
+	protected List<TicketDTO> generateTickets(User user) {
 		TicketDAO dao = (TicketDAO) ctx.getAttribute("ticketDAO");
 
 		List<TicketDTO> tickets = new ArrayList<TicketDTO>();
@@ -143,10 +184,7 @@ public class RegistrationService {
 			}
 		}
 
-		UserProfileDTO userDAO = new UserProfileDTO(user.getUsername(), user.getPassword(), user.getFirstName(),
-				user.getLastName(), user.getGender(), user.getBirthday().toString(), tickets,
-				user.getRole().toString());
-		return userDAO;
+		return tickets;
 
 	}
 }
