@@ -57,9 +57,10 @@ div {
 					<div class="row">
 						<img class="responsive-img" id="blah"
 							src="Resources/images/3237447.png" alt="Manifestation Poster" />
+							<a id="link" download style="display: none">shouldnt be visible</a>
 					</div>
 					<div class="row">
-						<input type='file' onchange="readURL(this);" required name="file" id="file"/>
+						<input type='file' onchange="readURL(this);" required name="file" id="file" enctype="multipart/form-data"/>
 					</div>
 					<div class="input-field row">
 						<input placeholder="Name" id="name" name="name" type="text"
@@ -103,8 +104,8 @@ div {
 						<input placeholder="Number" id="number" name="number" type="text"
 							required onchange="changed()" /> <label for="city">City</label>
 						<input placeholder="City" id="city" name="city" type="text"
-							required onchange="changed()" /> <label for="name">Country</label>
-						<input placeholder="Country" id="country" name="country"
+							required onchange="changed()" /> <label for="name">Postal code</label>
+						<input placeholder="Postal code" id="country" name="country"
 							type="text" required onchange="changed()" />
 
 						<div id="map" style="max-width: 100%; height: auto;"></div>
