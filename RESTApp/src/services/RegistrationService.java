@@ -68,7 +68,7 @@ public class RegistrationService {
 
 			// --------------
 
-			ctx.setAttribute("registeredUser", a);
+			ctx.setAttribute("registeredUser", v);
 		}
 
 	}
