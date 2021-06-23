@@ -21,6 +21,7 @@ import beans.TicketStatus;
 import beans.TicketType;
 import beans.User;
 import beans.UserRole;
+import beans.Vendor;
 
 public class RegisteredUserDAO {
 	private Map<String, User> registeredUsers = new HashMap<>();
@@ -40,6 +41,8 @@ public class RegisteredUserDAO {
 		addRegisteredUser(a);
 		RegisteredUser u = new RegisteredUser("cao", "cao", "cao", "cao", Gender.FEMALE, LocalDate.now(), UserRole.USER, CustomerKind.CHAMP, new ArrayList<Ticket>(), 10 , false); 
 		addRegisteredUser(u);
+		Vendor v = new Vendor("vendor", "vendor", "vendor", "vendor", Gender.FEMALE, LocalDate.now(), UserRole.VENDOR, CustomerKind.CHAMP); 
+		addRegisteredUser(v);
 	}
 
 	public User find(String username, String password) {
