@@ -14,40 +14,73 @@
 </head>
 <style>
 img {
-    width: 200px;
-    height: 200px;
+	width: 200px;
+	height: 200px;
+}
 
+div {
+  padding: 5px;
 }
 </style>
-<body class="container">
-	<div class="row center teal lighten-2">
-		<header>
-		<h2 style="color: white;">New Manifestation</h2>
-		</header>
-	</div>
-	<div class="row">
+<body>
+
+	<nav class="nav-extended">
+		<div class="nav-wrapper teal darken-2">
+			<a href="#" class="brand-logo"> <img
+				style="width: 12%; height: 12%;" src="Resources/images/ticket.png"
+				alt="TiTi" />
+			</a>
+			<ul id="nav-mobile" class="right hide-on-med-and-down">
+				<li><a href="http://localhost:8080/RESTApp/registration.html">Registration</a></li>
+				<li><a href="http://localhost:8080/RESTApp/userProfile.html">MyProfile</a></li>
+			</ul>
+		</div>
+		<div class="nav-content">
+			<ul class="tabs tabs-transparent">
+				<li class="tab"><a class="active"
+					href="http://localhost:8080/RESTApp/index.html">Home Page</a></li>
+				<li class="tab"><a class="active"
+					href="http://localhost:8080/RESTApp/adminUsers.html">Users</a></li>
+				<li class="tab disabled"><a href="#">Disabled Tab</a></li>
+				<li class="tab"><a href="#">Test 4</a></li>
+			</ul>
+		</div>
+	</nav>
+
+	<div class="container">
 		<form id="manifestation_form">
-      <div class="row">
-        <div clas = "row">
-           <img id="blah"
-          src="Resources/images/3237447.png" alt="Manifestation Image" />
-        </div>
-        <div class="row">	<input type='file' onchange="readURL(this);" /> </div>
-      </div>
 			<div class="row">
-				<div class="input-field col s6">
-					<input placeholder="Name" id="name" name="name" type="text"
-						required /> <label for="name">Name</label>
+				<div class="col s6 center">
+					<div class="row">
+						<img id="blah" src="Resources/images/3237447.png"
+							alt="Manifestation Image" />
+					</div>
+					<div class="row">
+						<input type='file' onchange="readURL(this);" />
+					</div>
 				</div>
 				<div class="col s6">
-					<label for="type">Type</label>
-					<div class="input-field col s12">
-						<select>
-							<option value="" disabled selected></option>
+					<div class="input-field row">
+						<input placeholder="Name" id="name" name="name" type="text"
+							required/> <label for="name">Name</label>
+					</div>
+					<div class="input-field row">
+						<div>
+						<label for="date">Date</label> <input id="date"
+							name="date" type="datetime-local" required />
+					</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col s6">
+					<label for="typeSelect">Manifestation Type</label>
+					<div class="input-field">
+						<select class="browser-default" id="typeSelect">
 							<option value="CONCERT">Concert</option>
 							<option value="FESTIVAL">Festival</option>
 							<option value="THEATER">Theater</option>
-						</select> <label>Choose a type</label>
+						</select>
 					</div>
 				</div>
 			</div>
@@ -56,16 +89,6 @@ img {
 					<input placeholder="Number of seats" id="numSeats" name="numSeats"
 						type="number" min="1" step="1" required /> <label for="numSeats">Number
 						of seats</label>
-				</div>
-			</div>
-			<div class="row">
-				<div class="input-field col s6">
-					<div>
-						<label for="datee">Number of seats</label> <input id="date"
-							name="date" type="datetime-local" min="1" step="1" required />
-					</div>
-
-
 				</div>
 			</div>
 
