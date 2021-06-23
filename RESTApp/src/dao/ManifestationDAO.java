@@ -51,15 +51,20 @@ public class ManifestationDAO {
 		return manifestationList;
 	}
 
-	public Boolean isManifestationOverlapping(LocalDateTime date, Location location) {
+	public Boolean isManifestationOverlapping(LocalDateTime date, Location location, int id) {
 
 		for (Manifestation manifestation : findAllList()) {
-			if (manifestation.getDate().toLocalDate().equals(date.toLocalDate()) // if date overlaps
-					&& (manifestation.getLocation().getAddress().equals(location.getAddress())  // and location overlaps
-							|| (manifestation.getLocation().getLatitude() == location.getLatitude() // or lat and lon
-									&& manifestation.getLocation().getLongitude() == location.getLongitude()))) {
-				return true;
+			if(manifestation.getId() != id) {
+				if (manifestation.getDate().toLocalDate().equals(date.toLocalDate()) // if date overlaps
+						&& (manifestation.getLocation().getAddress().equals(location.getAddress()) // and location
+																									// overlaps
+								|| (manifestation.getLocation().getLatitude() == location.getLatitude() // or lat and
+																										// lon
+										&& manifestation.getLocation().getLongitude() == location.getLongitude()))) {
+					return true;
+				}
 			}
+			
 		}
 
 		return false;
@@ -68,7 +73,7 @@ public class ManifestationDAO {
 
 	private void loadManifestations(String contextPath) {
 
-		Location l1 = new Location(4.35247, 50.84673, "Mainski Put 2, Budva, Crna Gora");
+		Location l1 = new Location(50.84673, 4.35247, "Mainski Put 2, Budva, Crna Gora");
 
 		Manifestation m1 = new Manifestation("Manifestation1", ManifestationType.FESTIVAL, 20,
 				LocalDateTime.now().plusDays(1), 10, ManifestationStatus.ACTIVE, l1, "ticket.png");
