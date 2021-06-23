@@ -15,6 +15,7 @@ import java.util.StringTokenizer;
 import beans.Administrator;
 import beans.CustomerKind;
 import beans.Gender;
+import beans.Manifestation;
 import beans.RegisteredUser;
 import beans.Ticket;
 import beans.TicketStatus;
@@ -32,6 +33,7 @@ public class RegisteredUserDAO {
 		Administrator a = new Administrator("admin", "admin", "admin", "admin", Gender.FEMALE, LocalDate.now(), UserRole.ADMINISTRATOR, CustomerKind.CHAMP); 
 		addRegisteredUser(a);
 		RegisteredUser u = new RegisteredUser("cao", "cao", "cao", "cao", Gender.FEMALE, LocalDate.now(), UserRole.USER, CustomerKind.CHAMP, new ArrayList<Ticket>(), 10 , false); 
+		
 		addRegisteredUser(u);
 	}
 
@@ -42,6 +44,7 @@ public class RegisteredUserDAO {
 		RegisteredUser u = new RegisteredUser("cao", "cao", "cao", "cao", Gender.FEMALE, LocalDate.now(), UserRole.USER, CustomerKind.CHAMP, new ArrayList<Ticket>(), 10 , false); 
 		addRegisteredUser(u);
 		Vendor v = new Vendor("vendor", "vendor", "vendor", "vendor", Gender.FEMALE, LocalDate.now(), UserRole.VENDOR, CustomerKind.CHAMP); 
+		v.setManifestations(new ArrayList<Manifestation>());
 		addRegisteredUser(v);
 	}
 

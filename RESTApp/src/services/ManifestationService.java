@@ -35,6 +35,7 @@ import beans.UserRole;
 import beans.Vendor;
 import dao.ManifestationDAO;
 import dao.RegisteredUserDAO;
+import dto.EditManifestationDTO;
 import dto.NewManifestationDTO;
 import dto.RegistrationDTO;
 import exception.InvalidInputException;
@@ -105,23 +106,76 @@ public class ManifestationService {
 	@Path("/add")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Manifestation addRegisteredUser(NewManifestationDTO newManifestationDTO) {
+	public Manifestation addNewManifestation(NewManifestationDTO newManifestationDTO) {
 
 		Vendor user = (Vendor) ctx.getAttribute("registeredUser");
 		if (user == null)
 			throw new UserNotFoundException("No user registered");
-		
+
 		ManifestationDAO dao = (ManifestationDAO) ctx.getAttribute("manifestationDAO");
-		
-		Location location = new Location(newManifestationDTO.getLat(), newManifestationDTO.getLon(), newManifestationDTO.getLocation());
-		if(dao.isManifestationOverlapping(newManifestationDTO.getDate(), location)) {
+
+		Location location = new Location(newManifestationDTO.getLat(), newManifestationDTO.getLon(),
+				newManifestationDTO.getLocation());
+		if (dao.isManifestationOverlapping(newManifestationDTO.getDate(), location, -1)) {
 			throw new ManifestationExistsException("Manifestation for that date and location exists");
 		}
-		
+
+		List<Manifestation> manifestations = user.getManifestations();
+
 		ManifestationType type = ManifestationType.valueOf(newManifestationDTO.getType());
 		// TODO download image
-		Manifestation manifestation = new Manifestation(newManifestationDTO.getName(), type, newManifestationDTO.getNumSeats(), newManifestationDTO.getDate(), newManifestationDTO.getRegularPrice(), ManifestationStatus.UNACTIVE, location,"ticket.png");
+
+		Manifestation manifestation = new Manifestation(newManifestationDTO.getName(), type,
+				newManifestationDTO.getNumSeats(), newManifestationDTO.getDate(), newManifestationDTO.getRegularPrice(),
+				ManifestationStatus.UNACTIVE, location, "ticket.png");
+
+		manifestations.add(manifestation);
+		user.setManifestations(manifestations);
+		
 		return dao.addManifestation(manifestation);
+	}
+
+	// Edit manifestation
+	@POST
+	@Path("/edit")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Manifestation editManifestation(EditManifestationDTO editDTO) {
+
+		Vendor user = (Vendor) ctx.getAttribute("registeredUser");
+		if (user == null)
+			throw new UserNotFoundException("No user registered");
+
+		ManifestationDAO dao = (ManifestationDAO) ctx.getAttribute("manifestationDAO");
+		
+		int intId = -1;
+		try {
+
+			intId = Integer.parseInt(editDTO.getId());
+
+		} catch (NumberFormatException e) {
+			System.out.println(editDTO.getId() + " is not a valid integer number");
+			return null;
+		}
+		
+		Manifestation manifestation = dao.findById(intId);
+		if(manifestation == null)
+			throw new ManifestationNotFoundException("Manifestation with the id " + editDTO.getId() + "not found");
+		
+		Location location = new Location(editDTO.getLat(), editDTO.getLon(),
+				editDTO.getLocation());
+		if (dao.isManifestationOverlapping(manifestation.getDate(), location, intId)) {
+			throw new ManifestationExistsException("Manifestation for that date and location exists");
+		}
+
+		ManifestationType type = ManifestationType.valueOf(editDTO.getType());
+		
+		// TODO download image
+		manifestation.setLocation(location);
+		manifestation.setName(editDTO.getName());
+		manifestation.setType(type);
+		
+		return manifestation;
 	}
 
 	/*
