@@ -1,11 +1,11 @@
-function cancelTicket(ticket){
+function cancelTicket(ticket) {
 	$.get({
 		url: 'rest/tickets/cancel/' + ticket.id,
-		success: function () {
+		success: function() {
 			document.getElementById(ticket.id).outerHTML = ''
 			M.toast({ html: 'Successfully canceled ticket', classes: 'rounded', panning: 'center' });
 		},
-		error: function () {
+		error: function() {
 			M.toast({ html: 'Unable to cancel ticket', classes: 'rounded', panning: 'center' });
 		}
 	});
@@ -13,35 +13,72 @@ function cancelTicket(ticket){
 
 }
 
+
+$("#profile_form").submit(function(event) {
+
+	// Stop form from submitting normally
+	event.preventDefault();
+	console.log("Editing profile...");
+
+	let password = $('input[name="password"]').val();
+	let name = $('input[name="name"]').val();
+	let surname = $('input[name="surname"]').val();
+
+	if (!password || !name || !surname) {
+		$('#error').text('All fields must be filled!');
+		$("#error").show().delay(3000).fadeOut();
+		return;
+	}
+
+	$.ajax({
+		type: 'POST',
+		url: "rest/registration/edit",
+		data: JSON.stringify({
+			password: password,
+			name: name,
+			surname: surname
+
+		}),
+		contentType: 'application/json',
+		success: function(result) {
+			console.log(result);
+			M.toast({ html: 'Successfully edited profile information', classes: 'rounded', panning: 'center' });
+
+		},
+		error: function() {
+			M.toast({ html: 'Invalid input', classes: 'rounded', panning: 'center' });
+		}
+	});
+});
+
 function addTicketTr(ticket, role) {
-	
+
 	var cancel = document.getElementById('cancel_th');
-	
+
 	let tr = $('<tr id="' + ticket.id + '"></tr>');
 	let tdManifestation = $('<td>' + ticket.manifestation + '</td>');
 	let tdDate = $('<td>' + ticket.date + '</td>');
 	let tdPrice = $('<td>' + ticket.price + '</td>');
 	let tdStatus = $('<td>' + ticket.status + '</td>');
 	let tdType = $('<td>' + ticket.type + '</td>');
-	
+
 	tr.append(tdManifestation).append(tdDate).append(tdPrice).append(tdStatus).append(tdType);
-	if(role === "USER"){
+	if (role === "USER") {
 		var date = new Date(ticket.date);
 		var today = new Date();
-		today.setDate(today.getDate()+7);
-		console.log(today);
-		console.log(date);
-		if(date > today ){
+		today.setDate(today.getDate() + 7);
+
+		if (date > today) {
 			var btn = document.createElement('input');
 			btn.type = "button";
 			btn.className = "btn";
 			btn.value = "Cancel";
-			btn.onclick = (function(ticket) {return function() {cancelTicket(ticket);}})(ticket);
+			btn.onclick = (function(ticket) { return function() { cancelTicket(ticket); } })(ticket);
 			let tdBtn = $('<td></td>');
 			tdBtn.append(btn);
 			tr.append(tdBtn);
 		}
-	}else{
+	} else {
 		cancel.style.display = "none";
 	}
 
@@ -57,7 +94,7 @@ function showInfo(user) {
 	document.getElementById('surname').value = user.lastName;
 	document.getElementById('birthday').value = user.birthday;
 	document.getElementById('gender').value = user.gender.charAt(0).toUpperCase() + user.gender.slice(1).toLowerCase();
-	
+
 	if (user.role == "VENDOR") {
 
 	}
@@ -71,10 +108,10 @@ function showInfo(user) {
 	}
 }
 
-$(document).ready(function () {
+$(document).ready(function() {
 	$.get({
 		url: 'rest/registration/registeredUser',
-		success: function (user) {
+		success: function(user) {
 			showInfo(user);
 		}
 	});

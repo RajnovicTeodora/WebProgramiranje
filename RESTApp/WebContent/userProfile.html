@@ -14,7 +14,7 @@
 </head>
 
 <body>
-<ul id="dropdown1" class="dropdown-content">
+	<ul id="dropdown1" class="dropdown-content">
 		<li><a href="#!">one</a></li>
 		<li><a href="#!">two</a></li>
 		<li class="divider"></li>
@@ -44,53 +44,62 @@
 	</nav>
 
 	<div class="container center" id="userProfile">
-		<div class="card  center" style="color:white;">
+		<div class="card  center" style="color: white;">
 			<div class="card-contet teal darken-2 center">
 				<form class="col s12 center" id="profile_form">
 					<div class="row">
 						<div class="input-field col s6">
-							<i class="material-icons prefix">account_circle</i> <input  style="color:white;"
-								placeholder="Username" id="username" name="username" type="text"
-								required readonly /> <label for="username"  style="color:white;">Username</label>
+							<i class="material-icons prefix">account_circle</i> <input
+								style="color: white;" placeholder="Username" id="username"
+								name="username" type="text" required readonly /> <label
+								for="username" style="color: white;">Username</label>
 						</div>
 						<div class="input-field col s6">
-							<label for="password"  style="color:white;">Password</label> <input id="password"
-								type="password" placeholder="Password" name="password" required
-								readonly  style="color:white;"/>
+							<label for="password" style="color: white;">Password <i
+								class="material-icons right">edit</i>
+							</label> <input id="password" type="password" placeholder="Password"
+								name="password" required style="color: white;" />
 						</div>
 					</div>
 
 					<div class="row">
 						<div class="input-field col s6">
 							<input placeholder="Name" id="name" name="name" type="text"
-								required readonly  style="color:white;"/> <label for="name"  style="color:white;">Name</label>
+								required style="color: white;" /> <label for="name"
+								style="color: white;">Name <i
+								class="material-icons right">edit</i>
+							</label>
 						</div>
 						<div class="input-field col s6">
-							<label for="surname"  style="color:white;">Surname</label> <input id="surname"
-								type="text" placeholder="Surname" name="surname" required
-								readonly  style="color:white;" />
+							<label for="surname" style="color: white;">Surname <i
+								class="material-icons right">edit</i>
+							</label> <input id="surname" type="text" placeholder="Surname"
+								name="surname" required style="color: white;" />
 						</div>
 					</div>
 
 					<div class="row">
 						<div class="input-field col s4">
 							<input placeholder="Gender" id="gender" name="gender" type="text"
-								readonly  style="color:white;"/> <label for="gender"  style="color:white;">Gender</label>
+								readonly style="color: white;" /> <label for="gender"
+								style="color: white;">Gender</label>
 						</div>
-						<div class="input-field col s4">
-							<label for="birthday"  style="color:white;">Date of Birth</label> <input id="birthday"
-								type="text" placeholder="Date of Birth" name="birthday" readonly   style="color:white;"/>
+						<div class="input-field col s4 ">
+							<label for="birthday" style="color: white;">Date of Birth</label>
+							<input id="birthday" type="text" placeholder="Date of Birth"
+								name="birthday" readonly style="color: white;" />
 						</div>
 						<div class="input-field col s4" hidden id="points_field">
-							<label for="points"  style="color:white;">Points</label> <input type="text" id="points"
-								placeholder="Points" name="points" readonly  style="color:white;" />
+							<label for="points" style="color: white;">Points</label> <input
+								type="text" id="points" placeholder="Points" name="points"
+								style="color: white;" readonly />
 						</div>
 					</div>
 
-					
-					<button class="btn waves-effect waves-purple right row" type="submit"
-						name="action">
-						Edit <i class="material-icons right">send</i>
+
+					<button class="btn waves-effect waves-purple right row"
+						type="submit" name="action">
+						Save <i class="material-icons right">edit</i>
 					</button>
 
 				</form>
@@ -98,20 +107,20 @@
 
 		</div>
 		<div class="row">
-		<table class="highlight centered" id="tickets">
-			<thead style="background-color: #ED6D71;">
-				<tr style="color: white;">
-					<th>Manifestation</th>
-					<th>Date</th>
-					<th>Price</th>
-					<th>Status</th>
-					<th>Type</th>
-					<th id="cancel_th"></th>
-				</tr>
-			</thead>
-			<tbody class="white">
-			</tbody>
-		</table>
+			<table class="highlight centered" id="tickets">
+				<thead style="background-color: #ED6D71;">
+					<tr style="color: white;">
+						<th>Manifestation</th>
+						<th>Date</th>
+						<th>Price</th>
+						<th>Status</th>
+						<th>Type</th>
+						<th id="cancel_th"></th>
+					</tr>
+				</thead>
+				<tbody class="white">
+				</tbody>
+			</table>
 		</div>
 	</div>
 
