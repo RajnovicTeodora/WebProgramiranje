@@ -65,3 +65,10 @@ $("#manifestation_form").submit(function (event) {
 		}
 	});
 });
+
+$(document).ready(function() {
+	var date = new Date();
+  	date.setDate(date.getDate() + 1);
+  
+	document.getElementById('date').min = date.toISOString().substr(0, 16)
+});
