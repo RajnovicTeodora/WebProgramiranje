@@ -29,6 +29,7 @@ import beans.TicketStatus;
 import beans.TicketType;
 import beans.User;
 import beans.UserRole;
+import beans.Vendor;
 import dao.RegisteredUserDAO;
 import dao.TicketDAO;
 import dto.RegistrationDTO;
@@ -63,7 +64,7 @@ public class RegistrationService {
 
 			Administrator a = (Administrator) dao.findByUsername("admin");
 			RegisteredUser u = (RegisteredUser) dao.findByUsername("cao");
-
+			Vendor v = (Vendor) dao.findByUsername("vendor");
 			List<Ticket> tickets = u.getTickets();
 			tickets.add(daoT.findById("1"));
 			tickets.add(daoT.findById("2"));
@@ -71,7 +72,7 @@ public class RegistrationService {
 
 			// --------------
 
-			ctx.setAttribute("registeredUser", u);
+			ctx.setAttribute("registeredUser", v);
 		}
 
 	}
