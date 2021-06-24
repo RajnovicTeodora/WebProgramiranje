@@ -118,7 +118,7 @@ $("#manifestation_form").submit(function(event) {
 		success: function(result) {
 			console.log(result);
 			M.toast({ html: 'Successfully edited the manifestation', classes: 'rounded', panning: 'center' });
-			window.location.href = "http://localhost:8080/RESTApp/index.html";
+			window.location.href = "http://localhost:8080/RESTApp/vendorManifestations.html";
 
 		},
 		error: function() {
