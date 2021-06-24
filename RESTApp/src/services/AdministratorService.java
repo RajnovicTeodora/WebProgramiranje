@@ -53,24 +53,4 @@ public class AdministratorService {
 
 	}
 
-	// Returns the currently registered users
-	@GET
-	@Path("/registeredUsers")
-	@Produces(MediaType.APPLICATION_JSON)
-	public ArrayList<UserDTO> getRegisteredUser() {
-		
-		User user = (User) ctx.getAttribute("registeredUser");
-		
-		if(user.getRole() != UserRole.ADMINISTRATOR)
-			throw new UnauthorizedUserException("User doesn not have permission to view system users");
-		
-		RegisteredUserDAO dao = (RegisteredUserDAO) ctx.getAttribute("registeredUserDAO");
-	    
-	    ArrayList<UserDTO> users = new ArrayList<UserDTO>();
-	    for(User u : dao.findAllList()) {
-	    	if(!u.getUsername().equals(user.getUsername()))
-	    		users.add(new UserDTO(u));
-	    }
-	    return users;
-	}
 }

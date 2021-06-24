@@ -31,8 +31,10 @@ import dao.TicketDAO;
 import dto.EditProfileDTO;
 import dto.RegistrationDTO;
 import dto.TicketDTO;
+import dto.UserDTO;
 import dto.UserProfileDTO;
 import exception.InvalidInputException;
+import exception.UnauthorizedUserException;
 import exception.UserExistsException;
 import exception.UserNotFoundException;
 
@@ -75,14 +77,14 @@ public class RegistrationService {
 			manifs.add(daoM.findById(1));
 			manifs.add(daoM.findById(2));
 			manifs.add(daoM.findById(3));
-			
+
 			v.setManifestations(manifs);
 			tickets.add(daoT.findById("1"));
 			tickets.add(daoT.findById("2"));
 			u.setTickets(tickets);
 
 			// --------------
-			ctx.setAttribute("registeredUser", u);
+			ctx.setAttribute("registeredUser", v);
 		}
 
 	}
@@ -182,4 +184,43 @@ public class RegistrationService {
 
 	}
 
+	// Returns the currently registered users
+	@GET
+	@Path("/users")
+	@Produces(MediaType.APPLICATION_JSON)
+	public ArrayList<UserDTO> getRegisteredUsers() {
+
+		User user = (User) ctx.getAttribute("registeredUser");
+
+		if (user == null)
+			throw new UserNotFoundException("User not registered");
+
+		RegisteredUserDAO dao = (RegisteredUserDAO) ctx.getAttribute("registeredUserDAO");
+
+		ArrayList<UserDTO> users = new ArrayList<UserDTO>();
+
+		if (user.getRole() == UserRole.ADMINISTRATOR) {
+			for (User u : dao.findAllList()) {
+				if (!u.getUsername().equals(user.getUsername()))
+					users.add(new UserDTO(u));
+			}
+		} else if (user.getRole() == UserRole.VENDOR) {
+			for (User u : dao.findAllList()) {
+				if(u.getRole() != UserRole.USER || u.getUsername().equals(user.getUsername()))
+					continue;
+				else {
+					for(Ticket t : ((RegisteredUser)u).getTickets()) {
+						if(((Vendor)user).getManifestations().contains(t.getManifestation())) {
+							users.add(new UserDTO(u));
+							break;
+						}
+					}
+				}
+			}
+		} else {
+			throw new UnauthorizedUserException("User doesn not have permission to view system users");
+		}
+
+		return users;
+	}
 }
