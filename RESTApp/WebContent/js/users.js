@@ -1,5 +1,5 @@
 function addUserTr(user) {
-	
+
 	let tr = $('<tr id="' + user.username + '"></tr>');
 	let tdUsername = $('<td>' + user.username + '</td>');
 	let tdName = $('<td>' + user.firstName + '</td>');
@@ -9,11 +9,11 @@ function addUserTr(user) {
 	let tdRole = $('<td>' + user.role + '</td>');
 	let tdType = $('<td>' + user.customerType + '</td>');
 	let tdPoints = $('<td>' + user.points + '</td>');
-	
+
 	tr.append(tdUsername).append(tdName).append(tdSurname).append(tdGender).append(tdBirthday).append(tdRole).append(tdType).append(tdPoints);
-	
+
 	// TODO ADD DELETE BUTTON ?
-	
+
 	$('#users tbody').append(tr);
 }
 
@@ -21,8 +21,8 @@ function showInfo(user) {
 	if (!user) return;
 
 	$.get({
-		url: 'rest/administrator/registeredUsers',
-		success: function (users) {
+		url: 'rest/registration/users',
+		success: function(users) {
 			for (let u of users) {
 				addUserTr(u);
 			}
@@ -31,11 +31,11 @@ function showInfo(user) {
 
 }
 
-$(document).ready(function () {
+$(document).ready(function() {
 	$.get({
 		url: 'rest/registration/registeredUser',
-		success: function (user) {
-			if(user.role == "ADMINISTRATOR")
+		success: function(user) {
+			if (user.role == "ADMINISTRATOR" || user.role == "VENDOR")
 				showInfo(user);
 		}
 	});
