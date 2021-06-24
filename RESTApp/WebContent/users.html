@@ -33,7 +33,7 @@
 				<li class="tab"><a class="active" href="http://localhost:8080/RESTApp/index.html">Home Page</a></li>
 				<li class="tab"><a class="active" href="http://localhost:8080/RESTApp/users.html">Users</a></li>
 				<li class="tab"><a class="active" href="http://localhost:8080/RESTApp/tickets.html">Tickets</a></li>
-				<li class="tab"><a class="active" href="http://localhost:8080/RESTApp/vendorManifestations.html">My Manifestations</a></li>
+				<li class="tab"><a href="#">Test 4</a></li>
 			</ul>
 		</div>
 	</nav>
@@ -72,9 +72,33 @@
 				</div>
 			</div>
 		</form>
-		<div class="container" id="manifestaions"></div>
+      	<div class="row">
+        	<form action="http://localhost:8080/RESTApp/registration.html">
+          		<button class="btn waves-effect waves-purple right" type="submit" name="action">New Vendor
+            		<i class="material-icons right">add</i>
+          		</button>
+        	</form>
+      	</div>
+		<div class="row">
+		<table class="highlight centered" id="users">
+			<thead style="background-color: #ED6D71;">
+				<tr style="color: white;">
+					<th>Username</th>
+					<th>Name</th>
+					<th>Surname</th>
+					<th>Gender</th>
+					<th>Birthday</th>
+					<th>Role</th>
+					<th>Type</th>
+					<th>Points</th>
+				</tr>
+			</thead>
+			<tbody class="white">
+			</tbody>
+		</table>
+		</div>
 	</div>
 	<script type="text/javascript" src="js/materialize.min.js"></script>
 	<script src="jquery-3.3.1.min.js"></script>
-	<script type="text/javascript" src="js/manifestations.js"></script>
+	<script type="text/javascript" src="js/users.js"></script>
 </body>

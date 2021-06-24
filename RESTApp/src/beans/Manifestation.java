@@ -135,35 +135,9 @@ public class Manifestation {
 		if (getClass() != obj.getClass())
 			return false;
 		Manifestation other = (Manifestation) obj;
-		if (date == null) {
-			if (other.date != null)
-				return false;
-		} else if (!date.equals(other.date))
+		if (id != other.id)
 			return false;
-		if (location == null) {
-			if (other.location != null)
-				return false;
-		} else if (!location.equals(other.location))
-			return false;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		if (numSeats != other.numSeats)
-			return false;
-		if (poster == null) {
-			if (other.poster != null)
-				return false;
-		} else if (!poster.equals(other.poster))
-			return false;
-		if (Double.doubleToLongBits(regularPrice) != Double.doubleToLongBits(other.regularPrice))
-			return false;
-		if (type == null) {
-			if (other.type != null)
-				return false;
-		} else if (!type.equals(other.type))
-			return false;
+		
 		return true;
 	}
 

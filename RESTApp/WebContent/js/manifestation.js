@@ -104,7 +104,6 @@ function showManifestation(manifestation) {
 		'<p> Number of seats: ' + manifestation.numSeats + '</p>' +
 		'<p> Available tickets: ' + manifestation.leftSeats + ' </p> ' +
 		'<p style="padding-bottom:20px;"> Address: ' + manifestation.location.address + ' </p>' +
-		'<a class="btn-floating right waves-effect waves-light teal darken-2" href="http://localhost:8080/RESTApp/editManifestation.html?manifestation=' + manifestation.id + '"><i class="material-icons">edit</i></a>' +
 		'</div>' +
 		'</div>');
 

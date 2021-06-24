@@ -29,6 +29,7 @@ import beans.TicketStatus;
 import beans.TicketType;
 import beans.User;
 import beans.UserRole;
+import beans.Vendor;
 import dao.ManifestationDAO;
 import dao.RegisteredUserDAO;
 import dao.TicketDAO;
@@ -37,14 +38,15 @@ import dto.TicketDTO;
 import dto.UserDTO;
 import dto.UserProfileDTO;
 import exception.UnauthorizedUserException;
+import exception.UserNotFoundException;
 
-@Path("/administrator")
-public class AdministratorService {
+@Path("/vendor")
+public class VendorService {
 
 	@Context
 	ServletContext ctx;
 
-	public AdministratorService() {
+	public VendorService() {
 
 	}
 
@@ -53,4 +55,18 @@ public class AdministratorService {
 
 	}
 
+	@GET
+	@Path("/manifestations")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Manifestation> getManifestations() {
+		User user = (User) ctx.getAttribute("registeredUser");
+		if (user == null)
+			throw new UserNotFoundException("No user registered");
+
+		if (user.getRole() != UserRole.VENDOR)
+			throw new UnauthorizedUserException("Unauthorized action");
+
+		return ((Vendor) user).getManifestations();
+
+	}
 }

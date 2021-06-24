@@ -18,19 +18,23 @@ import javax.ws.rs.core.MediaType;
 import beans.Administrator;
 import beans.CustomerKind;
 import beans.Gender;
+import beans.Manifestation;
 import beans.RegisteredUser;
 import beans.Ticket;
 import beans.TicketStatus;
 import beans.User;
 import beans.UserRole;
 import beans.Vendor;
+import dao.ManifestationDAO;
 import dao.RegisteredUserDAO;
 import dao.TicketDAO;
 import dto.EditProfileDTO;
 import dto.RegistrationDTO;
 import dto.TicketDTO;
+import dto.UserDTO;
 import dto.UserProfileDTO;
 import exception.InvalidInputException;
+import exception.UnauthorizedUserException;
 import exception.UserExistsException;
 import exception.UserNotFoundException;
 
@@ -50,6 +54,10 @@ public class RegistrationService {
 			String contextPath = ctx.getRealPath("");
 			ctx.setAttribute("registeredUserDAO", new RegisteredUserDAO(contextPath));
 		}
+		if (ctx.getAttribute("manifestationDAO") == null) {
+			String contextPath = ctx.getRealPath("");
+			ctx.setAttribute("manifestationDAO", new ManifestationDAO(contextPath));
+		}
 		if (ctx.getAttribute("ticketDAO") == null) {
 			String contextPath = ctx.getRealPath("");
 			ctx.setAttribute("ticketDAO", new TicketDAO(contextPath));
@@ -58,16 +66,24 @@ public class RegistrationService {
 			TicketDAO daoT = (TicketDAO) ctx.getAttribute("ticketDAO");
 			// TEST
 
+			ManifestationDAO daoM = (ManifestationDAO) ctx.getAttribute("manifestationDAO");
+
 			Administrator a = (Administrator) dao.findByUsername("admin");
 			RegisteredUser u = (RegisteredUser) dao.findByUsername("cao");
 			Vendor v = (Vendor) dao.findByUsername("vendor");
 			List<Ticket> tickets = u.getTickets();
+			List<Manifestation> manifs = v.getManifestations();
+
+			manifs.add(daoM.findById(1));
+			manifs.add(daoM.findById(2));
+			manifs.add(daoM.findById(3));
+
+			v.setManifestations(manifs);
 			tickets.add(daoT.findById("1"));
 			tickets.add(daoT.findById("2"));
 			u.setTickets(tickets);
 
 			// --------------
-
 			ctx.setAttribute("registeredUser", v);
 		}
 
@@ -107,11 +123,11 @@ public class RegistrationService {
 
 		Gender gender = Gender.valueOf(registrationDTO.getGender().toUpperCase());
 		List<Ticket> tickets = new ArrayList<Ticket>();
-		
+
 		User maybeAdmin = (User) ctx.getAttribute("registeredUser");
 		UserRole userRole = UserRole.USER;
-		
-		if(maybeAdmin != null && maybeAdmin.getRole() == UserRole.ADMINISTRATOR)
+
+		if (maybeAdmin != null && maybeAdmin.getRole() == UserRole.ADMINISTRATOR)
 			userRole = UserRole.VENDOR;
 
 		RegisteredUser user = new RegisteredUser(username, password, name, surname, gender, date, userRole,
@@ -127,10 +143,9 @@ public class RegistrationService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public UserProfileDTO getRegisteredUser() {
 		User user = (User) ctx.getAttribute("registeredUser");
-
-		List<TicketDTO> tickets = generateTickets(user);
-
-		UserProfileDTO userDAO = new UserProfileDTO(user, tickets);
+		if (user == null)
+			throw new UserNotFoundException("No user registered");
+		UserProfileDTO userDAO = new UserProfileDTO(user);
 		return userDAO;
 
 	}
@@ -165,33 +180,47 @@ public class RegistrationService {
 
 		ctx.setAttribute("registeredUser", foundUser);
 
-		List<TicketDTO> tickets = generateTickets(user);
-		return new UserProfileDTO(foundUser, tickets);
+		return new UserProfileDTO(foundUser);
 
 	}
 
-	protected List<TicketDTO> generateTickets(User user) {
-		TicketDAO dao = (TicketDAO) ctx.getAttribute("ticketDAO");
+	// Returns the currently registered users
+	@GET
+	@Path("/users")
+	@Produces(MediaType.APPLICATION_JSON)
+	public ArrayList<UserDTO> getRegisteredUsers() {
 
-		List<TicketDTO> tickets = new ArrayList<TicketDTO>();
+		User user = (User) ctx.getAttribute("registeredUser");
 
-		if (user.getRole() == UserRole.USER) {
-			for (Ticket ticket : ((RegisteredUser) user).getTickets()) {
-				if (ticket.getStatus() == TicketStatus.RESERVED)
-					tickets.add(new TicketDTO(ticket));
+		if (user == null)
+			throw new UserNotFoundException("User not registered");
+
+		RegisteredUserDAO dao = (RegisteredUserDAO) ctx.getAttribute("registeredUserDAO");
+
+		ArrayList<UserDTO> users = new ArrayList<UserDTO>();
+
+		if (user.getRole() == UserRole.ADMINISTRATOR) {
+			for (User u : dao.findAllList()) {
+				if (!u.getUsername().equals(user.getUsername()))
+					users.add(new UserDTO(u));
 			}
 		} else if (user.getRole() == UserRole.VENDOR) {
-			for (Ticket ticket : dao.findAllList()) {
-				if (ticket.getStatus() == TicketStatus.RESERVED)
-					tickets.add(new TicketDTO(ticket));
+			for (User u : dao.findAllList()) {
+				if(u.getRole() != UserRole.USER || u.getUsername().equals(user.getUsername()))
+					continue;
+				else {
+					for(Ticket t : ((RegisteredUser)u).getTickets()) {
+						if(((Vendor)user).getManifestations().contains(t.getManifestation())) {
+							users.add(new UserDTO(u));
+							break;
+						}
+					}
+				}
 			}
-		} else if (user.getRole() == UserRole.ADMINISTRATOR) {
-			for (Ticket ticket : dao.findAllList()) {
-				tickets.add(new TicketDTO(ticket));
-			}
+		} else {
+			throw new UnauthorizedUserException("User doesn not have permission to view system users");
 		}
 
-		return tickets;
-
+		return users;
 	}
 }

@@ -31,8 +31,8 @@
 		<div class="nav-content">
 			<ul class="tabs tabs-transparent">
 				<li class="tab"><a class="active" href="http://localhost:8080/RESTApp/index.html">Home Page</a></li>
-				<li class="tab"><a class="active" href="http://localhost:8080/RESTApp/adminUsers.html">Users</a></li>
-				<li class="tab disabled"><a href="#">Disabled Tab</a></li>
+				<li class="tab"><a class="active" href="http://localhost:8080/RESTApp/users.html">Users</a></li>
+				<li class="tab"><a class="active" href="http://localhost:8080/RESTApp/tickets.html">Tickets</a></li>
 				<li class="tab"><a href="#">Test 4</a></li>
 			</ul>
 		</div>
@@ -73,24 +73,26 @@
 			</div>
 		</form>
       	<div class="row">
-        	<form action="http://localhost:8080/RESTApp/registration.html">
-          		<button class="btn waves-effect waves-purple right" type="submit" name="action">New Vendor
+        	<form action="http://localhost:8080/RESTApp/manifestationForm.html">
+          		<button class="btn waves-effect waves-purple right" type="submit" name="action">New Manifestation
             		<i class="material-icons right">add</i>
           		</button>
         	</form>
       	</div>
 		<div class="row">
-		<table class="highlight centered" id="users">
+		<table class="highlight centered" id="manifestations">
 			<thead style="background-color: #ED6D71;">
 				<tr style="color: white;">
-					<th>Username</th>
 					<th>Name</th>
-					<th>Surname</th>
-					<th>Gender</th>
-					<th>Birthday</th>
-					<th>Role</th>
 					<th>Type</th>
-					<th>Points</th>
+					<th>Date</th>
+					<th>Price</th>
+					<th>Status</th>
+					<th>Seats</th>
+					<th>Remaining tickets</th>
+					<th>Location</th>
+					<th>Edit</th>
+					
 				</tr>
 			</thead>
 			<tbody class="white">
@@ -100,5 +102,5 @@
 	</div>
 	<script type="text/javascript" src="js/materialize.min.js"></script>
 	<script src="jquery-3.3.1.min.js"></script>
-	<script type="text/javascript" src="js/administratorUsers.js"></script>
+	<script type="text/javascript" src="js/vendorManifestations.js"></script>
 </body>
