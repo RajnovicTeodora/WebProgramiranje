@@ -1,6 +1,5 @@
 package dto;
 
-import java.util.List;
 
 import beans.Gender;
 import beans.RegisteredUser;
@@ -14,11 +13,10 @@ public class UserProfileDTO {
 	private String lastName;
 	private Gender gender;
 	private String birthday;
-	private List<TicketDTO> tickets;
 	private String role;
 	private int points;
 
-	public UserProfileDTO(User user, List<TicketDTO> tickets) {
+	public UserProfileDTO(User user) {
 		super();
 		this.username = user.getUsername();
 		this.password = user.getPassword();
@@ -26,7 +24,6 @@ public class UserProfileDTO {
 		this.lastName = user.getLastName();
 		this.gender = user.getGender();
 		this.birthday = user.getBirthday().toString();
-		this.tickets = tickets;
 		this.role = user.getRole().toString();
 
 		if (user.getRole() == UserRole.USER)
@@ -36,7 +33,7 @@ public class UserProfileDTO {
 	}
 
 	public UserProfileDTO(String username, String password, String firstName, String lastName, Gender gender,
-			String birthday, List<TicketDTO> tickets, String role) {
+			String birthday, String role) {
 		super();
 		this.username = username;
 		this.password = password;
@@ -44,7 +41,6 @@ public class UserProfileDTO {
 		this.lastName = lastName;
 		this.gender = gender;
 		this.birthday = birthday;
-		this.tickets = tickets;
 		this.role = role;
 	}
 
@@ -94,14 +90,6 @@ public class UserProfileDTO {
 
 	public void setBirthday(String birthday) {
 		this.birthday = birthday;
-	}
-
-	public List<TicketDTO> getTickets() {
-		return tickets;
-	}
-
-	public void setTickets(List<TicketDTO> tickets) {
-		this.tickets = tickets;
 	}
 
 	public String getRole() {
