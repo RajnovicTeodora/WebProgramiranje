@@ -14,11 +14,14 @@ import beans.RegisteredUser;
 import beans.Ticket;
 import beans.TicketStatus;
 import beans.TicketType;
+import beans.User;
 import beans.UserRole;
+import beans.Vendor;
 import dao.ManifestationDAO;
 import dao.RegisteredUserDAO;
 import dao.TicketDAO;
 import dto.ReservationDTO;
+import dto.TicketDTO;
 import exception.InvalidInputException;
 import exception.ManifestationNotFoundException;
 import exception.TicketNotFoundEception;
@@ -26,6 +29,7 @@ import exception.UnauthorizedUserException;
 import exception.UserNotFoundException;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,10 +53,7 @@ public class TicketService {
 			String contextPath = ctx.getRealPath("");
 			ctx.setAttribute("ticketDAO", new TicketDAO(contextPath));
 		}
-		if (ctx.getAttribute("registeredUserDAO") == null) {
-			String contextPath = ctx.getRealPath("");
-			ctx.setAttribute("registeredUserDAO", new RegisteredUserDAO(contextPath));
-		}
+
 	}
 
 	@GET
@@ -77,6 +78,58 @@ public class TicketService {
 		user.setPoints((int) (user.getPoints() - ticket.getPrice() / 1000 * 133 * 4));
 		return ticket;
 		// TODO really cancel manifestation and save
+	}
+
+	@GET
+	@Path("/list")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<TicketDTO> getTickets() {
+
+		User user = (User) ctx.getAttribute("registeredUser");
+		if (user == null)
+			throw new UserNotFoundException("No user registered");
+
+		TicketDAO dao = (TicketDAO) ctx.getAttribute("ticketDAO");
+
+		List<TicketDTO> tickets = new ArrayList<TicketDTO>();
+
+		if (user.getRole() == UserRole.USER) {
+			for (Ticket ticket : ((RegisteredUser) user).getTickets()) {
+				if (ticket.getStatus() == TicketStatus.RESERVED) {
+				
+					TicketDTO dto = new TicketDTO(ticket);
+					dto.setStatus(dto.getStatus().substring(0, 1) + dto.getStatus().toLowerCase().substring(1));
+					dto.setType(dto.getType().substring(0, 1) + dto.getType().toLowerCase().substring(1));
+		
+					tickets.add(dto);
+				}
+
+			}
+		} else if (user.getRole() == UserRole.VENDOR) {
+			for (Ticket ticket : dao.findAllList()) {
+				if (ticket.getStatus() == TicketStatus.RESERVED
+						&& ((Vendor) user).getManifestations().contains(ticket.getManifestation())) {
+
+					TicketDTO dto = new TicketDTO(ticket);
+					dto.setStatus(dto.getStatus().substring(0, 1) + dto.getStatus().toLowerCase().substring(1));
+					dto.setType(dto.getType().substring(0, 1) + dto.getType().toLowerCase().substring(1));
+	
+					tickets.add(dto);
+				}
+
+			}
+		} else if (user.getRole() == UserRole.ADMINISTRATOR) {
+			for (Ticket ticket : dao.findAllList()) {
+
+				TicketDTO dto = new TicketDTO(ticket);
+				dto.setStatus(dto.getStatus().substring(0, 1) + dto.getStatus().toLowerCase().substring(1));
+				dto.setType(dto.getType().substring(0, 1) + dto.getType().toLowerCase().substring(1));
+				
+				tickets.add(dto);
+			}
+		}
+
+		return tickets;
 	}
 
 	// Reserve manifestation ticket
@@ -108,7 +161,8 @@ public class TicketService {
 		if (numTickets <= 0 || numTickets > manifestation.getLeftSeats())
 			throw new InvalidInputException("Number of reserved tickets is invalid");
 
-		if (manifestation.getStatus() != ManifestationStatus.ACTIVE || manifestation.getDate().isBefore(LocalDateTime.now()))
+		if (manifestation.getStatus() != ManifestationStatus.ACTIVE
+				|| manifestation.getDate().isBefore(LocalDateTime.now()))
 			throw new InvalidInputException("Manifestation status must be active");
 
 		String ticketId = ticketDao.findId();
