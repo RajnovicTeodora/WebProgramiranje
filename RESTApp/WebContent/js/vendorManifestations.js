@@ -13,8 +13,18 @@ function addManifestationTr(manifestation) {
 	let tdSeats = $('<td>' + manifestation.numSeats + '</td>');
 	let tdLeft = $('<td>' + manifestation.leftSeats + '</td>');
 	let tdAddress = $('<td>' + manifestation.location.address + '</td>');
-	let tdEdit = $('<td><a class="btn-floating right waves-effect waves-light teal darken-2" href="http://localhost:8080/RESTApp/editManifestation.html?manifestation=' + manifestation.id + '"><i class="material-icons">edit</i></a></td>');
-	tr.append(tdName).append(tdType).append(tdDate).append(tdPrice).append(tdStatus).append(tdSeats).append(tdLeft).append(tdAddress).append(tdEdit);
+
+	tr.append(tdName).append(tdType).append(tdDate).append(tdPrice).append(tdStatus).append(tdSeats).append(tdLeft).append(tdAddress);
+	
+	var date = new Date(manifestation.date)
+	var today = new Date()
+
+	if (date > today) {
+		let tdEdit = $('<td><a class="btn-floating right waves-effect waves-light teal darken-2" href="http://localhost:8080/RESTApp/editManifestation.html?manifestation=' + manifestation.id + '"><i class="material-icons">edit</i></a></td>');
+		tr.append(tdEdit)
+	}
+
+
 
 	// TODO ADD DELETE BUTTON ?
 
