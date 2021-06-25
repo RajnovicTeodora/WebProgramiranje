@@ -1,6 +1,6 @@
 package exception;
 
-public class UserNotFoundException extends RuntimeException {
+public class UserNotFoundException extends NullPointerException {
 
     private static final long serialVersionUID = 1L;
 
@@ -12,7 +12,4 @@ public class UserNotFoundException extends RuntimeException {
         super(message);
     }
 
-    public UserNotFoundException(String message, Throwable cause) {
-        super(message, cause);
-    }
 }

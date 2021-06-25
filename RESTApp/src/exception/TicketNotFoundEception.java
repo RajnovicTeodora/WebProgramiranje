@@ -1,6 +1,6 @@
 package exception;
 
-public class TicketNotFoundEception  extends RuntimeException {
+public class TicketNotFoundEception  extends NullPointerException {
 
     private static final long serialVersionUID = 1L;
 
@@ -12,7 +12,4 @@ public class TicketNotFoundEception  extends RuntimeException {
         super(message);
     }
 
-    public TicketNotFoundEception(String message, Throwable cause) {
-        super(message, cause);
-    }
 }

@@ -1,6 +1,6 @@
 package exception;
 
-public class InvalidInputException extends RuntimeException {
+public class InvalidInputException extends IllegalArgumentException {
 
     private static final long serialVersionUID = 1L;
 

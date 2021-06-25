@@ -16,6 +16,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import beans.Administrator;
+import beans.Comment;
 import beans.CustomerKind;
 import beans.Gender;
 import beans.Manifestation;
@@ -25,6 +26,7 @@ import beans.TicketStatus;
 import beans.User;
 import beans.UserRole;
 import beans.Vendor;
+import dao.CommentDAO;
 import dao.ManifestationDAO;
 import dao.RegisteredUserDAO;
 import dao.TicketDAO;
@@ -58,6 +60,10 @@ public class RegistrationService {
 			String contextPath = ctx.getRealPath("");
 			ctx.setAttribute("manifestationDAO", new ManifestationDAO(contextPath));
 		}
+		if (ctx.getAttribute("commentDAO") == null) {
+			String contextPath = ctx.getRealPath("");
+			ctx.setAttribute("commentDAO", new CommentDAO(contextPath));
+		}
 		if (ctx.getAttribute("ticketDAO") == null) {
 			String contextPath = ctx.getRealPath("");
 			ctx.setAttribute("ticketDAO", new TicketDAO(contextPath));
@@ -80,11 +86,18 @@ public class RegistrationService {
 
 			v.setManifestations(manifs);
 			tickets.add(daoT.findById("1"));
-			tickets.add(daoT.findById("2"));
+			//tickets.add(daoT.findById("2"));
 			u.setTickets(tickets);
+			
+			CommentDAO commentDAO = (CommentDAO) ctx.getAttribute("commentDAO");
+			
+			for(Comment comment : commentDAO.findAllList()) {
+				comment.setUser(u);
+				comment.setManifestation(daoM.findById(2));
+			}
 
 			// --------------
-			ctx.setAttribute("registeredUser", v);
+			ctx.setAttribute("registeredUser", u);
 		}
 
 	}

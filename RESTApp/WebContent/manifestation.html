@@ -21,28 +21,42 @@
 	max-width: 30%;
 	height: auto;
 }
+
+ul.collection {
+	max-height: 400px;
+	overflow: scroll;
+	list-style-type: none;
+	/* not sure if you need this. Hides bullet list dots */
+}
+
+textarea {
+	height: 100px;
+}
 </style>
 <body>
 
 	<nav class="nav-extended">
-		<div class="nav-wrapper teal darken-2">
-			<a href="#" class="brand-logo"> <img
-				style="width: 12%; height: 12%;" src="Resources/images/ticket.png"
-				alt="TiTi" />
-			</a>
-			<ul id="nav-mobile" class="right hide-on-med-and-down">
-				<li><a href="http://localhost:8080/RESTApp/registration.html">Registration</a></li>
-				<li><a href="http://localhost:8080/RESTApp/userProfile.html">MyProfile</a></li>
-			</ul>
-		</div>
-		<div class="nav-content">
-			<ul class="tabs tabs-transparent">
-				<li class="tab"><a class="active" href="http://localhost:8080/RESTApp/index.html">Home Page</a></li>
-				<li class="tab"><a class="active" href="http://localhost:8080/RESTApp/users.html">Users</a></li>
-				<li class="tab"><a class="active" href="http://localhost:8080/RESTApp/tickets.html">Tickets</a></li>
-				<li class="tab"><a href="#">Test 4</a></li>
-			</ul>
-		</div>
+	<div class="nav-wrapper teal darken-2">
+		<a href="#" class="brand-logo"> <img
+			style="width: 12%; height: 12%;" src="Resources/images/ticket.png"
+			alt="TiTi" />
+		</a>
+		<ul id="nav-mobile" class="right hide-on-med-and-down">
+			<li><a href="http://localhost:8080/RESTApp/registration.html">Registration</a></li>
+			<li><a href="http://localhost:8080/RESTApp/userProfile.html">MyProfile</a></li>
+		</ul>
+	</div>
+	<div class="nav-content">
+		<ul class="tabs tabs-transparent">
+			<li class="tab"><a class="active"
+				href="http://localhost:8080/RESTApp/index.html">Home Page</a></li>
+			<li class="tab"><a class="active"
+				href="http://localhost:8080/RESTApp/users.html">Users</a></li>
+			<li class="tab"><a class="active"
+				href="http://localhost:8080/RESTApp/tickets.html">Tickets</a></li>
+			<li class="tab"><a href="#">Test 4</a></li>
+		</ul>
+	</div>
 	</nav>
 
 	<div class="row">
@@ -80,8 +94,53 @@
 			<div class="card col s6" id="map"
 				style="max-width: 50%; height: auto;"></div>
 		</div>
-	</div>
+		<div class="row" id="comment_section">
 
+			<div class="card">
+				<div class="card-content">
+					<span class="card-title">Comments<i
+						class="material-icons right">forum</i></span>
+					<ul class="collection with-header" id="comment_list">
+
+					</ul>
+				</div>
+			</div>
+
+		</div>
+		<div class="row" style="width: 50%;">
+			<form id="comment_form">
+				<div class="card">
+					<div class="card-content">
+						<span class="card-title">Leave a comment<i
+							class="material-icons right">maps_ugc</i></span>
+						<div class="row">
+							<div class="col s10">
+								<label for="comment" class="required">Your message</label>
+								<textarea name="comment" id="comment" rows="10" tabindex="4"
+									required></textarea>
+							</div>
+							<div class="col s2">
+								<label for="rating">Rating</label> <select
+									class="browser-default" id="rating">
+									<option value=1>1</option>
+									<option value=2>2</option>
+									<option value=3>3</option>
+									<option value=4>4</option>
+									<option value=5>5</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="card-action right-align">
+						<button class="btn waves-effect waves-purple right-align">
+							<i class="material-icons">send</i>
+						</button>
+					</div>
+				</div>
+			</form>
+
+		</div>
+	</div>
 
 	<script
 		src="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.3.0/build/ol.js"></script>
