@@ -1,5 +1,38 @@
 let regular = 0;
 
+
+$("#comment_form").submit(function(event) {
+	event.preventDefault();
+	console.log("Commenting...");
+
+	var select = document.getElementById('rating')
+	var text = document.getElementById('comment').value
+
+	if (!text)
+		return
+
+	const queryString = window.location.search;
+	const urlParams = new URLSearchParams(queryString);
+	$.ajax({
+		type: 'POST',
+		url: "rest/comments/add",
+		data: JSON.stringify({
+			manifestation: urlParams.get('manifestation'),
+			rating: select.value,
+			text: text
+
+		}),
+		contentType: 'application/json',
+		success: function() {
+			M.toast({ html: 'Successfully made a comment. It will be visible if a vendor approves it.', classes: 'rounded', panning: 'center' });
+
+		},
+		error: function() {
+			M.toast({ html: 'Failed to create a comment', classes: 'rounded', panning: 'center' });
+		}
+	});
+});
+
 function changed() {
 
 	var select = document.getElementById('typeSelect')
@@ -72,24 +105,112 @@ function readURL(input) {
 	}
 }
 
+function showComment(comment, user) {
+	if (!user) return
 
-function showManifestation(manifestation) {
+	if (user.role == "USER") {
+		let item = $('<li class="collection-item" id="' + comment.id + '"><div>' +
+			'<span class="title">' + comment.user + '</span>' +
+			'<p>Rating: ' + comment.rating + '<br>Comment: ' + comment.text + ' </p>' +
+			'</div></li>');
+		$('#comment_list').append(item);
+	}
+	else if (user.role == "VENDOR") {
+		if (comment.status == "WAITING") {
+			let item = $('<li class="collection-item" id="' + comment.id + '"><div>' +
+				'<span class="title">' + comment.user + " - " + comment.status + '</span>' +
+				'<p>Rating: ' + comment.rating + '<br>Comment: ' + comment.text + ' <button onclick="approve(' + comment.id + ')" class="secondary-content btn-floating btn-small waves-effect waves-light"><i class="material-icons">check_circle</i></button><button onclick="reject(' + comment.id + ')" class="secondary-content  btn-floating btn-small waves-effect waves-light"><i class="material-icons">cancel</i></button><br></p>' +
+				'</div></li>');
+			$('#comment_list').append(item);
+		} else {
+			let item = $('<li class="collection-item" id="' + comment.id + '"><div>' +
+				'<span class="title">' + comment.user + " - " + comment.status + '</span>' +
+				'<p>Rating: ' + comment.rating + '<br>Comment: ' + comment.text + '</p>' +
+				'</div></li>');
+			$('#comment_list').append(item);
+		}
 
+	}
+	else if (user.role == "ADMINISTRATOR") {
+		let item = $('<li class="collection-item" id="' + comment.id + '"><div>' +
+			'<span class="title">' + comment.user + " - " + comment.status + '</span>' +
+			'<p>Rating: ' + comment.rating + '<br>Comment: ' + comment.text + ' </p>' +
+			'</div></li>');
+		$('#comment_list').append(item);
+	} else {
+		return
+	}
+}
+
+
+function approve(id) {
 	$.get({
-		url: 'rest/registration/registeredUser',
-		success: function(result) {
-			var user = result;
-			var reserve = document.getElementById('reserve_form')
-			var tickets = document.getElementById('numSeats')
-
-			if (user) {
-				if (manifestation.leftSeats == 0 || user.role != "USER" || manifestation.status != "ACTIVE")
-					reserve.style.display = "none"
-			}
-			tickets.max = manifestation.leftSeats
-			//document.getElementById('total').value = manifestation.regularPrice
+		url: 'rest/comments/approve/' + id,
+		success: function(comment) {
+			let item = '<div>' +
+				'<span class="title">' + comment.user + " - " + comment.status + '</span>' +
+				'<p>Rating: ' + comment.rating + '<br>Comment: ' + comment.text + '</p>' +
+				'</div>';
+			const listItem = document.getElementById(comment.id);
+			listItem.innerHTML = item
+			M.toast({ html: 'Successfully approved user comment', classes: 'rounded', panning: 'center' });
+		},
+		error: function() {
+			M.toast({ html: 'Unable to approve user comment', classes: 'rounded', panning: 'center' });
 		}
 	});
+}
+
+function reject(id) {
+	$.get({
+		url: 'rest/comments/reject/' + id,
+		success: function(comment) {
+			let item = '<div>' +
+				'<span class="title">' + comment.user + " - " + comment.status + '</span>' +
+				'<p>Rating: ' + comment.rating + '<br>Comment: ' + comment.text + '</p>' +
+				'</div>';
+			const listItem = document.getElementById(comment.id);
+			listItem.innerHTML = item
+			M.toast({ html: 'Successfully rejected user comment', classes: 'rounded', panning: 'center' });
+		},
+		error: function() {
+			M.toast({ html: 'Unable to reject user comment', classes: 'rounded', panning: 'center' });
+		}
+	});
+}
+
+
+function showManifestation(manifestation, user) {
+	if (!user) return
+
+	var reserve = document.getElementById('reserve_form')
+	var tickets = document.getElementById('numSeats')
+
+	var date = new Date(manifestation.date)
+	var today = new Date()
+
+	if (user) {
+		if (manifestation.leftSeats == 0 || user.role != "USER" || manifestation.status != "ACTIVE" || date >= today)
+			reserve.style.display = "none"
+
+		$.get({
+			url: 'rest/comments/isCommentingAllowed/' + manifestation.id,
+			success: function(result) {
+				if (user.role != "USER" || manifestation.status != "ACTIVE" || date < today || !result) {
+					document.getElementById('comment_form').style.display = "none"
+				}
+			},
+			error: function() {
+				document.getElementById('comment_form').style.display = "none"
+			}
+		});
+
+		// Can user see left comments
+		if (manifestation.status != "ACTIVE" || date < today) {
+			document.getElementById('comment_section').style.display = "none"
+		}
+	}
+	tickets.max = manifestation.leftSeats
 
 	let basicInfo = $(
 		'<div class="card horizontal">' +
@@ -115,16 +236,6 @@ function showManifestation(manifestation) {
 	var lon = parseFloat(manifestation.location.longitude) * 1
 	//var lon = 4.35247
 	//var lat = 50.84673
-
-	var attribution = new ol.control.Attribution({
-		collapsible: false
-	});
-
-
-	var attribution = new ol.control.Attribution({
-		collapsible: false
-	});
-
 
 	var map = new ol.Map({
 		target: 'map',
@@ -162,6 +273,16 @@ function showManifestation(manifestation) {
 	});
 	map.addLayer(layer);
 
+
+	$.get({
+		url: 'rest/comments/list/' + manifestation.id,
+		success: function(result) {
+			for (let c of result)
+				showComment(c, user)
+
+		}
+	});
+
 }
 
 
@@ -174,7 +295,13 @@ $(document).ready(function() {
 		url: 'rest/manifestations/' + id,
 		success: function(manifestaton) {
 			console.log(manifestaton)
-			showManifestation(manifestaton)
+			$.get({
+				url: 'rest/registration/registeredUser',
+				success: function(result) {
+
+					showManifestation(manifestaton, result)
+				}
+			});
 		}
 	});
 });
