@@ -1,6 +1,7 @@
 package exception;
 
-public class ManifestationNotFoundException extends RuntimeException {
+
+public class ManifestationNotFoundException extends NullPointerException {
 
     private static final long serialVersionUID = 1L;
 
@@ -12,7 +13,4 @@ public class ManifestationNotFoundException extends RuntimeException {
         super(message);
     }
 
-    public ManifestationNotFoundException(String message, Throwable cause) {
-        super(message, cause);
-    }
 }

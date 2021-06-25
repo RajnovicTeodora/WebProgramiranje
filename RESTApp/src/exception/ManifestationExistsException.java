@@ -1,6 +1,6 @@
 package exception;
 
-public class ManifestationExistsException extends RuntimeException {
+public class ManifestationExistsException extends IllegalArgumentException {
 
     private static final long serialVersionUID = 1L;
 
