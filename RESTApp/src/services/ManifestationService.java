@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -22,6 +23,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import beans.Comment;
+import beans.CommentStatus;
 import beans.CustomerKind;
 import beans.Gender;
 import beans.Location;
@@ -33,14 +36,18 @@ import beans.Ticket;
 import beans.User;
 import beans.UserRole;
 import beans.Vendor;
+import dao.CommentDAO;
 import dao.ManifestationDAO;
 import dao.RegisteredUserDAO;
+import dto.CommentDTO;
 import dto.EditManifestationDTO;
 import dto.NewManifestationDTO;
 import dto.RegistrationDTO;
+import exception.CommentNotFoundException;
 import exception.InvalidInputException;
 import exception.ManifestationExistsException;
 import exception.ManifestationNotFoundException;
+import exception.UnauthorizedUserException;
 import exception.UserExistsException;
 import exception.UserNotFoundException;
 
@@ -131,7 +138,7 @@ public class ManifestationService {
 
 		manifestations.add(manifestation);
 		user.setManifestations(manifestations);
-		
+
 		return dao.addManifestation(manifestation);
 	}
 
@@ -147,7 +154,7 @@ public class ManifestationService {
 			throw new UserNotFoundException("No user registered");
 
 		ManifestationDAO dao = (ManifestationDAO) ctx.getAttribute("manifestationDAO");
-		
+
 		int intId = -1;
 		try {
 
@@ -157,24 +164,59 @@ public class ManifestationService {
 			System.out.println(editDTO.getId() + " is not a valid integer number");
 			return null;
 		}
-		
+
 		Manifestation manifestation = dao.findById(intId);
-		if(manifestation == null)
+		if (manifestation == null)
 			throw new ManifestationNotFoundException("Manifestation with the id " + editDTO.getId() + "not found");
-		
-		Location location = new Location(editDTO.getLat(), editDTO.getLon(),
-				editDTO.getLocation());
+
+		Location location = new Location(editDTO.getLat(), editDTO.getLon(), editDTO.getLocation());
 		if (dao.isManifestationOverlapping(manifestation.getDate(), location, intId)) {
 			throw new ManifestationExistsException("Manifestation for that date and location exists");
 		}
 
 		ManifestationType type = ManifestationType.valueOf(editDTO.getType());
-		
+
 		// TODO download image
 		manifestation.setLocation(location);
 		manifestation.setName(editDTO.getName());
 		manifestation.setType(type);
-		
+
+		return manifestation;
+	}
+
+	@GET
+	@Path("/approve/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Manifestation approveComment(@PathParam("id") String id) {
+
+		User user = (User) ctx.getAttribute("registeredUser");
+		if (user == null)
+			throw new UserNotFoundException("No user registered");
+
+		if (user.getRole() != UserRole.ADMINISTRATOR)
+			throw new UnauthorizedUserException("Unauthorized action");
+
+		ManifestationDAO manifestationDAO = (ManifestationDAO) ctx.getAttribute("manifestationDAO");
+
+		int intId = -1;
+		try {
+
+			intId = Integer.parseInt(id);
+
+		} catch (NumberFormatException e) {
+			System.out.println(id + " is not a valid integer number");
+			throw new NumberFormatException();
+		}
+
+		Manifestation manifestation = manifestationDAO.findById(intId);
+		if (manifestation == null)
+			throw new CommentNotFoundException("Comment with the id " + id + " not found");
+
+		if (manifestation.getStatus() == ManifestationStatus.ACTIVE
+				|| manifestation.getDate().isBefore(LocalDateTime.now()))
+			throw new InvalidInputException("Unable to set status to active. Status is already active or date passed");
+
+		manifestation.setStatus(ManifestationStatus.ACTIVE);
 		return manifestation;
 	}
 
