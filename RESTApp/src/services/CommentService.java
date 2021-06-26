@@ -63,7 +63,6 @@ public class CommentService {
 		ManifestationDAO dao = (ManifestationDAO) ctx.getAttribute("manifestationDAO");
 		int intId = -1;
 		try {
-
 			intId = Integer.parseInt(id);
 
 		} catch (NumberFormatException e) {
@@ -94,14 +93,13 @@ public class CommentService {
 
 		int intId = -1;
 		try {
-
 			intId = Integer.parseInt(id);
 
 		} catch (NumberFormatException e) {
 			System.out.println(id + " is not a valid integer number");
 			throw new NumberFormatException();
 		}
-
+		
 		ManifestationDAO manifestationDAO = (ManifestationDAO) ctx.getAttribute("manifestationDAO");
 		Manifestation manifestation = manifestationDAO.findById(intId);
 		if (manifestation == null)

@@ -1,12 +1,15 @@
 package dao;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
 import beans.Comment;
 import beans.CommentStatus;
+import beans.Manifestation;
+import beans.RegisteredUser;
 
 public class CommentDAO {
 
@@ -17,14 +20,7 @@ public class CommentDAO {
 	}
 
 	public CommentDAO(String contextPath) {
-		// TODO loadComments(contextPath);
-		Comment c1 = new Comment(1, null, null, "Some text", 5, CommentStatus.WAITING);
-		Comment c2 = new Comment(2, null, null, "Again some text", 4, CommentStatus.APPROVED);
-		Comment c3 = new Comment(3, null, null, "Just text", 3, CommentStatus.REJECTED);
-
-		addComment(c1);
-		addComment(c2);
-		addComment(c3);
+		loadAll(contextPath);
 	}
 
 	public Comment findById(int id) {
@@ -50,9 +46,6 @@ public class CommentDAO {
 		}
 		return commentList;
 	}
-	/*
-	 * private void loadComments(String contextPath) { // TODO }
-	 */
 
 	public int findId() {
 		int i = 1;
@@ -62,6 +55,51 @@ public class CommentDAO {
 				i++;
 			} else {
 				return i;
+			}
+		}
+	}
+	
+	private void loadAll(String contextPath) {
+		BufferedReader bufferedReader = null;
+		try {
+
+			FileReader reader = new FileReader(contextPath + "Resources\\csvFiles\\comments.csv"); 
+			bufferedReader = new BufferedReader(reader);
+			String line;
+			
+			line =  bufferedReader.readLine();
+			
+			while (line != null){
+				
+				if ( line.charAt(0) == '#') {
+					line = bufferedReader.readLine();
+					continue;
+				}
+				
+				String[] st = line.split(";");
+				
+				int id = Integer.parseInt(st[0].trim());
+				RegisteredUser user = ToiToiDAO.getUser(contextPath, st[1].trim()); 
+				Manifestation manifestation = ToiToiDAO.getManifestation(contextPath, Integer.parseInt(st[2].trim()));
+				String text = st[3].trim();
+				int rating = Integer.valueOf(st[4]);
+				CommentStatus status = CommentStatus.values()[Integer.parseInt(st[5].trim())];
+
+				Comment comment = new Comment(id, user, manifestation, text, rating, status); 
+				addComment(comment);
+				
+				line = bufferedReader.readLine();
+			}			
+			reader.close();
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			if (bufferedReader != null) {
+				try {
+					bufferedReader.close();
+				} catch (Exception e) {
+				}
 			}
 		}
 	}
