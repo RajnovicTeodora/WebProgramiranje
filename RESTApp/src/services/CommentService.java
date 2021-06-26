@@ -89,8 +89,6 @@ public class CommentService {
 	public List<CommentDTO> getComments(@PathParam("id") String id) {
 
 		User user = (User) ctx.getAttribute("registeredUser");
-		if (user == null)
-			throw new UserNotFoundException("No user registered");
 
 		CommentDAO commentDAO = (CommentDAO) ctx.getAttribute("commentDAO");
 
@@ -111,7 +109,7 @@ public class CommentService {
 
 		List<CommentDTO> comments = new ArrayList<CommentDTO>();
 
-		if (user.getRole() == UserRole.USER) {
+		if (user == null || user.getRole() == UserRole.USER) {
 			for (Comment comment : commentDAO.findAllList()) {
 				if (comment.getStatus() == CommentStatus.APPROVED
 						&& comment.getManifestation().getId() == manifestation.getId()) {
