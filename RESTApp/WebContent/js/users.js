@@ -23,6 +23,8 @@ function showInfo(user) {
 	$.get({
 		url: 'rest/registration/users',
 		success: function(users) {
+			if (user.role == "VENDOR")
+				document.getElementById("new_vendor").innerHTML = ''
 			for (let u of users) {
 				addUserTr(u);
 			}

@@ -55,14 +55,25 @@ function showInfo(user) {
 		document.getElementById('points').value = user.points;
 
 	}
-	
+
 }
 
 $(document).ready(function() {
 	$.get({
 		url: 'rest/registration/registeredUser',
 		success: function(user) {
+			if (user.role == "USER") {
+				document.getElementById("li_manifestations").innerHTML = ''
+				document.getElementById("li_users").innerHTML = ''
+			}
 			showInfo(user);
+		},
+		error: function() {
+			document.getElementById("li_users").innerHTML = ''
+			document.getElementById("li_my_profile").innerHTML = ''
+			document.getElementById("li_tickets").innerHTML = ''
+			document.getElementById("li_manifestations").innerHTML = ''
+			document.getElementById("li_logout").innerHTML = ''
 		}
 	});
 

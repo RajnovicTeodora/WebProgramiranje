@@ -31,7 +31,7 @@ function addTicketTr(ticket, role) {
 		var today = new Date();
 		today.setDate(today.getDate() + 7);
 		if (date > today) {
-			
+
 			var btn = document.createElement('input');
 			btn.type = "button";
 			btn.className = "btn";
@@ -52,8 +52,20 @@ function addTicketTr(ticket, role) {
 $(document).ready(function() {
 	$.get({
 		url: 'rest/registration/registeredUser',
-		success: function(registeredUser) {
-			user = registeredUser;
+		success: function(u) {
+			user = u
+			if (user.role == "USER") {
+				document.getElementById("li_manifestations").innerHTML = ''
+				document.getElementById("li_users").innerHTML = ''
+			}
+
+		},
+		error: function() {
+			document.getElementById("li_users").innerHTML = ''
+			document.getElementById("li_my_profile").innerHTML = ''
+			document.getElementById("li_tickets").innerHTML = ''
+			document.getElementById("li_manifestations").innerHTML = ''
+			document.getElementById("li_logout").innerHTML = ''
 		}
 	});
 

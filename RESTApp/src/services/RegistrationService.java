@@ -22,7 +22,6 @@ import beans.Gender;
 import beans.Manifestation;
 import beans.RegisteredUser;
 import beans.Ticket;
-import beans.TicketStatus;
 import beans.User;
 import beans.UserRole;
 import beans.Vendor;
@@ -31,8 +30,8 @@ import dao.ManifestationDAO;
 import dao.RegisteredUserDAO;
 import dao.TicketDAO;
 import dto.EditProfileDTO;
+import dto.LogInDTO;
 import dto.RegistrationDTO;
-import dto.TicketDTO;
 import dto.UserDTO;
 import dto.UserProfileDTO;
 import exception.InvalidInputException;
@@ -86,18 +85,18 @@ public class RegistrationService {
 
 			v.setManifestations(manifs);
 			tickets.add(daoT.findById("1"));
-			//tickets.add(daoT.findById("2"));
+			// tickets.add(daoT.findById("2"));
 			u.setTickets(tickets);
-			
+
 			CommentDAO commentDAO = (CommentDAO) ctx.getAttribute("commentDAO");
-			
-			for(Comment comment : commentDAO.findAllList()) {
+
+			for (Comment comment : commentDAO.findAllList()) {
 				comment.setUser(u);
 				comment.setManifestation(daoM.findById(2));
 			}
 
 			// --------------
-			ctx.setAttribute("registeredUser", u);
+			// ctx.setAttribute("registeredUser", u);
 		}
 
 	}
@@ -219,11 +218,11 @@ public class RegistrationService {
 			}
 		} else if (user.getRole() == UserRole.VENDOR) {
 			for (User u : dao.findAllList()) {
-				if(u.getRole() != UserRole.USER || u.getUsername().equals(user.getUsername()))
+				if (u.getRole() != UserRole.USER || u.getUsername().equals(user.getUsername()))
 					continue;
 				else {
-					for(Ticket t : ((RegisteredUser)u).getTickets()) {
-						if(((Vendor)user).getManifestations().contains(t.getManifestation())) {
+					for (Ticket t : ((RegisteredUser) u).getTickets()) {
+						if (((Vendor) user).getManifestations().contains(t.getManifestation())) {
 							users.add(new UserDTO(u));
 							break;
 						}
@@ -235,5 +234,46 @@ public class RegistrationService {
 		}
 
 		return users;
+	}
+
+	@POST
+	@Path("/login")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public UserProfileDTO logIn(LogInDTO logInDTO) {
+
+		User user = (User) ctx.getAttribute("registeredUser");
+		if (user != null)
+			throw new UserExistsException("User already logged in");
+
+		RegisteredUserDAO dao = (RegisteredUserDAO) ctx.getAttribute("registeredUserDAO");
+
+		String username = logInDTO.getUsername().trim();
+		String password = logInDTO.getPassword().trim();
+
+		if (username.equals("") || password.equals(""))
+			throw new InvalidInputException("Input is invalid");
+
+		User foundUser = dao.find(username, password);
+		if (foundUser == null)
+			throw new UserNotFoundException("Enetered credidentials are invalid");
+
+		ctx.setAttribute("registeredUser", foundUser);
+		return new UserProfileDTO(foundUser);
+
+	}
+
+	@GET
+	@Path("/logout")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public void logOut() {
+
+		User user = (User) ctx.getAttribute("registeredUser");
+		if (user == null)
+			throw new UserExistsException("User not logged in");
+
+		ctx.setAttribute("registeredUser", null);
+
 	}
 }

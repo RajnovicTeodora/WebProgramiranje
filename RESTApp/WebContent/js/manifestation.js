@@ -1,6 +1,5 @@
 let regular = 0;
 
-
 $("#comment_form").submit(function(event) {
 	event.preventDefault();
 	console.log("Commenting...");
@@ -55,7 +54,6 @@ function changed() {
 
 $("#reserve_form").submit(function(event) {
 
-
 	event.preventDefault();
 	console.log("Reserving ticket...");
 
@@ -106,9 +104,8 @@ function readURL(input) {
 }
 
 function showComment(comment, user) {
-	if (!user) return
 
-	if (user.role == "USER") {
+	if (!user || user.role == "USER") {
 		let item = $('<li class="collection-item" id="' + comment.id + '"><div>' +
 			'<span class="title">' + comment.user + '</span>' +
 			'<p>Rating: ' + comment.rating + '<br>Comment: ' + comment.text + ' </p>' +
@@ -181,7 +178,6 @@ function reject(id) {
 
 
 function showManifestation(manifestation, user) {
-	if (!user) return
 
 	var reserve = document.getElementById('reserve_form')
 	var tickets = document.getElementById('numSeats')
@@ -189,14 +185,18 @@ function showManifestation(manifestation, user) {
 	var date = new Date(manifestation.date)
 	var today = new Date()
 
-	if (user) {
-		if (manifestation.leftSeats == 0 || user.role != "USER" || manifestation.status != "ACTIVE" || date >= today)
-			reserve.style.display = "none"
+	// Ticket reservation
+	if (user == null || manifestation.leftSeats == 0 || user.role != "USER" || manifestation.status != "ACTIVE" || date >= today)
+		reserve.style.display = "none"
 
+	// Commenting
+	if (user == null || user.role != "USER") {
+		document.getElementById('comment_form').style.display = "none"
+	} else {
 		$.get({
 			url: 'rest/comments/isCommentingAllowed/' + manifestation.id,
 			success: function(result) {
-				if (user.role != "USER" || manifestation.status != "ACTIVE" || date < today || !result) {
+				if (manifestation.status != "ACTIVE" || date < today || !result || !user) {
 					document.getElementById('comment_form').style.display = "none"
 				}
 			},
@@ -204,12 +204,13 @@ function showManifestation(manifestation, user) {
 				document.getElementById('comment_form').style.display = "none"
 			}
 		});
-
-		// Can user see left comments
-		if (manifestation.status != "ACTIVE" || date < today) {
-			document.getElementById('comment_section').style.display = "none"
-		}
 	}
+
+	// Can user see left comments
+	if (manifestation.status != "ACTIVE" || date < today) {
+		document.getElementById('comment_section').style.display = "none"
+	}
+
 	tickets.max = manifestation.leftSeats
 
 	let basicInfo = $(
@@ -294,13 +295,25 @@ $(document).ready(function() {
 	$.get({
 		url: 'rest/manifestations/' + id,
 		success: function(manifestaton) {
-			console.log(manifestaton)
 			$.get({
 				url: 'rest/registration/registeredUser',
-				success: function(result) {
-
-					showManifestation(manifestaton, result)
-				}
+				success: function(user) {
+					if (user.role == "USER") {
+						document.getElementById("li_manifestations").innerHTML = ''
+						document.getElementById("li_users").innerHTML = ''
+					}
+					document.getElementById("li_registration").innerHTML = ''
+					document.getElementById("li_login").innerHTML = ''
+					showManifestation(manifestaton, user)
+				},
+				error: function() {
+					document.getElementById("li_users").innerHTML = ''
+					document.getElementById("li_my_profile").innerHTML = ''
+					document.getElementById("li_tickets").innerHTML = ''
+					document.getElementById("li_manifestations").innerHTML = ''
+					document.getElementById("li_logout").innerHTML = ''
+					showManifestation(manifestaton, null)
+				},
 			});
 		}
 	});

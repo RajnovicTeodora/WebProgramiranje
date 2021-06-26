@@ -16,6 +16,27 @@ function addManifestationCard(manifestation) {
 
 
 $(document).ready(function() {
+
+	$.get({
+		url: 'rest/registration/registeredUser',
+		success: function(user) {
+			if (user.role == "USER") {
+				document.getElementById("li_manifestations").innerHTML = ''
+				document.getElementById("li_users").innerHTML = ''
+			}
+			document.getElementById("li_registration").innerHTML = ''
+			document.getElementById("li_login").innerHTML = ''
+		},
+		error: function() {
+			document.getElementById("li_users").innerHTML = ''
+			document.getElementById("li_my_profile").innerHTML = ''
+			document.getElementById("li_tickets").innerHTML = ''
+			document.getElementById("li_manifestations").innerHTML = ''
+			document.getElementById("li_logout").innerHTML = ''
+		}
+	});
+
+
 	$.get({
 		url: 'rest/manifestations/list',
 		success: function(manifestatons) {
@@ -29,6 +50,8 @@ $(document).ready(function() {
 });
 
 
+
+// TODO 
 $("#filter_manifestations_form").submit(function(event) {
 
 	// Stop form from submitting normally
@@ -44,15 +67,11 @@ $("#filter_manifestations_form").submit(function(event) {
 
 	if (dateFrom > dateTo) {
 		M.toast({ html: 'Date from must be greater than date to!' })
-		$('#error').text('Date from must be greater than date to!');
-		$("#error").show().delay(3000).fadeOut();
 		return;
 	}
 
 	if (priceFrom > priceTo) {
-		M.toast({ html: 'Successfully registered', classes: 'rounded', panning: 'center' });
-		$('#error').text('Price from must be greater than price to!');
-		$("#error").show().delay(3000).fadeOut();
+		M.toast({ html: 'Price from must be greater than price to.', classes: 'rounded', panning: 'center' });
 		return;
 	}
 

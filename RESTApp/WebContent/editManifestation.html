@@ -25,24 +25,29 @@ img {
 <body>
 
 	<nav class="nav-extended">
-		<div class="nav-wrapper teal darken-2">
-			<a href="#" class="brand-logo"> <img
-				style="width: 12%; height: 12%;" src="Resources/images/ticket.png"
-				alt="TiTi" />
-			</a>
-			<ul id="nav-mobile" class="right hide-on-med-and-down">
-				<li><a href="http://localhost:8080/RESTApp/registration.html">Registration</a></li>
-				<li><a href="http://localhost:8080/RESTApp/userProfile.html">MyProfile</a></li>
-			</ul>
-		</div>
-		<div class="nav-content">
-			<ul class="tabs tabs-transparent">
-				<li class="tab"><a class="active" href="http://localhost:8080/RESTApp/index.html">Home Page</a></li>
-				<li class="tab"><a class="active" href="http://localhost:8080/RESTApp/users.html">Users</a></li>
-				<li class="tab"><a class="active" href="http://localhost:8080/RESTApp/tickets.html">Tickets</a></li>
-				<li class="tab"><a href="#">Test 4</a></li>
-			</ul>
-		</div>
+	<div class="nav-wrapper teal darken-2">
+		<a href="http://localhost:8080/RESTApp/index.html"
+			class="brand-logo disabled"> <img
+			style="width: 12%; height: 12%;" src="Resources/images/ticket.png"
+			alt="TiTi" />
+		</a>
+		<ul id="nav-mobile" class="right hide-on-med-and-down">
+			<li><a href="http://localhost:8080/RESTApp/userProfile.html">MyProfile</a></li>
+			<li id="li_logout"><a href="#" id="logout-click">Log Out</a></li>
+		</ul>
+	</div>
+	<div class="nav-content">
+		<ul class="tabs tabs-transparent">
+			<li class="tab"><a class="active"
+				href="http://localhost:8080/RESTApp/index.html">Home Page</a></li>
+			<li class="tab"><a class="active"
+				href="http://localhost:8080/RESTApp/users.html">Users</a></li>
+			<li class="tab"><a class="active"
+				href="http://localhost:8080/RESTApp/tickets.html">Tickets</a></li>
+			<li class="tab"><a class="active"
+				href="http://localhost:8080/RESTApp/manifestationTable.html">Manifestations</a></li>
+		</ul>
+	</div>
 	</nav>
 
 
@@ -91,7 +96,7 @@ img {
 						</div>
 						<div class="input-field col s6">
 							<input placeholder="Price" id="price" name="price" type="number"
-								 required readonly /> <label for="price">Price</label>
+								required readonly /> <label for="price">Price</label>
 						</div>
 					</div>
 
@@ -134,4 +139,5 @@ img {
 	<script type="text/javascript" src="js/materialize.min.js"></script>
 	<script src="jquery-3.3.1.min.js"></script>
 	<script type="text/javascript" src="js/editManfestation.js"></script>
+	<script type="text/javascript" src="js/login.js"></script>
 </body>
