@@ -8,6 +8,7 @@ public class Ticket {
 	private LocalDateTime date;
 	private double price;
 	private String buyer; // name + surname
+	private String buyerUsername;
 	private TicketStatus status; //reserved, canceled
 	private TicketType type; // VIP, regular, fan pit
 	
@@ -89,5 +90,12 @@ public class Ticket {
 				+ ", buyer=" + buyer + ", status=" + status + ", type=" + type + "]";
 	}
 
+	public String getBuyerUsername() {
+		return buyerUsername;
+	}
+
+	public void setBuyerUsername(String buyerUsername) {
+		this.buyerUsername = buyerUsername;
+	}
 	
 }

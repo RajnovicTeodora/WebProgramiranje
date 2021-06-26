@@ -1,9 +1,12 @@
 package dao;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import beans.Location;
@@ -74,20 +77,76 @@ public class TicketDAO {
 		}
 	}
 	
+	public List<Ticket> getUserTickets(String username){
+		List<Ticket>  userTickets = new ArrayList<Ticket>();
+		for (Ticket ticket : findAll()) {
+			if(ticket.getBuyerUsername().equals(username)) {
+				userTickets.add(ticket);
+			}
+		}
+		return userTickets;
+	}
+	
 	private void loadTickets(String contextPath) {
-		Manifestation m1 = new Manifestation("Manifestation1", ManifestationType.FESTIVAL, 20, LocalDateTime.now().plusDays(1), 10 , ManifestationStatus.ACTIVE, new Location(), "ticket.png");
-		Manifestation m2 = new Manifestation("Manifestation2", ManifestationType.FESTIVAL, 20, LocalDateTime.now().plusDays(3), 10 , ManifestationStatus.ACTIVE, new Location(), "ticket.png");
-		Manifestation m3 = new Manifestation("Manifestation3", ManifestationType.FESTIVAL, 20, LocalDateTime.now(), 10 , ManifestationStatus.ACTIVE, new Location(), "ticket.png");
-		m1.setId(1);
-		m2.setId(2);
-		m3.setId(3);
+//		Manifestation m1 = new Manifestation(1, "Manifestation1", ManifestationType.FESTIVAL, 20, LocalDateTime.now().plusDays(1), 10 , ManifestationStatus.ACTIVE, new Location(), "ticket.png");
+//		Manifestation m2 = new Manifestation(2, "Manifestation2", ManifestationType.FESTIVAL, 20, LocalDateTime.now().plusDays(3), 10 , ManifestationStatus.ACTIVE, new Location(), "ticket.png");
+//		Manifestation m3 = new Manifestation(3, "Manifestation3", ManifestationType.FESTIVAL, 20, LocalDateTime.now(), 10 , ManifestationStatus.ACTIVE, new Location(), "ticket.png");
+//		m1.setId(1);
+//		m2.setId(2);
+//		m3.setId(3);
+//		
+//		Ticket t1 = new Ticket("1", m1 , LocalDateTime.now().plusDays(20), 11, "Mika Mikic", TicketStatus.RESERVED, TicketType.REGULAR);
+//		Ticket t2 = new Ticket("2", m2 , LocalDateTime.now().plusDays(30), 11, "Pera Peric", TicketStatus.RESERVED, TicketType.REGULAR);
+//		Ticket t3 = new Ticket("3", m3 , LocalDateTime.now(), 11, "Laza Lazic", TicketStatus.RESERVED, TicketType.REGULAR);
+//		
+//		addTicket(t1);
+//		addTicket(t2);
+//		addTicket(t3);
 		
-		Ticket t1 = new Ticket("1", m1 , LocalDateTime.now().plusDays(20), 11, "Mika Mikic", TicketStatus.RESERVED, TicketType.REGULAR);
-		Ticket t2 = new Ticket("2", m2 , LocalDateTime.now().plusDays(30), 11, "Pera Peric", TicketStatus.RESERVED, TicketType.REGULAR);
-		Ticket t3 = new Ticket("3", m3 , LocalDateTime.now(), 11, "Laza Lazic", TicketStatus.RESERVED, TicketType.REGULAR);
-		
-		addTicket(t1);
-		addTicket(t2);
-		addTicket(t3);
+		BufferedReader bufferedReader = null;
+		try {
+
+			FileReader reader = new FileReader(contextPath + "Resources\\csvFiles\\tickets.csv"); 
+			bufferedReader = new BufferedReader(reader);
+			String line;
+			
+			line =  bufferedReader.readLine();
+			
+			while (line != null){
+				
+				if ( line.charAt(0) == '#') {
+					line = bufferedReader.readLine();
+					continue;
+				}
+				
+				String[] st = line.split(";");
+				
+				String id = st[0].trim();
+				Manifestation manifestation = ToiToiDAO.getManifestation(contextPath, Integer.parseInt(st[1]));
+				LocalDateTime date = LocalDateTime.parse(st[2]);
+				int price = Integer.parseInt(st[3]);
+				String buyerName = st[4];
+				String byerUsername = st[5];
+				TicketStatus status = TicketStatus.values()[Integer.parseInt(st[6])];
+				TicketType type = TicketType.values()[Integer.parseInt(st[7])];
+				
+				Ticket ticket = new Ticket(id, manifestation, date, price, buyerName, status, type);
+				ticket.setBuyerUsername(byerUsername);
+				addTicket(ticket);
+				
+				line = bufferedReader.readLine();
+			}			
+			reader.close();
+			
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			if (bufferedReader != null) {
+				try {
+					bufferedReader.close();
+				} catch (Exception e) {
+				}
+			}
+		}
 	}
 }
