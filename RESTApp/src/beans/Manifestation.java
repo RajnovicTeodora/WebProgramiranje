@@ -13,14 +13,16 @@ public class Manifestation {
 	private Location location;
 	private String poster;
 	private int leftSeats;
+	private String vendorUsername;
 
 	public Manifestation() {
 		super();
 	}
 
-	public Manifestation(String name, ManifestationType type, int numSeats, LocalDateTime date, double regularPrice,
+	public Manifestation(int id, String name, ManifestationType type, int numSeats, LocalDateTime date, double regularPrice,
 			ManifestationStatus status, Location location, String poster) {
 		super();
+		this.id = id;
 		this.name = name;
 		this.type = type;
 		this.numSeats = numSeats;
@@ -30,6 +32,21 @@ public class Manifestation {
 		this.location = location;
 		this.poster = poster;
 		this.leftSeats = numSeats; // TODO
+	}
+	
+	public Manifestation(int id, String name, ManifestationType type, int numSeats, LocalDateTime date, double regularPrice,
+			ManifestationStatus status, Location location, String poster, int leftSeats) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.type = type;
+		this.numSeats = numSeats;
+		this.date = date;
+		this.regularPrice = regularPrice;
+		this.status = status;
+		this.location = location;
+		this.poster = poster;
+		this.leftSeats = leftSeats;
 	}
 
 	public int getId() {
@@ -148,5 +165,15 @@ public class Manifestation {
 	public void setLeftSeats(int leftSeats) {
 		this.leftSeats = leftSeats;
 	}
+
+	public String getVendorUsername() {
+		return vendorUsername;
+	}
+
+	public void setVendorUsername(String vendorUsername) {
+		this.vendorUsername = vendorUsername;
+	}
+	
+	
 
 }

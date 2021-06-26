@@ -1,18 +1,10 @@
 package services;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Random;
-
 import javax.annotation.PostConstruct;
-import javax.imageio.ImageIO;
 import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -23,32 +15,21 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-import beans.Comment;
-import beans.CommentStatus;
-import beans.CustomerKind;
-import beans.Gender;
 import beans.Location;
 import beans.Manifestation;
 import beans.ManifestationStatus;
 import beans.ManifestationType;
-import beans.RegisteredUser;
-import beans.Ticket;
 import beans.User;
 import beans.UserRole;
 import beans.Vendor;
-import dao.CommentDAO;
 import dao.ManifestationDAO;
-import dao.RegisteredUserDAO;
-import dto.CommentDTO;
 import dto.EditManifestationDTO;
 import dto.NewManifestationDTO;
-import dto.RegistrationDTO;
 import exception.CommentNotFoundException;
 import exception.InvalidInputException;
 import exception.ManifestationExistsException;
 import exception.ManifestationNotFoundException;
 import exception.UnauthorizedUserException;
-import exception.UserExistsException;
 import exception.UserNotFoundException;
 
 @Path("/manifestations")
@@ -132,7 +113,7 @@ public class ManifestationService {
 		ManifestationType type = ManifestationType.valueOf(newManifestationDTO.getType());
 		// TODO download image
 
-		Manifestation manifestation = new Manifestation(newManifestationDTO.getName(), type,
+		Manifestation manifestation = new Manifestation(dao.getNextId(), newManifestationDTO.getName(), type,
 				newManifestationDTO.getNumSeats(), newManifestationDTO.getDate(), newManifestationDTO.getRegularPrice(),
 				ManifestationStatus.UNACTIVE, location, "ticket.png");
 

@@ -1,15 +1,23 @@
 package dao;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 
+import beans.Comment;
+import beans.CommentStatus;
 import beans.Location;
 import beans.Manifestation;
 import beans.ManifestationStatus;
 import beans.ManifestationType;
+import beans.RegisteredUser;
 
 public class ManifestationDAO {
 	private Map<Integer, Manifestation> manifestations = new HashMap<Integer, Manifestation>();
@@ -50,6 +58,16 @@ public class ManifestationDAO {
 		}
 		return manifestationList;
 	}
+	
+	public List<Manifestation> findByVendor(String username){
+		List<Manifestation> manifestationList = new ArrayList<Manifestation>();
+		for (Manifestation manifestation : findAll()) {
+			if(manifestation.getVendorUsername().equals(username)) {
+				manifestationList.add(manifestation);
+			}		
+		}
+		return manifestationList;
+	}
 
 	public Boolean isManifestationOverlapping(LocalDateTime date, Location location, int id) {
 
@@ -68,26 +86,63 @@ public class ManifestationDAO {
 		}
 
 		return false;
-
+	}
+	
+	public int getNextId() {
+		if(manifestations.size()==0) return 1;
+		int lastId = (Integer)new TreeSet<Integer>(manifestations.keySet()).last();
+		return lastId+1;
 	}
 
 	private void loadManifestations(String contextPath) {
+		
+		BufferedReader bufferedReader = null;
+		try {
 
-		Location l1 = new Location(50.84673, 4.35247, "Mainski Put 2, Budva, Crna Gora");
-
-		Manifestation m1 = new Manifestation("Manifestation1", ManifestationType.FESTIVAL, 20,
-				LocalDateTime.now().plusDays(1), 10, ManifestationStatus.ACTIVE, l1, "ticket.png");
-		Manifestation m2 = new Manifestation("Manifestation2", ManifestationType.FESTIVAL, 20,
-				LocalDateTime.now().plusDays(3), 10, ManifestationStatus.ACTIVE, l1, "ticket.png");
-		Manifestation m3 = new Manifestation("Manifestation3", ManifestationType.FESTIVAL, 20, LocalDateTime.now(), 10,
-				ManifestationStatus.ACTIVE, l1, "ticket.png");
-		m1.setId(1);
-		m2.setId(2);
-		m3.setId(3);
-
-		addManifestation(m1);
-		addManifestation(m2);
-		addManifestation(m3);
-
+			FileReader reader = new FileReader(contextPath + "Resources\\csvFiles\\manifestations.csv"); 
+			bufferedReader = new BufferedReader(reader);
+			String line;
+			
+			line =  bufferedReader.readLine();
+			
+			while (line != null){
+				
+				if ( line.charAt(0) == '#') {
+					line = bufferedReader.readLine();
+					continue;
+				}
+				
+				String[] st = line.split(";");
+				
+				int id = Integer.parseInt(st[0].trim());
+				String name = st[1].trim();
+				ManifestationType type = ManifestationType.values()[Integer.valueOf(st[2])];
+				int numSeats = Integer.valueOf(st[3].trim());
+				LocalDateTime date = LocalDateTime.parse(st[4]);
+				int price = Integer.valueOf(st[5].trim());
+				ManifestationStatus status = ManifestationStatus.values()[Integer.valueOf(st[6])];
+				Location location = ToiToiDAO.getManifestationLocation(contextPath, Integer.valueOf(st[7].trim()));
+				String poster = st[8].trim();
+				int leftSeats = Integer.valueOf(st[9].trim());
+				String vendorUsername = st[10];
+				
+				Manifestation manifestation = new Manifestation(id, name, type, numSeats, date, price, status, location, poster, leftSeats);
+				manifestation.setVendorUsername(vendorUsername);
+				addManifestation(manifestation);
+				
+				line = bufferedReader.readLine();
+			}			
+			reader.close();
+			
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			if (bufferedReader != null) {
+				try {
+					bufferedReader.close();
+				} catch (Exception e) {
+				}
+			}
+		}
 	}
 }
