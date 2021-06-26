@@ -4,15 +4,21 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
 import beans.Administrator;
 import beans.CustomerKind;
 import beans.Gender;
+import beans.Manifestation;
+import beans.RegisteredUser;
+import beans.Ticket;
 import beans.UserRole;
+import beans.Vendor;
 
 public class AdministratorDAO {
 
@@ -54,36 +60,48 @@ public class AdministratorDAO {
 	}
 
 	private void loadAdministrators(String contextPath) {
-		BufferedReader in = null;
-		try {
-			File file = new File(contextPath + "/Administrator.csv");
-			in = new BufferedReader(new FileReader(file));
+		BufferedReader bufferedReader = null;
+		try {		
+			FileReader reader = new FileReader(contextPath + "Resources\\csvFiles\\users.csv"); 
+			bufferedReader = new BufferedReader(reader);
 			String line;
-			StringTokenizer st;
-			while ((line = in.readLine()) != null) {
-				line = line.trim();
-				if (line.equals("") || line.indexOf('#') == 0)
+			
+			line =  bufferedReader.readLine();
+			
+			while (line != null){
+				
+				if ( line.charAt(0) == '#') {
+					line = bufferedReader.readLine();
 					continue;
-				st = new StringTokenizer(line, ";");
-				while (st.hasMoreTokens()) {
-					String username = st.nextToken().trim();
-					String password = st.nextToken().trim();
-					String firstName = st.nextToken().trim();
-					String lastName = st.nextToken().trim();
-					Gender gender = Gender.valueOf(st.nextToken().trim());
-					LocalDate date = LocalDate.parse(st.nextToken().trim());
-
-					administrators.put(username, new Administrator(username, password, firstName, lastName, gender,
-							date, UserRole.USER, CustomerKind.NEWBIE));
 				}
-
-			}
+				
+				String[] st = line.split(";");
+				UserRole role = UserRole.values()[Integer.valueOf(st[6])];
+				if(role != UserRole.ADMINISTRATOR) {
+					line = bufferedReader.readLine();
+					continue;
+				}
+				
+				String username = st[0].trim();
+				String password = st[1].trim();
+				String firstName = st[2].trim();
+				String lastName = st[3].trim();
+				Gender gender = Gender.values()[Integer.valueOf(st[4])];
+				LocalDate date = LocalDate.parse(st[5]);				
+				CustomerKind kind = CustomerKind.values()[Integer.valueOf(st[7])];
+				
+				Administrator admin = new Administrator(username, password, firstName, lastName, gender, date, role, kind);
+				addAdministrator(admin);
+				
+				line = bufferedReader.readLine();
+			}			
+			reader.close();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		} finally {
-			if (in != null) {
+			if (bufferedReader != null) {
 				try {
-					in.close();
+					bufferedReader.close();
 				} catch (Exception e) {
 				}
 			}

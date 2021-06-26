@@ -66,34 +66,34 @@ public class RegistrationService {
 		if (ctx.getAttribute("ticketDAO") == null) {
 			String contextPath = ctx.getRealPath("");
 			ctx.setAttribute("ticketDAO", new TicketDAO(contextPath));
+//
+//			RegisteredUserDAO dao = (RegisteredUserDAO) ctx.getAttribute("registeredUserDAO");
+//			TicketDAO daoT = (TicketDAO) ctx.getAttribute("ticketDAO");
+//			// TEST
+//
+//			ManifestationDAO daoM = (ManifestationDAO) ctx.getAttribute("manifestationDAO");
 
-			RegisteredUserDAO dao = (RegisteredUserDAO) ctx.getAttribute("registeredUserDAO");
-			TicketDAO daoT = (TicketDAO) ctx.getAttribute("ticketDAO");
-			// TEST
-
-			ManifestationDAO daoM = (ManifestationDAO) ctx.getAttribute("manifestationDAO");
-
-			Administrator a = (Administrator) dao.findByUsername("admin");
-			RegisteredUser u = (RegisteredUser) dao.findByUsername("cao");
-			Vendor v = (Vendor) dao.findByUsername("vendor");
-			List<Ticket> tickets = u.getTickets();
-			List<Manifestation> manifs = v.getManifestations();
-
-			manifs.add(daoM.findById(1));
-			manifs.add(daoM.findById(2));
-			manifs.add(daoM.findById(3));
-
-			v.setManifestations(manifs);
-			tickets.add(daoT.findById("1"));
+//			Administrator a = (Administrator) dao.findByUsername("admin");
+//			RegisteredUser u = (RegisteredUser) dao.findByUsername("cao");
+//			Vendor v = (Vendor) dao.findByUsername("vendor");
+//			List<Ticket> tickets = u.getTickets();
+//			List<Manifestation> manifs = v.getManifestations();
+//
+//			manifs.add(daoM.findById(1));
+//			manifs.add(daoM.findById(2));
+//			manifs.add(daoM.findById(3));
+//
+//			v.setManifestations(manifs);
+			//tickets.add(daoT.findById("1"));
 			// tickets.add(daoT.findById("2"));
-			u.setTickets(tickets);
+			//u.setTickets(tickets);
 
-			CommentDAO commentDAO = (CommentDAO) ctx.getAttribute("commentDAO");
-
-			for (Comment comment : commentDAO.findAllList()) {
-				comment.setUser(u);
-				comment.setManifestation(daoM.findById(2));
-			}
+//			CommentDAO commentDAO = (CommentDAO) ctx.getAttribute("commentDAO");
+//
+//			for (Comment comment : commentDAO.findAllList()) {
+//				comment.setUser(u);
+//				comment.setManifestation(daoM.findById(2));
+//			}
 
 			// --------------
 			// ctx.setAttribute("registeredUser", u);
@@ -230,7 +230,7 @@ public class RegistrationService {
 				}
 			}
 		} else {
-			throw new UnauthorizedUserException("User doesn not have permission to view system users");
+			throw new UnauthorizedUserException("User does not have permission to view system users");
 		}
 
 		return users;
@@ -256,7 +256,7 @@ public class RegistrationService {
 
 		User foundUser = dao.find(username, password);
 		if (foundUser == null)
-			throw new UserNotFoundException("Enetered credidentials are invalid");
+			throw new UserNotFoundException("Entered credidentials are invalid");
 
 		ctx.setAttribute("registeredUser", foundUser);
 		return new UserProfileDTO(foundUser);

@@ -1,0 +1,4 @@
+#username;password;firstName;lastName;gender;birthday;role;kind;points
+admin;admin;admin;admin;1;1999-09-02;0;1
+cao;cao;cao;cao;1;1999-10-02;2;1;10
+vendor;vendor;vendor;vendor;1;1989-04-21;1;1
