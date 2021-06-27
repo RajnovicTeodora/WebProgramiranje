@@ -2,6 +2,8 @@ package dao;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -93,6 +95,20 @@ public class ManifestationDAO {
 		int lastId = (Integer)new TreeSet<Integer>(manifestations.keySet()).last();
 		return lastId+1;
 	}
+	
+	public boolean writeManifestation(Manifestation manifestation) {
+		FileWriter writer;
+		try {
+			writer = new FileWriter(this.contextPath + "Resources\\csvFiles\\manifestations.csv", true);
+			writer.write(manifestation.toCsvString());
+			writer.close();
+			return true;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		} 		
+	}
 
 	private void loadManifestations(String contextPath) {
 		
@@ -119,7 +135,7 @@ public class ManifestationDAO {
 				ManifestationType type = ManifestationType.values()[Integer.valueOf(st[2])];
 				int numSeats = Integer.valueOf(st[3].trim());
 				LocalDateTime date = LocalDateTime.parse(st[4]);
-				int price = Integer.valueOf(st[5].trim());
+				double price = Double.valueOf(st[5].trim());
 				ManifestationStatus status = ManifestationStatus.values()[Integer.valueOf(st[6])];
 				Location location = ToiToiDAO.getManifestationLocation(contextPath, Integer.valueOf(st[7].trim()));
 				String poster = st[8].trim();

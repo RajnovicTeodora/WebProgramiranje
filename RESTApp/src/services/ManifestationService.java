@@ -22,6 +22,7 @@ import beans.ManifestationType;
 import beans.User;
 import beans.UserRole;
 import beans.Vendor;
+import dao.LocationDAO;
 import dao.ManifestationDAO;
 import dto.EditManifestationDTO;
 import dto.NewManifestationDTO;
@@ -101,9 +102,15 @@ public class ManifestationService {
 			throw new UserNotFoundException("No user registered");
 
 		ManifestationDAO dao = (ManifestationDAO) ctx.getAttribute("manifestationDAO");
-
-		Location location = new Location(newManifestationDTO.getLat(), newManifestationDTO.getLon(),
+		
+		//TODO: proveriti da li postoji ta lokacija vec
+		LocationDAO locationDao = (LocationDAO) ctx.getAttribute("locationDAO");
+		
+		int locationID = locationDao.findNextId();
+		Location location = new Location(locationID, newManifestationDTO.getLat(), newManifestationDTO.getLon(),
 				newManifestationDTO.getLocation());
+		locationDao.writeLocation(location);
+		locationDao.addLocation(location);
 		if (dao.isManifestationOverlapping(newManifestationDTO.getDate(), location, -1)) {
 			throw new ManifestationExistsException("Manifestation for that date and location exists");
 		}
@@ -116,11 +123,16 @@ public class ManifestationService {
 		Manifestation manifestation = new Manifestation(dao.getNextId(), newManifestationDTO.getName(), type,
 				newManifestationDTO.getNumSeats(), newManifestationDTO.getDate(), newManifestationDTO.getRegularPrice(),
 				ManifestationStatus.UNACTIVE, location, "ticket.png");
-
+		manifestation.setVendorUsername(user.getUsername());
 		manifestations.add(manifestation);
 		user.setManifestations(manifestations);
 
-		return dao.addManifestation(manifestation);
+		if(dao.writeManifestation(manifestation)) {
+			return dao.addManifestation(manifestation);
+		}
+		else {
+			return null;
+		}
 	}
 
 	// Edit manifestation

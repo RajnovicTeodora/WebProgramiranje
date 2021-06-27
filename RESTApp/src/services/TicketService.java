@@ -174,7 +174,9 @@ public class TicketService {
 		while (numTickets > 0) {
 			Ticket ticket = new Ticket(ticketId, manifestation, manifestation.getDate(), price, buyer,
 					TicketStatus.RESERVED, ticketType);
+			ticket.setBuyerUsername(user.getUsername());
 			tickets.add(ticket);
+			ticketDao.writeTicket(ticket);
 			ticketDao.addTicket(ticket);
 			numTickets--;
 		}

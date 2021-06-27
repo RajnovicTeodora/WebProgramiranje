@@ -76,5 +76,10 @@ public class Comment {
 		return "Comment [user=" + user.getUsername() + ", manifestation=" + manifestation.getName() + ", text=" + text
 				+ ", rating=" + rating + ", status=" + status + "]";
 	}
+	
+	public String toCsvString() {
+		String[] elems = {String.valueOf(this.id), user.getUsername(), String.valueOf(manifestation.getId()), this.text, String.valueOf(this.rating), String.valueOf(this.status.ordinal())};
+		return String.join(";", elems)+"\n";	
+	}
 
 }

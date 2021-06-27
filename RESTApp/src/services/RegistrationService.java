@@ -23,6 +23,7 @@ import beans.User;
 import beans.UserRole;
 import beans.Vendor;
 import dao.CommentDAO;
+import dao.LocationDAO;
 import dao.ManifestationDAO;
 import dao.RegisteredUserDAO;
 import dao.TicketDAO;
@@ -63,6 +64,10 @@ public class RegistrationService {
 		if (ctx.getAttribute("ticketDAO") == null) {
 			String contextPath = ctx.getRealPath("");
 			ctx.setAttribute("ticketDAO", new TicketDAO(contextPath));
+		}
+		if (ctx.getAttribute("locationDAO") == null) {
+			String contextPath = ctx.getRealPath("");
+			ctx.setAttribute("locationDAO", new LocationDAO(contextPath));
 		}
 
 	}
@@ -113,8 +118,13 @@ public class RegistrationService {
 			
 			RegisteredUser user = new RegisteredUser(username, password, name, surname, gender, date, userRole,
 					CustomerKind.NEWBIE, tickets, 0, false);
-			dao.addUser(user);
-			return (RegisteredUser) dao.addRegisteredUser(user);
+			if(dao.addUser(user)) {
+				return (RegisteredUser) dao.addRegisteredUser(user);
+			}
+			else {
+				return null;
+			}
+			
 		}
 		
 	}

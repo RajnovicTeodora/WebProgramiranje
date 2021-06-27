@@ -61,5 +61,10 @@ public class Location {
 	public String toString() {
 		return "Location [latitude=" + latitude + ", longitude=" + longitude + ", address=" + address + "]";
 	}
+	
+	public String toCsvString() {
+		String[] elems = {String.valueOf(this.id), String.valueOf(this.latitude), String.valueOf(this.longitude), this.address};
+		return String.join(";", elems)+"\n";	
+	}
 
 }

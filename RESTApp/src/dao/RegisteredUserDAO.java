@@ -77,7 +77,6 @@ public class RegisteredUserDAO {
 	private void loadRegisteredUsers(String contextPath) {
 		BufferedReader bufferedReader = null;
 		try {		
-			System.out.println(contextPath + "Resources\\csvFiles\\users.csv");
 			FileReader reader = new FileReader(contextPath + "Resources\\csvFiles\\users.csv"); 
 			bufferedReader = new BufferedReader(reader);
 			String line;
@@ -135,15 +134,17 @@ public class RegisteredUserDAO {
 		}
 	}
 
-	public void addUser(User user) {
+	public boolean addUser(User user) {
 		FileWriter writer;
 		try {
 			writer = new FileWriter(this.contextPath + "Resources\\csvFiles\\users.csv", true);
 			writer.write(user.toCsvString());
 			writer.close();
+			return true;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return false;
 		} 		
 	}
 	

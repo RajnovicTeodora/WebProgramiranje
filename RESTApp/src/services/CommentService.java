@@ -217,6 +217,7 @@ public class CommentService {
 
 		Comment comment = new Comment(commentDAO.findId(), (RegisteredUser) user, manifestation, commentDTO.getText(),
 				commentDTO.getRating(), CommentStatus.WAITING);
+		commentDAO.writeComment(comment);
 		return new CommentDTO(commentDAO.addComment(comment));
 	}
 }

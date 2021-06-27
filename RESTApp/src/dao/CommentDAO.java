@@ -2,6 +2,8 @@ package dao;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -10,16 +12,19 @@ import beans.Comment;
 import beans.CommentStatus;
 import beans.Manifestation;
 import beans.RegisteredUser;
+import beans.User;
 
 public class CommentDAO {
 
 	private Map<Integer, Comment> comments = new HashMap<>();
+	private String contextPath = "";
 
 	public CommentDAO() {
 
 	}
 
 	public CommentDAO(String contextPath) {
+		this.contextPath = contextPath;
 		loadAll(contextPath);
 	}
 
@@ -57,6 +62,20 @@ public class CommentDAO {
 				return i;
 			}
 		}
+	}
+	
+	public boolean writeComment(Comment comment) {
+		FileWriter writer;
+		try {
+			writer = new FileWriter(this.contextPath + "Resources\\csvFiles\\comments.csv", true);
+			writer.write(comment.toCsvString());
+			writer.close();
+			return true;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		} 		
 	}
 	
 	private void loadAll(String contextPath) {

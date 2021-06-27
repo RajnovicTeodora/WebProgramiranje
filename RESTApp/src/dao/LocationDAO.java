@@ -2,16 +2,21 @@ package dao;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeSet;
 
+import beans.Comment;
 import beans.Location;
 
 public class LocationDAO {
 	
 	private Map<Integer, Location> locations = new HashMap<Integer, Location>();
+	private String contextPath = "";
 
 	public LocationDAO() {
 		super();
@@ -19,6 +24,7 @@ public class LocationDAO {
 
 	public LocationDAO(String contextPath) {
 		super();
+		this.contextPath = contextPath;
 		loadLocations(contextPath);
 	}
 	
@@ -46,6 +52,26 @@ public class LocationDAO {
 			locationList.add(location);
 		}
 		return locationList;
+	}
+	
+	public int findNextId() {
+		if(locations.size()==0) return 1;
+		int lastId = (Integer)new TreeSet<Integer>(locations.keySet()).last();
+		return lastId+1;
+	}
+	
+	public boolean writeLocation(Location location) {
+		FileWriter writer;
+		try {
+			writer = new FileWriter(this.contextPath + "Resources\\csvFiles\\locations.csv", true);
+			writer.write(location.toCsvString());
+			writer.close();
+			return true;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		} 		
 	}
 	
 	private void loadLocations(String contextPath) {

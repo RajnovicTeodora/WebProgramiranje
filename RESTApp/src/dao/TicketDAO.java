@@ -2,6 +2,8 @@ package dao;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -75,6 +77,20 @@ public class TicketDAO {
 				return Integer.toString(i);
 			}
 		}
+	}
+	
+	public boolean writeTicket(Ticket ticket) {
+		FileWriter writer;
+		try {
+			writer = new FileWriter(this.contextPath + "Resources\\csvFiles\\tickets.csv", true);
+			writer.write(ticket.toCsvString());
+			writer.close();
+			return true;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		} 		
 	}
 	
 	public List<Ticket> getUserTickets(String username){

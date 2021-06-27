@@ -174,6 +174,11 @@ public class Manifestation {
 		this.vendorUsername = vendorUsername;
 	}
 	
-	
+	public String toCsvString() {
+		//id;name;type;numSeats;date;price;status;location;poster;leftSeats;vendor username
+		String[] elems = {String.valueOf(this.id), this.name, String.valueOf(this.type.ordinal()),String.valueOf(this.numSeats), this.date.toString(), 
+				String.valueOf(this.regularPrice), String.valueOf(this.status.ordinal()), String.valueOf(this.location.getId()), this.poster, String.valueOf(this.leftSeats), this.vendorUsername};
+		return String.join(";", elems)+"\n";	
+	}
 
 }
