@@ -1,24 +1,15 @@
 package dao;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
-
 import beans.Administrator;
 import beans.CustomerKind;
 import beans.Gender;
-import beans.Manifestation;
-import beans.RegisteredUser;
-import beans.Ticket;
 import beans.UserRole;
-import beans.Vendor;
 
 public class AdministratorDAO {
 

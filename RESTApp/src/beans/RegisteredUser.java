@@ -21,7 +21,14 @@ public class RegisteredUser extends User {
 		this.points = points;
 		this.tickets = tickets;
 	}
-
+	
+	@Override
+	public String toCsvString() {
+		String[] elems = {this.getUsername(),this.getPassword(),this.getFirstName(),this.getLastName(),String.valueOf(this.getGender().ordinal()),this.getBirthday().toString(),
+				String.valueOf(this.getRole().ordinal()), String.valueOf(this.getCustomerType().ordinal()), String.valueOf(points)};
+		return String.join(";",elems)+"\n";
+	}
+	
 	public List<Ticket> getTickets() {
 		return tickets;
 	}

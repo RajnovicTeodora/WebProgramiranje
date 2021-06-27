@@ -2,6 +2,8 @@ package dao;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,7 +13,6 @@ import java.util.Map;
 import beans.Administrator;
 import beans.CustomerKind;
 import beans.Gender;
-import beans.Manifestation;
 import beans.RegisteredUser;
 import beans.Ticket;
 import beans.User;
@@ -20,12 +21,15 @@ import beans.Vendor;
 
 public class RegisteredUserDAO {
 	private Map<String, User> registeredUsers = new HashMap<>();
+	
+	String contextPath = "";
 
 	public RegisteredUserDAO() {
 		
 	}
 
 	public RegisteredUserDAO(String contextPath) {
+		this.contextPath = contextPath;
 		loadRegisteredUsers(contextPath);
 	}
 
@@ -48,11 +52,12 @@ public class RegisteredUserDAO {
 	}
 	
 	public User updateUser(User user) {
-		
+		//editUser(user);
 		return registeredUsers.replace(user.getUsername(), user);
 	}
 
 	public User addRegisteredUser(User registeredUser) {
+		//addUser(registeredUser);
 		registeredUsers.put(registeredUser.getUsername(), registeredUser);
 		return registeredUser;
 	}
@@ -72,6 +77,7 @@ public class RegisteredUserDAO {
 	private void loadRegisteredUsers(String contextPath) {
 		BufferedReader bufferedReader = null;
 		try {		
+			System.out.println(contextPath + "Resources\\csvFiles\\users.csv");
 			FileReader reader = new FileReader(contextPath + "Resources\\csvFiles\\users.csv"); 
 			bufferedReader = new BufferedReader(reader);
 			String line;
@@ -127,5 +133,21 @@ public class RegisteredUserDAO {
 				}
 			}
 		}
+	}
+
+	public void addUser(User user) {
+		FileWriter writer;
+		try {
+			writer = new FileWriter(this.contextPath + "Resources\\csvFiles\\users.csv", true);
+			writer.write(user.toCsvString());
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 		
+	}
+	
+	private void editUser(User user) {
+		//TODO: file write
 	}
 }

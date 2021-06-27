@@ -15,11 +15,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
-import beans.Administrator;
-import beans.Comment;
 import beans.CustomerKind;
 import beans.Gender;
-import beans.Manifestation;
 import beans.RegisteredUser;
 import beans.Ticket;
 import beans.User;
@@ -66,37 +63,6 @@ public class RegistrationService {
 		if (ctx.getAttribute("ticketDAO") == null) {
 			String contextPath = ctx.getRealPath("");
 			ctx.setAttribute("ticketDAO", new TicketDAO(contextPath));
-//
-//			RegisteredUserDAO dao = (RegisteredUserDAO) ctx.getAttribute("registeredUserDAO");
-//			TicketDAO daoT = (TicketDAO) ctx.getAttribute("ticketDAO");
-//			// TEST
-//
-//			ManifestationDAO daoM = (ManifestationDAO) ctx.getAttribute("manifestationDAO");
-
-//			Administrator a = (Administrator) dao.findByUsername("admin");
-//			RegisteredUser u = (RegisteredUser) dao.findByUsername("cao");
-//			Vendor v = (Vendor) dao.findByUsername("vendor");
-//			List<Ticket> tickets = u.getTickets();
-//			List<Manifestation> manifs = v.getManifestations();
-//
-//			manifs.add(daoM.findById(1));
-//			manifs.add(daoM.findById(2));
-//			manifs.add(daoM.findById(3));
-//
-//			v.setManifestations(manifs);
-			//tickets.add(daoT.findById("1"));
-			// tickets.add(daoT.findById("2"));
-			//u.setTickets(tickets);
-
-//			CommentDAO commentDAO = (CommentDAO) ctx.getAttribute("commentDAO");
-//
-//			for (Comment comment : commentDAO.findAllList()) {
-//				comment.setUser(u);
-//				comment.setManifestation(daoM.findById(2));
-//			}
-
-			// --------------
-			// ctx.setAttribute("registeredUser", u);
 		}
 
 	}
@@ -106,7 +72,7 @@ public class RegistrationService {
 	@Path("/add")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public RegisteredUser addRegisteredUser(RegistrationDTO registrationDTO) {
+	public User addRegisteredUser(RegistrationDTO registrationDTO) {
 
 		RegisteredUserDAO dao = (RegisteredUserDAO) ctx.getAttribute("registeredUserDAO");
 		if (dao.findByUsername(registrationDTO.getUsername()) != null)
@@ -122,11 +88,8 @@ public class RegistrationService {
 			throw new InvalidInputException("Input is invalid");
 
 		try {
-
 			date = LocalDate.parse(registrationDTO.getBirthday());
-
 		} catch (DateTimeParseException e) {
-
 			throw e;
 		}
 
@@ -139,14 +102,21 @@ public class RegistrationService {
 		User maybeAdmin = (User) ctx.getAttribute("registeredUser");
 		UserRole userRole = UserRole.USER;
 
-		if (maybeAdmin != null && maybeAdmin.getRole() == UserRole.ADMINISTRATOR)
+		if (maybeAdmin != null && maybeAdmin.getRole() == UserRole.ADMINISTRATOR) {
 			userRole = UserRole.VENDOR;
-
-		RegisteredUser user = new RegisteredUser(username, password, name, surname, gender, date, userRole,
-				CustomerKind.NEWBIE, tickets, 0, false);
-
-		return (RegisteredUser) dao.addRegisteredUser(user);
-
+			Vendor user = new Vendor(username, password, name, surname, gender, date, userRole,
+					CustomerKind.NEWBIE);
+			dao.addUser(user);
+			return (Vendor) dao.addRegisteredUser(user);
+		}
+		else {
+			
+			RegisteredUser user = new RegisteredUser(username, password, name, surname, gender, date, userRole,
+					CustomerKind.NEWBIE, tickets, 0, false);
+			dao.addUser(user);
+			return (RegisteredUser) dao.addRegisteredUser(user);
+		}
+		
 	}
 
 	// Returns the currently registered user

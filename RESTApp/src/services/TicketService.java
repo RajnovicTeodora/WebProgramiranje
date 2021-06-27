@@ -18,7 +18,6 @@ import beans.User;
 import beans.UserRole;
 import beans.Vendor;
 import dao.ManifestationDAO;
-import dao.RegisteredUserDAO;
 import dao.TicketDAO;
 import dto.ReservationDTO;
 import dto.TicketDTO;
@@ -29,7 +28,6 @@ import exception.UnauthorizedUserException;
 import exception.UserNotFoundException;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
