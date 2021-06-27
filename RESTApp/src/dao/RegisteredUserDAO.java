@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import beans.Administrator;
+import beans.Comment;
 import beans.CustomerKind;
 import beans.Gender;
 import beans.RegisteredUser;
@@ -148,7 +149,20 @@ public class RegisteredUserDAO {
 		} 		
 	}
 	
-	private void editUser(User user) {
-		//TODO: file write
+	public boolean writeAllUsers() {
+		FileWriter writer;
+		try {
+			writer = new FileWriter(this.contextPath + "Resources\\csvFiles\\users.csv", false);
+			
+			for(User u : findAllList()) {
+				writer.write(u.toCsvString());
+			}
+			writer.close();
+			return true;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		} 
 	}
 }

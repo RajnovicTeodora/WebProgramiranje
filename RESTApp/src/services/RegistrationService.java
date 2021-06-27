@@ -172,6 +172,8 @@ public class RegistrationService {
 
 		ctx.setAttribute("registeredUser", foundUser);
 
+		dao.addRegisteredUser(foundUser);
+		dao.writeAllUsers();
 		return new UserProfileDTO(foundUser);
 
 	}
