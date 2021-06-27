@@ -154,7 +154,8 @@ public class CommentService {
 			throw new CommentNotFoundException("Comment with the id " + id + " not found");
 
 		comment.setStatus(CommentStatus.REJECTED);
-
+		commentDAO.addComment(comment);
+		commentDAO.writeAllComments();
 		return new CommentDTO(comment);
 	}
 
@@ -187,6 +188,8 @@ public class CommentService {
 			throw new CommentNotFoundException("Comment with the id " + id + " not found");
 
 		comment.setStatus(CommentStatus.APPROVED);
+		commentDAO.addComment(comment);
+		commentDAO.writeAllComments();
 		return new CommentDTO(comment);
 	}
 

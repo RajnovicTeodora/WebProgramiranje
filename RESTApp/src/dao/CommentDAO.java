@@ -78,6 +78,23 @@ public class CommentDAO {
 		} 		
 	}
 	
+	public boolean writeAllComments() {
+		FileWriter writer;
+		try {
+			writer = new FileWriter(this.contextPath + "Resources\\csvFiles\\comments.csv", false);
+			
+			for(Comment c : findAllList()) {
+				writer.write(c.toCsvString());
+			}
+			writer.close();
+			return true;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		} 
+	}
+	
 	private void loadAll(String contextPath) {
 		BufferedReader bufferedReader = null;
 		try {
