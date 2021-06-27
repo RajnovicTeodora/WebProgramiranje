@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import beans.Comment;
 import beans.Location;
 import beans.Manifestation;
 import beans.ManifestationStatus;
@@ -91,6 +92,23 @@ public class TicketDAO {
 			e.printStackTrace();
 			return false;
 		} 		
+	}
+	
+	public boolean writeAllTickets() {
+		FileWriter writer;
+		try {
+			writer = new FileWriter(this.contextPath + "Resources\\csvFiles\\tickets.csv", false);
+			
+			for(Ticket t : findAllList()) {
+				writer.write(t.toCsvString());
+			}
+			writer.close();
+			return true;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		} 
 	}
 	
 	public List<Ticket> getUserTickets(String username){

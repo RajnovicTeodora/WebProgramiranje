@@ -74,6 +74,8 @@ public class TicketService {
 		ticket.getManifestation().setNumSeats(ticket.getManifestation().getLeftSeats() + 1);
 
 		user.setPoints((int) (user.getPoints() - ticket.getPrice() / 1000 * 133 * 4));
+		dao.addTicket(ticket);
+		dao.writeAllTickets();
 		return ticket;
 		// TODO really cancel manifestation and save
 	}
@@ -100,6 +102,7 @@ public class TicketService {
 					dto.setType(dto.getType().substring(0, 1) + dto.getType().toLowerCase().substring(1));
 		
 					tickets.add(dto);
+					dao.writeAllTickets();
 				}
 
 			}
@@ -113,6 +116,7 @@ public class TicketService {
 					dto.setType(dto.getType().substring(0, 1) + dto.getType().toLowerCase().substring(1));
 	
 					tickets.add(dto);
+					dao.writeAllTickets();
 				}
 
 			}
@@ -124,9 +128,10 @@ public class TicketService {
 				dto.setType(dto.getType().substring(0, 1) + dto.getType().toLowerCase().substring(1));
 				
 				tickets.add(dto);
+				dao.writeAllTickets();
 			}
 		}
-
+		
 		return tickets;
 	}
 
@@ -180,7 +185,7 @@ public class TicketService {
 			ticketDao.addTicket(ticket);
 			numTickets--;
 		}
-
+		ticketDao.writeAllTickets();
 		user.setTickets(tickets);
 
 		return tickets;
