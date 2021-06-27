@@ -173,7 +173,8 @@ public class ManifestationService {
 		manifestation.setLocation(location);
 		manifestation.setName(editDTO.getName());
 		manifestation.setType(type);
-
+		dao.addManifestation(manifestation);
+		dao.writeAllManifetations();
 		return manifestation;
 	}
 
@@ -210,6 +211,8 @@ public class ManifestationService {
 			throw new InvalidInputException("Unable to set status to active. Status is already active or date passed");
 
 		manifestation.setStatus(ManifestationStatus.ACTIVE);
+		manifestationDAO.addManifestation(manifestation);
+		manifestationDAO.writeAllManifetations();
 		return manifestation;
 	}
 

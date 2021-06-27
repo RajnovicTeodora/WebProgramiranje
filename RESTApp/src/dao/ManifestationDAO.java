@@ -90,6 +90,23 @@ public class ManifestationDAO {
 		return false;
 	}
 	
+	public boolean writeAllManifetations() {
+		FileWriter writer;
+		try {
+			writer = new FileWriter(this.contextPath + "Resources\\csvFiles\\manifestations.csv", false);
+			
+			for(Manifestation m : findAllList()) {
+				writer.write(m.toCsvString());
+			}
+			writer.close();
+			return true;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		} 
+	}
+	
 	public int getNextId() {
 		if(manifestations.size()==0) return 1;
 		int lastId = (Integer)new TreeSet<Integer>(manifestations.keySet()).last();
