@@ -112,7 +112,7 @@ $("#manifestation_form").submit(function(event) {
 			location: newStreet + " " + newNumber + ", " + newCity + ", " + newCountry,
 			lat: lat,
 			lon: lon,
-			poster: "ugh" // :')
+			poster: "ugh"
 		}),
 		contentType: 'application/json',
 		success: function(result) {
