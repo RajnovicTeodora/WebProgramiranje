@@ -93,7 +93,6 @@ $("#filter_manifestations_form").submit(function(event) {
 		contentType: 'application/json',
  		success: function(response) {
 			$('#manifestaions').empty();
-			$('vendor_manifestations').empty();
  			console.log(response);
 			for (let manifestation of response) {
 				addManifestationCard(manifestation);
