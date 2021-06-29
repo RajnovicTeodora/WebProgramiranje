@@ -70,7 +70,7 @@
 						type="number" placeholder="Price From" min="0" name="priceFrom" />
 				</div>
 				<div class="input-field col s1">
-					<label for="priceTo">Price From</label> <input id="priceTo"
+					<label for="priceTo">Price To</label> <input id="priceTo"
 						type="number" placeholder="Price To" min="0" name="priceTo" />
 				</div>
 				<div class="col s2">
@@ -91,7 +91,7 @@
 			</form>
 		</div>
 		<div class="row">
-			<table class="highlight centered" id="vendor_manifestations">
+			<table class="highlight centered sortable" id="vendor_manifestations">
 				<thead style="background-color: #ED6D71;">
 					<tr style="color: white;">
 						<th>Name</th>
@@ -102,14 +102,14 @@
 						<th>Seats</th>
 						<th>Remaining tickets</th>
 						<th>Location</th>
-						<th>Edit</th>
+						<th class="sorttable_nosort">Edit</th>
 
 					</tr>
 				</thead>
 				<tbody class="white">
 				</tbody>
 			</table>
-			<table class="highlight centered" id="admin_manifestations">
+			<table class="highlight centered sortable" id="admin_manifestations">
 				<thead style="background-color: #ED6D71;">
 					<tr style="color: white;">
 						<th>Name</th>
@@ -118,7 +118,7 @@
 						<th>Price</th>
 						<th>Seats</th>
 						<th>Location</th>
-						<th>Approve</th>
+						<th  class="sorttable_nosort">Approve</th>
 					</tr>
 				</thead>
 				<tbody class="white">
@@ -128,6 +128,8 @@
 	</div>
 	<script type="text/javascript" src="js/materialize.min.js"></script>
 	<script src="jquery-3.3.1.min.js"></script>
+	<script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
+	<script type="text/javascript" src="js/manifestations.js"></script>
 	<script type="text/javascript" src="js/manifestationTable.js"></script>
 	<script type="text/javascript" src="js/login.js"></script>
 </body>

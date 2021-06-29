@@ -158,7 +158,7 @@ public class TicketDAO {
 				String id = st[0].trim();
 				Manifestation manifestation = ToiToiDAO.getManifestation(contextPath, Integer.parseInt(st[1]));
 				LocalDateTime date = LocalDateTime.parse(st[2]);
-				int price = Integer.parseInt(st[3]);
+				Double price = Double.parseDouble(st[3]);
 				String buyerName = st[4];
 				String byerUsername = st[5];
 				TicketStatus status = TicketStatus.values()[Integer.parseInt(st[6])];
