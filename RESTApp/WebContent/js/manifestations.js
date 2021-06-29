@@ -81,7 +81,7 @@ $("#filter_manifestations_form").submit(function(event) {
 	if(manifestationName==="") manifestationName="null";
 	if(location==="") location="null";
 	if(dateFrom==="") dateFrom="null";
-	if(dateTo==="") manifestatiodateTonName="null";
+	if(dateTo==="") dateTo="null";
 	if(priceFrom==="") priceFrom="null";
 	if(priceTo==="") priceTo="null";
 	
