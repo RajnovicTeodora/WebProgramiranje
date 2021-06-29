@@ -1,8 +1,6 @@
 package services;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -217,62 +215,23 @@ public class ManifestationService {
 		manifestationDAO.writeAllManifetations();
 		return manifestation;
 	}
-	
-	
-	@GET
-	@Path("/searchManifestations/{Name}/{Location}/{DateFrom}/{DateTo}/{PriceFrom}/{PriceTo}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public List<Manifestation> searchManifestations(@PathParam("Name") String Name, @PathParam("Location") String Location, @PathParam("DateFrom") String DateFrom,
-			@PathParam("DateTo") String DateTo, @PathParam("PriceFrom") String PriceFrom, @PathParam("PriceTo") String PriceTo){  
-		
-//		System.out.println("Searching manifestations...");
-//		System.out.println("Name: "+Name);
-//		System.out.println("Location: "+Location);
-//		System.out.println("Date from: "+DateFrom);
-//		System.out.println("Date to: "+DateTo);
-//		System.out.println("Price from: "+PriceFrom);
-//		System.out.println("Price to: "+PriceTo);
-		
-		String name;
-		String location;
-		if (Name.equals("null")) name="";
-		else name = Name;
-		
-		if (Location.equals("null")) location="";
-		else location = Location;
-		LocalDate dateFrom = null;
-		try {
-			dateFrom = LocalDate.parse(DateFrom);
-		}catch (Exception e) {}
-		LocalDate dateTo = null;
-		try {
-			dateTo = LocalDate.parse(DateTo);
-		}catch (Exception e) {}
-		
-		double priceFrom = -1;
-		double priceTo = 1000000;
-		try {
-			priceFrom = Double.valueOf(PriceFrom);
-			priceTo = Double.valueOf(PriceTo);
-		}catch (Exception e) {}
-		
-		
-		
-		ManifestationDAO dao = (ManifestationDAO) ctx.getAttribute("manifestationDAO");
-		
-		List<Manifestation> allManifestations = dao.findAllList();
-		List<Manifestation> filteredManifestations = new ArrayList<Manifestation>();
-		for(Manifestation m : allManifestations) {
-			if(!m.getName().toLowerCase().contains(name.toLowerCase())) continue;   // provera ime
-			if(!m.getLocation().getAddress().toLowerCase().contains(location.toLowerCase())) continue; //provera lokacija
-			if(dateFrom != null && m.getDate().isBefore(LocalDateTime.of(dateFrom, LocalTime.now()))) continue;
-			if(dateTo != null && m.getDate().isAfter(LocalDateTime.of(dateTo, LocalTime.now()))) continue;
-			if(priceFrom > m.getRegularPrice()) continue;
-			if(priceTo < m.getRegularPrice()) continue;
-			
-			filteredManifestations.add(m);
-		}
-		return filteredManifestations;
-	}
+
+	/*
+	 * @GET
+	 * 
+	 * @Path("/{name}/{location}/{dateFrom}/{dateTo}/{priceFrom}/{priceTo}")
+	 * 
+	 * @Produces(MediaType.APPLICATION_JSON) public ArrayList<Manifestation>
+	 * findBySearchCriteria(@PathParam("name") String name,
+	 * 
+	 * @PathParam("location") String location, @PathParam("dateFrom") String
+	 * dateFrom, @PathParam("dateTo") String dateTo,
+	 * 
+	 * @PathParam("priceFrom") String priceFrom, @PathParam("priceTo") String
+	 * priceTo) { System.out.println("cao"); ManifestationDAO dao =
+	 * (ManifestationDAO) ctx.getAttribute("manifestationDAO");
+	 * ArrayList<Manifestation> manifestations = new ArrayList<Manifestation>();
+	 * System.out.println("cao"); System.out.println(name + " - " + location + " - "
+	 * + priceFrom + " - " + priceTo); return manifestations; }
+	 */
 }

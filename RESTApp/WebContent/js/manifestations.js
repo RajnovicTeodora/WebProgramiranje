@@ -51,12 +51,13 @@ $(document).ready(function() {
 
 
 
+// TODO 
 $("#filter_manifestations_form").submit(function(event) {
 
 	// Stop form from submitting normally
 	event.preventDefault();
-	console.log("Filtering manifestationss...");
-	
+	console.log("Filtering manifestations...");
+
 	let manifestationName = $('input[name="manifestationName"]').val();
 	let location = $('input[name="location"]').val();
 	let dateFrom = $('input[name="dateFrom"]').val();
@@ -64,19 +65,16 @@ $("#filter_manifestations_form").submit(function(event) {
 	let priceFrom = $('input[name="priceFrom"]').val();
 	let priceTo = $('input[name="priceTo"]').val();
 
-	if(dateFrom !== "" && dateTo!==""){
-		if (dateFrom > dateTo) {
-			M.toast({ html: 'Date from must be before date to!' })
-			return;
-		}
+	if (dateFrom > dateTo) {
+		M.toast({ html: 'Date from must be greater than date to!' })
+		return;
 	}
-	
-	if (priceFrom !== "" && priceTo!== ""){
-		if (priceFrom > priceTo) {
-			M.toast({ html: 'Price from must be leser than price to.', classes: 'rounded', panning: 'center' });
-			return;
-		}
+
+	if (priceFrom > priceTo) {
+		M.toast({ html: 'Price from must be greater than price to.', classes: 'rounded', panning: 'center' });
+		return;
 	}
+<<<<<<< HEAD
 	
 	if(manifestationName==="") manifestationName="null";
 	if(location==="") location="null";
@@ -98,11 +96,9 @@ $("#filter_manifestations_form").submit(function(event) {
 				addManifestationCard(manifestation);
 			}
  			M.toast({ html: 'Successfully sent data.', classes: 'rounded', panning: 'center' });
+=======
+>>>>>>> parent of 62e96c2 (finished manifestations search)
 
- 		},
- 		error: function() {
- 			M.toast({ html: 'Failed to send data', classes: 'rounded', panning: 'center' });
- 		}
- 	});
+	//TODO send get request
 
 });
