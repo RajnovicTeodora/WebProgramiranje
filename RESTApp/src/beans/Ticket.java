@@ -99,7 +99,7 @@ public class Ticket {
 	}
 	
 	public String toCsvString() {
-		String[] elems = {String.valueOf(this.id), this.date.toString(), String.valueOf(this.price), this.buyer, this.buyerUsername, String.valueOf(this.status.ordinal()), String.valueOf(this.type.ordinal())};
+		String[] elems = {String.valueOf(this.id), String.valueOf(this.getManifestation().getId()), this.date.toString(), String.valueOf(this.price), this.buyer, this.buyerUsername, String.valueOf(this.status.ordinal()), String.valueOf(this.type.ordinal())};
 		return String.join(";", elems)+"\n";	
 	}
 	
