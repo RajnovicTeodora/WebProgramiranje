@@ -21,19 +21,24 @@ var map = new ol.Map({
 });
 
 
-function readURL(input) {
-	if (input.files && input.files[0]) {
-		var reader = new FileReader();
+function readURL() {
 
-		reader.onload = function(e) {
-			$('#blah')
-				.attr('src', e.target.result)
+	var filesSelected = document.getElementById("file").files;
+	if (filesSelected.length > 0) {
+		var fileToLoad = filesSelected[0];
+
+		var fileReader = new FileReader();
+
+		fileReader.onload = function(fileLoadedEvent) {
+			var srcData = fileLoadedEvent.target.result; // <--- data: base64
+
+			$('#myImg')
+				.attr('src', srcData)
 				.width(150)
 				.height(200);
-		};
 
-		reader.readAsDataURL(input.files[0]);
-
+		}
+		fileReader.readAsDataURL(fileToLoad);
 	}
 }
 
