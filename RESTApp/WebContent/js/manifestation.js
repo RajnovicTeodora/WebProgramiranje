@@ -213,25 +213,59 @@ function showManifestation(manifestation, user) {
 
 	tickets.max = manifestation.leftSeats
 
-	let basicInfo = $(
-		'<div class="card horizontal">' +
-		'<div class="card-image">' +
-		'<img src="data:image/png;base64, ' + manifestation.poster + '" alt="Poster"/>' +
-		'</div>' +
-		'<div class="card-content">' +
-		'<span class="card-title">' + manifestation.name + ' - ' + manifestation.type + '</span>' +
-		'<p> Date: ' + new Date(manifestation.date).toUTCString() + '</p>' +
-		'<p>Price: ' + manifestation.regularPrice + '</p>' +
-		'<p>Status: ' + manifestation.status + '</p> ' +
-		'<p> Number of seats: ' + manifestation.numSeats + '</p>' +
-		'<p> Available tickets: ' + manifestation.leftSeats + ' </p> ' +
-		'<p style="padding-bottom:20px;"> Address: ' + manifestation.location.address + ' </p>' +
-		'</div>' +
-		'</div>');
 
-	regular = manifestation.regularPrice
-	document.getElementById('total').value = regular
-	$('#manifestaion').append(basicInfo);
+	if (new Date(manifestation.date) <= new Date() && manifestation.status == "ACTIVE") {
+		$.get({
+			url: 'rest/manifestations/rating/' + manifestation.id,
+			success: function(rating) {
+				if (rating != -1) {
+
+					let basicInfo = $(
+						'<div class="card horizontal">' +
+						'<div class="card-image">' +
+						'<img src="data:image/png;base64, ' + manifestation.poster + '" alt="Poster"/>' +
+						'</div>' +
+						'<div class="card-content">' +
+						'<span class="card-title">' + manifestation.name + ' - ' + manifestation.type + '</span>' +
+						'<p> Date: ' + new Date(manifestation.date).toUTCString() + '</p>' +
+						'<p>Price: ' + manifestation.regularPrice + '</p>' +
+						'<p>Status: ' + manifestation.status + '</p> ' +
+						'<p> Number of seats: ' + manifestation.numSeats + '</p>' +
+						'<p> Available tickets: ' + manifestation.leftSeats + ' </p> ' +
+						'<p> Address: ' + manifestation.location.address + ' </p>' +
+						'<p style="padding-bottom:20px;">Rating:' + rating + ' </p>' +
+						'</div>' +
+						'</div>');
+
+					regular = manifestation.regularPrice
+					document.getElementById('total').value = regular
+					$('#manifestaion').append(basicInfo);
+				}
+
+			}
+		});
+	} else {
+		let basicInfo = $(
+			'<div class="card horizontal">' +
+			'<div class="card-image">' +
+			'<img src="data:image/png;base64, ' + manifestation.poster + '" alt="Poster"/>' +
+			'</div>' +
+			'<div class="card-content">' +
+			'<span class="card-title">' + manifestation.name + ' - ' + manifestation.type + '</span>' +
+			'<p> Date: ' + new Date(manifestation.date).toUTCString() + '</p>' +
+			'<p>Price: ' + manifestation.regularPrice + '</p>' +
+			'<p>Status: ' + manifestation.status + '</p> ' +
+			'<p> Number of seats: ' + manifestation.numSeats + '</p>' +
+			'<p> Available tickets: ' + manifestation.leftSeats + ' </p> ' +
+			'<p style="padding-bottom:20px;"> Address: ' + manifestation.location.address + ' </p>' +
+			'</div>' +
+			'</div>');
+
+		regular = manifestation.regularPrice
+		document.getElementById('total').value = regular
+		$('#manifestaion').append(basicInfo);
+	}
+
 
 	var lat = parseFloat(manifestation.location.latitude) * 1
 	var lon = parseFloat(manifestation.location.longitude) * 1

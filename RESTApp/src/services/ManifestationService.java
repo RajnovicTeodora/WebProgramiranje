@@ -17,6 +17,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import beans.Comment;
 import beans.Location;
 import beans.Manifestation;
 import beans.ManifestationStatus;
@@ -24,6 +25,7 @@ import beans.ManifestationType;
 import beans.User;
 import beans.UserRole;
 import beans.Vendor;
+import dao.CommentDAO;
 import dao.LocationDAO;
 import dao.ManifestationDAO;
 import dto.EditManifestationDTO;
@@ -318,5 +320,41 @@ public class ManifestationService {
 			filteredManifestations.add(m);
 		}
 		return filteredManifestations;
+	}
+
+	@GET
+	@Path("/rating/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public double getManifestationRating(@PathParam("id") String id) {
+		ManifestationDAO dao = (ManifestationDAO) ctx.getAttribute("manifestationDAO");
+		int intId = -1;
+		try {
+
+			intId = Integer.parseInt(id);
+
+		} catch (NumberFormatException e) {
+			System.out.println(id + " is not a valid integer number");
+			return -1;
+		}
+
+		Manifestation manifestation = dao.findById(intId);
+		if (manifestation == null)
+			throw new ManifestationNotFoundException("Manifestation with the id " + id + " not found");
+
+		CommentDAO commentDAO = (CommentDAO) ctx.getAttribute("commentDAO");
+
+		double score = 0;
+		int i = 0;
+
+		for (Comment comment : commentDAO.findAllList()) {
+			if (comment.getManifestation().getId() == manifestation.getId()) {
+				i++;
+				score += comment.getRating();
+			}
+		}
+		if (i == 0)
+			return 0;
+		else
+			return score / i;
 	}
 }
