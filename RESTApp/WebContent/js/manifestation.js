@@ -216,7 +216,7 @@ function showManifestation(manifestation, user) {
 	let basicInfo = $(
 		'<div class="card horizontal">' +
 		'<div class="card-image">' +
-		'<img src="Resources/posters/ticket.jpg"">' +
+		'<img src="data:image/png;base64, ' + manifestation.poster + '" alt="Poster"/>' +
 		'</div>' +
 		'<div class="card-content">' +
 		'<span class="card-title">' + manifestation.name + ' - ' + manifestation.type + '</span>' +
