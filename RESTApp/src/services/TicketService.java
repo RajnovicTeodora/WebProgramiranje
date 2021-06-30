@@ -27,7 +27,9 @@ import exception.TicketNotFoundEception;
 import exception.UnauthorizedUserException;
 import exception.UserNotFoundException;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -192,4 +194,69 @@ public class TicketService {
 
 	}
 
+	@GET
+	@Path("/searchTickets/{Name}/{DateFrom}/{DateTo}/{PriceFrom}/{PriceTo}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<TicketDTO> searchTickets(@PathParam("Name") String Name, @PathParam("DateFrom") String DateFrom,
+			@PathParam("DateTo") String DateTo, @PathParam("PriceFrom") String PriceFrom, @PathParam("PriceTo") String PriceTo){  
+		
+		
+		RegisteredUser user = (RegisteredUser) ctx.getAttribute("registeredUser");
+		if (user == null)
+			throw new UserNotFoundException("No user registered");
+
+		if (user.getRole() != UserRole.USER)
+			throw new UnauthorizedUserException("Registered user must be of type user");
+
+		TicketDAO ticketsDao = (TicketDAO) ctx.getAttribute("ticketDAO");
+		
+//		System.out.println("Searching tickets...");
+//		System.out.println("Name: "+Name);
+//		System.out.println("Date from: "+DateFrom);
+//		System.out.println("Date to: "+DateTo);
+//		System.out.println("Price from: "+PriceFrom);
+//		System.out.println("Price to: "+PriceTo);
+		
+		String name;
+		if (Name.equals("null")) name="";
+		else name = Name;
+		
+		LocalDate dateFrom = null;
+		try {
+			dateFrom = LocalDate.parse(DateFrom);
+		}catch (Exception e) {}
+		LocalDate dateTo = null;
+		try {
+			dateTo = LocalDate.parse(DateTo);
+		}catch (Exception e) {}
+		
+		double priceFrom = -1;
+		double priceTo = 1000000;
+		try {
+			priceFrom = Double.valueOf(PriceFrom);
+			priceTo = Double.valueOf(PriceTo);
+		}catch (Exception e) {}
+		
+		
+		
+		ManifestationDAO dao = (ManifestationDAO) ctx.getAttribute("manifestationDAO");
+		
+		List<Ticket> allTickets = ticketsDao.getUserTickets(user.getUsername());
+		List<TicketDTO> filteredTickets = new ArrayList<TicketDTO>();
+		for(Ticket t : allTickets) {
+			if(!t.getManifestation().getName().toLowerCase().contains(name.toLowerCase())) continue;  
+			if(dateFrom != null && t.getManifestation().getDate().isBefore(LocalDateTime.of(dateFrom, LocalTime.now()))) continue;
+			if(dateTo != null && t.getManifestation().getDate().isAfter(LocalDateTime.of(dateTo, LocalTime.now()))) continue;
+			if(priceFrom > t.getManifestation().getRegularPrice()) continue;
+			if(priceTo < t.getManifestation().getRegularPrice()) continue;
+			
+			TicketDTO dto = new TicketDTO(t);
+			dto.setStatus(dto.getStatus().substring(0, 1) + dto.getStatus().toLowerCase().substring(1));
+			dto.setType(dto.getType().substring(0, 1) + dto.getType().toLowerCase().substring(1));
+			filteredTickets.add(dto);
+		}
+		return filteredTickets;
+	}
+	
 }

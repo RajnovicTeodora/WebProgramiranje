@@ -40,9 +40,43 @@
 		</ul>
 	</div>
 	</nav>
-
+	<div class="row">
+		<form class="col s12" id="filter_tickets_form">
+			<div class="row card">
+				<div class="input-field col s2">
+					<input placeholder="Manifestation Name" id="manifestationName"
+						name="manifestationName" type="text" /> <label
+						for="manifestationName">Manifestation Name</label>
+				</div>
+				<div class="input-field col s2">
+					<label for="dateFrom">Date From</label> <input type="date"
+						class="datepicker" name="dateFrom" min="1899-01-01"
+						placeholder="Date From" />
+				</div>
+				<div class="input-field col s2">
+					<label for="dateTo">Date To</label> <input type="date"
+						class="datepicker" name="dateTo" min="1899-01-01"
+						placeholder="Date To" />
+				</div>
+				<div class="input-field col s1">
+					<label for="priceFrom">Price From</label> <input id="priceFrom"
+						type="number" placeholder="Price From" min="0" name="priceFrom" />
+				</div>
+				<div class="input-field col s1">
+					<label for="priceTo">Price To</label> <input id="priceTo"
+						type="number" placeholder="Price To" min="0" name="priceTo" />
+				</div>
+				<div class="col s2">
+					<button class="btn waves-effect waves-purple right" type="submit"
+						name="action" action>
+						Submit <i class="material-icons right">search</i>
+					</button>
+				</div>
+			</div>
+		</form>
+	</div>
 	<div class="row card">
-		<table class="highlight centered" id="tickets">
+		<table class="highlight centered sortable" id="tickets">
 			<thead style="background-color: #ED6D71;">
 				<tr style="color: white;">
 					<th>Manifestation</th>
@@ -50,7 +84,7 @@
 					<th>Price</th>
 					<th>Status</th>
 					<th>Type</th>
-					<th id="cancel_th"></th>
+					<th class="sorttable_nosort" id="cancel_th"></th>
 				</tr>
 			</thead>
 			<tbody class="white">
@@ -60,6 +94,7 @@
 
 	<script type="text/javascript" src="js/materialize.min.js"></script>
 	<script src="jquery-3.3.1.min.js"></script>
+	<script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
 	<script type="text/javascript" src="js/tickets.js"></script>
 	<script type="text/javascript" src="js/login.js"></script>
 </body>

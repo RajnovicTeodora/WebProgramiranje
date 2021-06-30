@@ -10,9 +10,7 @@ function cancelTicket(ticket) {
 		}
 	});
 
-
 }
-
 
 function addTicketTr(ticket, role) {
 
@@ -50,6 +48,7 @@ function addTicketTr(ticket, role) {
 
 
 $(document).ready(function() {
+
 	$.get({
 		url: 'rest/registration/registeredUser',
 		success: function(u) {
@@ -91,3 +90,58 @@ $(document).ready(function() {
 	});
 
 });
+
+
+$("#filter_tickets_form").submit(function(event) {
+
+	// Stop form from submitting normally
+	event.preventDefault();
+	console.log("Filtering tickets...");
+	
+	let manifestationName = $('input[name="manifestationName"]').val();
+	let dateFrom = $('input[name="dateFrom"]').val();
+	let dateTo = $('input[name="dateTo"]').val();
+	let priceFrom = $('input[name="priceFrom"]').val();
+	let priceTo = $('input[name="priceTo"]').val();
+
+
+	if(dateFrom !== "" && dateTo!==""){
+		if (dateFrom > dateTo) {
+			M.toast({ html: 'Date from must be before date to!' })
+			return;
+		}
+	}
+	
+	if (priceFrom !== "" && priceTo!== ""){
+		if (priceFrom > priceTo) {
+			M.toast({ html: 'Price from must be leser than price to.', classes: 'rounded', panning: 'center' });
+			return;
+		}
+	}
+	
+	if(manifestationName==="") manifestationName="null";
+	if(dateFrom==="") dateFrom="null";
+	if(dateTo==="") dateTo="null";
+	if(priceFrom==="") priceFrom="null";
+	if(priceTo==="") priceTo="null";
+	
+	
+	console.log("Sending request...");
+	$.ajax({
+ 		type: 'GET',
+ 		url: "rest/tickets/searchTickets/"+manifestationName+"/"+dateFrom+"/"+dateTo+"/"+priceFrom+"/"+priceTo,
+		contentType: 'application/json',
+ 		success: function(response) {
+			$("#tickets tbody").empty()
+			for (let ticket of response) {
+				console.log(ticket);
+				addTicketTr(ticket, "USER");
+			}
+ 			//M.toast({ html: 'Successfully sent data.', classes: 'rounded', panning: 'center' });
+
+ 		},
+ 		error: function() {
+ 			M.toast({ html: 'Failed to send data', classes: 'rounded', panning: 'center' });
+ 		}
+	});	
+ });
