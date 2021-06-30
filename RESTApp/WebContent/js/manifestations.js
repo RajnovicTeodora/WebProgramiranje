@@ -1,17 +1,45 @@
-function addManifestationCard(manifestation) {
-	let card = $('<div class="col s4">' +
-		'<div class="card">' +
-		'<div class="card-image">' +
-		'<img src="data:image/png;base64, ' + manifestation.poster + '" alt="Poster">' +
-		'<a class="btn-floating halfway-fab waves-effect waves-light teal darken-2 ligten" href="http://localhost:8080/RESTApp/manifestation.html?manifestation=' + manifestation.id + '"><i class="material-icons">info</i></a>' +
-		'</div>' +
-		'<div class="card-content">' +
-		'<span class="card-title">' + manifestation.name + ' - ' + manifestation.type + '</span>' +
-		'<p> Date: ' + new Date(manifestation.date).toUTCString() + '</p><p>Price: ' +
-		manifestation.regularPrice + '</p><p>Status: ' + manifestation.status + '</p></p>Location: ' + manifestation.location.address + '</p>' +
-		'</div></div></div></div>');
 
-	$('#manifestaions').append(card);
+function addManifestationCard(manifestation) {
+
+
+	if (new Date(manifestation.date) <= new Date() && manifestation.status == "ACTIVE") {
+		$.get({
+			url: 'rest/manifestations/rating/' + manifestation.id,
+			success: function(rating) {
+				if (rating != -1) {
+					console.log(rating)
+					let card = $('<div class="col s4">' +
+						'<div class="card">' +
+						'<div class="card-image">' +
+						'<img src="data:image/png;base64, ' + manifestation.poster + '" alt="Poster">' +
+						'<a class="btn-floating halfway-fab waves-effect waves-light teal darken-2 ligten" href="http://localhost:8080/RESTApp/manifestation.html?manifestation=' + manifestation.id + '"><i class="material-icons">info</i></a>' +
+						'</div>' +
+						'<div class="card-content">' +
+						'<span class="card-title">' + manifestation.name + ' - ' + manifestation.type + '</span>' +
+						'<p> Date: ' + new Date(manifestation.date).toUTCString() + '</p><p>Price: ' +
+						manifestation.regularPrice + '</p><p>Status: ' + manifestation.status + '</p></p>Location: ' + manifestation.location.address + '</p><p>Rating:' + rating +
+						'</p></div></div></div></div>');
+
+					$('#manifestaions').append(card);
+				}
+
+			}
+		});
+	}else{
+		let card = $('<div class="col s4">' +
+			'<div class="card">' +
+			'<div class="card-image">' +
+			'<img src="data:image/png;base64, ' + manifestation.poster + '" alt="Poster">' +
+			'<a class="btn-floating halfway-fab waves-effect waves-light teal darken-2 ligten" href="http://localhost:8080/RESTApp/manifestation.html?manifestation=' + manifestation.id + '"><i class="material-icons">info</i></a>' +
+			'</div>' +
+			'<div class="card-content">' +
+			'<span class="card-title">' + manifestation.name + ' - ' + manifestation.type + '</span>' +
+			'<p> Date: ' + new Date(manifestation.date).toUTCString() + '</p><p>Price: ' +
+			manifestation.regularPrice + '</p><p>Status: ' + manifestation.status + '</p></p>Location: ' + manifestation.location.address + '</p>' +
+			'</div></div></div></div>');
+
+		$('#manifestaions').append(card);
+	}
 }
 
 
@@ -91,8 +119,8 @@ $("#filter_manifestations_form").submit(function(event) {
 
 	console.log("Sending request...");
 	$.ajax({
- 		type: 'GET',
- 		url: "rest/manifestations/searchManifestations/"+manifestationName+"/"+location+"/"+dateFrom+"/"+dateTo+"/"+priceFrom+"/"+priceTo+"/"+type+"/"+soldOut,
+		type: 'GET',
+		url: "rest/manifestations/searchManifestations/" + manifestationName + "/" + location + "/" + dateFrom + "/" + dateTo + "/" + priceFrom + "/" + priceTo + "/" + type + "/" + soldOut,
 		contentType: 'application/json',
 		success: function(response) {
 			$('#manifestaions').empty();
