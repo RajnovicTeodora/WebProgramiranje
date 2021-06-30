@@ -195,11 +195,11 @@ public class TicketService {
 	}
 
 	@GET
-	@Path("/searchTickets/{Name}/{DateFrom}/{DateTo}/{PriceFrom}/{PriceTo}")
+	@Path("/searchTickets/{Name}/{DateFrom}/{DateTo}/{PriceFrom}/{PriceTo}/{Type}/{Status}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<TicketDTO> searchTickets(@PathParam("Name") String Name, @PathParam("DateFrom") String DateFrom,
-			@PathParam("DateTo") String DateTo, @PathParam("PriceFrom") String PriceFrom, @PathParam("PriceTo") String PriceTo){  
+			@PathParam("DateTo") String DateTo, @PathParam("PriceFrom") String PriceFrom, @PathParam("PriceTo") String PriceTo, @PathParam("Type") String Type, @PathParam("Status") String Status){  
 		
 		
 		RegisteredUser user = (RegisteredUser) ctx.getAttribute("registeredUser");
@@ -238,9 +238,15 @@ public class TicketService {
 			priceTo = Double.valueOf(PriceTo);
 		}catch (Exception e) {}
 		
+		int type = -1;
+		int status = -1;
+		try {
+			type = Integer.parseInt(Type);
+			status = Integer.parseInt(Status);
+		}catch (Exception e) {}
 		
 		
-		ManifestationDAO dao = (ManifestationDAO) ctx.getAttribute("manifestationDAO");
+//		ManifestationDAO dao = (ManifestationDAO) ctx.getAttribute("manifestationDAO");
 		
 		List<Ticket> allTickets = ticketsDao.getUserTickets(user.getUsername());
 		List<TicketDTO> filteredTickets = new ArrayList<TicketDTO>();
@@ -250,6 +256,8 @@ public class TicketService {
 			if(dateTo != null && t.getManifestation().getDate().isAfter(LocalDateTime.of(dateTo, LocalTime.now()))) continue;
 			if(priceFrom > t.getManifestation().getRegularPrice()) continue;
 			if(priceTo < t.getManifestation().getRegularPrice()) continue;
+			if(type != -1 && t.getType().ordinal() != type) continue;
+			if(status != -1 && t.getStatus().ordinal() != status) continue;
 			
 			TicketDTO dto = new TicketDTO(t);
 			dto.setStatus(dto.getStatus().substring(0, 1) + dto.getStatus().toLowerCase().substring(1));

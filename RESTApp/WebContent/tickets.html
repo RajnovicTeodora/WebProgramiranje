@@ -66,6 +66,21 @@
 					<label for="priceTo">Price To</label> <input id="priceTo"
 						type="number" placeholder="Price To" min="0" name="priceTo" />
 				</div>
+				<div class="input-field col s1.5">
+					<select class="browser-default" id="typeSelect">
+						<option value="-1" selected>Any ticket type</option>
+						<option value="0">Vip</option>
+						<option value="1">Regular</option>
+						<option value="2">Fanpit</option>
+					</select>
+				</div>
+				<div class="input-field col s1.5">
+					<select class="browser-default" id="statusSelect">
+						<option value="-1" selected>Any ticket status</option>
+						<option value="0">Reserved</option>
+						<option value="1">Canceled</option>
+					</select>
+				</div>
 				<div class="col s2">
 					<button class="btn waves-effect waves-purple right" type="submit"
 						name="action" action>

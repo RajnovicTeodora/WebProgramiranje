@@ -50,8 +50,6 @@ $(document).ready(function() {
 });
 
 
-
-// TODO 
 $("#filter_manifestations_form").submit(function(event) {
 
 	// Stop form from submitting normally
@@ -65,7 +63,9 @@ $("#filter_manifestations_form").submit(function(event) {
 	let priceFrom = $('input[name="priceFrom"]').val();
 	let priceTo = $('input[name="priceTo"]').val();
 
-	console.log(dateFrom);
+	let type = document.getElementById('typeSelect').value;
+	let soldOut = document.getElementById('soldOutSelect').value;
+
 
 	if (dateFrom !== "" && dateTo !== "") {
 		if (dateFrom > dateTo) {
@@ -91,13 +91,14 @@ $("#filter_manifestations_form").submit(function(event) {
 
 	console.log("Sending request...");
 	$.ajax({
-		type: 'GET',
-		url: "rest/manifestations/searchManifestations/" + manifestationName + "/" + location + "/" + dateFrom + "/" + dateTo + "/" + priceFrom + "/" + priceTo,
+ 		type: 'GET',
+ 		url: "rest/manifestations/searchManifestations/"+manifestationName+"/"+location+"/"+dateFrom+"/"+dateTo+"/"+priceFrom+"/"+priceTo+"/"+type+"/"+soldOut,
 		contentType: 'application/json',
 		success: function(response) {
 			$('#manifestaions').empty();
 			console.log(response);
 			for (let manifestation of response) {
+				console.log(manifestation);
 				addManifestationCard(manifestation);
 			}
 			//M.toast({ html: 'Successfully sent data.', classes: 'rounded', panning: 'center' });

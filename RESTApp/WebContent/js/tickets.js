@@ -104,6 +104,8 @@ $("#filter_tickets_form").submit(function(event) {
 	let priceFrom = $('input[name="priceFrom"]').val();
 	let priceTo = $('input[name="priceTo"]').val();
 
+	let type = document.getElementById('typeSelect').value;
+	let status = document.getElementById('statusSelect').value;
 
 	if(dateFrom !== "" && dateTo!==""){
 		if (dateFrom > dateTo) {
@@ -129,7 +131,7 @@ $("#filter_tickets_form").submit(function(event) {
 	console.log("Sending request...");
 	$.ajax({
  		type: 'GET',
- 		url: "rest/tickets/searchTickets/"+manifestationName+"/"+dateFrom+"/"+dateTo+"/"+priceFrom+"/"+priceTo,
+ 		url: "rest/tickets/searchTickets/"+manifestationName+"/"+dateFrom+"/"+dateTo+"/"+priceFrom+"/"+priceTo+"/"+type+"/"+status,
 		contentType: 'application/json',
  		success: function(response) {
 			$("#tickets tbody").empty()

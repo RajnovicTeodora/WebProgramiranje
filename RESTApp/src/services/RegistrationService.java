@@ -1,6 +1,8 @@
 package services;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,12 +13,14 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import beans.CustomerKind;
 import beans.Gender;
+import beans.Manifestation;
 import beans.RegisteredUser;
 import beans.Ticket;
 import beans.User;
@@ -257,5 +261,49 @@ public class RegistrationService {
 
 		ctx.setAttribute("registeredUser", null);
 
+	}
+	
+	@GET
+	@Path("/searchUsers/{FirstName}/{LastName}/{Username}/{Type}/{Role}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<UserDTO> searchUsers(@PathParam("FirstName") String FirstName, @PathParam("LastName") String LastName, @PathParam("Username") String Username,
+			@PathParam("Type") String Type, @PathParam("Role") String Role){  
+				
+		String fistName;
+		String lastName;
+		String username;
+		if (FirstName.equals("null")) fistName="";
+		else fistName = FirstName;
+		
+		if (LastName.equals("null")) lastName="";
+		else lastName = LastName;
+		
+		if (Username.equals("null")) username="";
+		else username = Username;
+		
+		int type = -1;
+		int role = -1;
+		try {
+			type = Integer.parseInt(Type);
+			role = Integer.parseInt(Role);
+		}catch (Exception e) {}
+
+		
+		RegisteredUserDAO dao = (RegisteredUserDAO) ctx.getAttribute("registeredUserDAO");
+		
+		List<User> allUsers = dao.findAllList();
+		List<UserDTO> filteredUsers = new ArrayList<UserDTO>();
+		for(User u : allUsers) {
+			if(!u.getFirstName().toLowerCase().contains(fistName.toLowerCase())) continue;   // provera ime
+			if(!u.getLastName().toLowerCase().contains(lastName.toLowerCase())) continue; //provera lokacija
+			if(!u.getUsername().toLowerCase().contains(username.toLowerCase())) continue;
+			if(type != -1 && u.getCustomerType().ordinal() != type) continue;
+			if(role != -1 && u.getRole().ordinal() != role) continue;
+
+			
+			filteredUsers.add(new UserDTO(u));
+		}
+		return filteredUsers;
 	}
 }

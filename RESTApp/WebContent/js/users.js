@@ -43,3 +43,41 @@ $(document).ready(function() {
 	});
 
 });
+
+$("#filter_users_form").submit(function(event) {
+
+	// Stop form from submitting normally
+	event.preventDefault();
+	console.log("Filtering users...");
+	
+	let firstName = $('input[name="firstName"]').val();
+	let lastName = $('input[name="lastName"]').val();
+	let username = $('input[name="username"]').val();
+
+	let type = document.getElementById('typeSelect').value;
+	let role = document.getElementById('roleSelect').value;
+
+	
+	if(firstName==="") firstName="null";
+	if(lastName==="") lastName="null";
+	if(username==="") username="null";
+	
+	console.log("Sending request...");
+	$.ajax({
+ 		type: 'GET',
+ 		url: "rest/registration/searchUsers/"+firstName+"/"+lastName+"/"+username+"/"+type+"/"+role,
+		contentType: 'application/json',
+ 		success: function(response) {
+			$('#users tbody').empty();
+			for (let user of response) {
+				console.log(user);
+				addUserTr(user);
+			}
+ 			// M.toast({ html: 'Successfully sent data.', classes: 'rounded', panning: 'center' });
+
+ 		},
+ 		error: function() {
+ 			M.toast({ html: 'Failed to send data', classes: 'rounded', panning: 'center' });
+ 		}
+	});	
+ });
