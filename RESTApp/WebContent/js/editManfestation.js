@@ -1,4 +1,4 @@
-//var file = document.getElementById('file');
+
 var manifestationName = document.getElementById('name');
 var type = document.getElementById('typeSelect');
 var numSeats = document.getElementById('numSeats');
@@ -8,6 +8,9 @@ var number = document.getElementById('number');
 var city = document.getElementById('city');
 var country = document.getElementById('country');
 var date = document.getElementById('date');
+
+
+var img64base;
 
 var lon;
 var lat;
@@ -25,6 +28,7 @@ var queryString = window.location.search;
 var urlParams = new URLSearchParams(queryString);
 var id = urlParams.get('manifestation')
 
+// Address changed
 function changed() {
 
 	// Stop form from submitting normally
@@ -67,13 +71,14 @@ function changed() {
 	});
 }
 
+// Form submit
 $("#manifestation_form").submit(function(event) {
 
 	// Stop form from submitting normally
 	event.preventDefault();
 	console.log("Editing manifestation...");
 
-	let newFile = $('input[name="file"]').val();
+	let newImg = img64base;
 	let newName = $('input[name="name"]').val();
 	let newType = document.getElementById('typeSelect').value; // 
 	let newStreet = $('input[name="street"]').val();
@@ -81,7 +86,7 @@ $("#manifestation_form").submit(function(event) {
 	let newCity = $('input[name="city"]').val();
 	let newCountry = $('input[name="country"]').val();
 
-	if (!newFile || !newName || !newType || !newStreet || !newNumber || !newCity || !newCountry) {
+	if (!newImg || !newName || !newType || !newStreet || !newNumber || !newCity || !newCountry) {
 		$('#error').text('All fields must be filled!');
 		$("#error").show().delay(3000).fadeOut();
 		return;
@@ -112,13 +117,13 @@ $("#manifestation_form").submit(function(event) {
 			location: newStreet + " " + newNumber + ", " + newCity + ", " + newCountry,
 			lat: lat,
 			lon: lon,
-			poster: "ugh"
+			poster: newImg
 		}),
 		contentType: 'application/json',
 		success: function(result) {
 			console.log(result);
 			M.toast({ html: 'Successfully edited the manifestation', classes: 'rounded', panning: 'center' });
-			window.location.href = "http://localhost:8080/RESTApp/vendorManifestations.html";
+			window.location.href = "http://localhost:8080/RESTApp/manifestationTable.html";
 
 		},
 		error: function() {
@@ -127,24 +132,29 @@ $("#manifestation_form").submit(function(event) {
 	});
 });
 
+function readURL() {
 
+	var filesSelected = document.getElementById("file").files;
+	if (filesSelected.length > 0) {
+		var fileToLoad = filesSelected[0];
 
+		var fileReader = new FileReader();
 
-function readURL(input) {
-	if (input.files && input.files[0]) {
-		var reader = new FileReader();
+		fileReader.onload = function(fileLoadedEvent) {
+			var srcData = fileLoadedEvent.target.result; // <--- data: base64
 
-		reader.onload = function(e) {
-			$('#blah')
-				.attr('src', e.target.result)
+			$('#myImg')
+				.attr('src', srcData)
 				.width(150)
 				.height(200);
-		};
 
-		reader.readAsDataURL(input.files[0]);
+			img64base = srcData.split(',')[1]
+		}
 
+		fileReader.readAsDataURL(fileToLoad);
 	}
 }
+
 
 
 function showManifestation(manifestation) {
@@ -171,6 +181,10 @@ function showManifestation(manifestation) {
 	lon = manifestation.location.longitude * 1
 	lat = manifestation.location.latitude * 1
 
+	$('#myImg')
+		.attr('src', "data:image/png;base64, " + manifestation.poster)
+		.width(150)
+		.height(200);
 	map = new ol.Map({
 		target: 'map',
 		layers: [
