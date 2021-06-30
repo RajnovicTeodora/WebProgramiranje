@@ -177,7 +177,7 @@ function showManifestation(manifestation) {
 	country.value = address[2];
 	price.value = manifestation.regularPrice;
 	date.value = new Date(manifestation.date).toISOString().substring(0, 19);
-
+	img64base = manifestation.poster
 	lon = manifestation.location.longitude * 1
 	lat = manifestation.location.latitude * 1
 
