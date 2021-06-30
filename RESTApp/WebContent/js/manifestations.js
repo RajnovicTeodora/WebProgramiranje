@@ -2,7 +2,7 @@ function addManifestationCard(manifestation) {
 	let card = $('<div class="col s4">' +
 		'<div class="card">' +
 		'<div class="card-image">' +
-		'<img src="Resources/posters/ticket.jpg">' +
+		'<img src="data:image/png;base64, ' + manifestation.poster + '" alt="Poster">' +
 		'<a class="btn-floating halfway-fab waves-effect waves-light teal darken-2 ligten" href="http://localhost:8080/RESTApp/manifestation.html?manifestation=' + manifestation.id + '"><i class="material-icons">info</i></a>' +
 		'</div>' +
 		'<div class="card-content">' +
@@ -57,7 +57,7 @@ $("#filter_manifestations_form").submit(function(event) {
 	// Stop form from submitting normally
 	event.preventDefault();
 	console.log("Filtering manifestationss...");
-	
+
 	let manifestationName = $('input[name="manifestationName"]').val();
 	let location = $('input[name="location"]').val();
 	let dateFrom = $('input[name="dateFrom"]').val();
@@ -67,44 +67,44 @@ $("#filter_manifestations_form").submit(function(event) {
 
 	console.log(dateFrom);
 
-	if(dateFrom !== "" && dateTo!==""){
+	if (dateFrom !== "" && dateTo !== "") {
 		if (dateFrom > dateTo) {
 			M.toast({ html: 'Date from must be before date to!' })
 			return;
 		}
 	}
-	
-	if (priceFrom !== "" && priceTo!== ""){
+
+	if (priceFrom !== "" && priceTo !== "") {
 		if (priceFrom > priceTo) {
 			M.toast({ html: 'Price from must be leser than price to.', classes: 'rounded', panning: 'center' });
 			return;
 		}
 	}
-	
-	if(manifestationName==="") manifestationName="null";
-	if(location==="") location="null";
-	if(dateFrom==="") dateFrom="null";
-	if(dateTo==="") dateTo="null";
-	if(priceFrom==="") priceFrom="null";
-	if(priceTo==="") priceTo="null";
-	
-	
+
+	if (manifestationName === "") manifestationName = "null";
+	if (location === "") location = "null";
+	if (dateFrom === "") dateFrom = "null";
+	if (dateTo === "") dateTo = "null";
+	if (priceFrom === "") priceFrom = "null";
+	if (priceTo === "") priceTo = "null";
+
+
 	console.log("Sending request...");
 	$.ajax({
- 		type: 'GET',
- 		url: "rest/manifestations/searchManifestations/"+manifestationName+"/"+location+"/"+dateFrom+"/"+dateTo+"/"+priceFrom+"/"+priceTo,
+		type: 'GET',
+		url: "rest/manifestations/searchManifestations/" + manifestationName + "/" + location + "/" + dateFrom + "/" + dateTo + "/" + priceFrom + "/" + priceTo,
 		contentType: 'application/json',
- 		success: function(response) {
+		success: function(response) {
 			$('#manifestaions').empty();
- 			console.log(response);
+			console.log(response);
 			for (let manifestation of response) {
 				addManifestationCard(manifestation);
 			}
- 			//M.toast({ html: 'Successfully sent data.', classes: 'rounded', panning: 'center' });
+			//M.toast({ html: 'Successfully sent data.', classes: 'rounded', panning: 'center' });
 
- 		},
- 		error: function() {
- 			M.toast({ html: 'Failed to send data', classes: 'rounded', panning: 'center' });
- 		}
-	});	
- });
+		},
+		error: function() {
+			M.toast({ html: 'Failed to send data', classes: 'rounded', panning: 'center' });
+		}
+	});
+});
