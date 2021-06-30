@@ -45,34 +45,38 @@
 	</nav>
 
 	<div class="row">
-		<form class="col s12" id="filter_manifestations_form">
+		<form class="col s12" id="filter_users_form">
 			<div class="row card">
 				<div class="input-field col s2">
-					<input placeholder="Manifestation Name" id="manifestationName"
-						name="manifestationName" type="text" /> <label
-						for="manifestationName">Manifestation Name</label>
+					<input placeholder="Name" id="firstName"
+						name="firstName" type="text" /> <label
+						for="firstName">Name</label>
 				</div>
 				<div class="input-field col s2">
-					<label for="location">Location</label> <input id="location"
-						type="text" placeholder="Location" name="location" />
+					<input placeholder="Surname" id="lastName"
+						name="lastName" type="text" /> <label
+						for="lastName">Surname</label>
 				</div>
 				<div class="input-field col s2">
-					<label for="dateFrom">Date From</label> <input type="date"
-						class="datepicker" name="dateFrom" min="1899-01-01"
-						placeholder="Date From" />
+					<input placeholder="Username" id="username"
+						name="username" type="text" /> <label
+						for="username">Username</label>
 				</div>
-				<div class="input-field col s2">
-					<label for="dateTo">Date To</label> <input type="date"
-						class="datepicker" name="dateTo" min="1899-01-01"
-						placeholder="Date To" />
+				<div class="input-field col s1.5">
+					<select class="browser-default" id="typeSelect">
+						<option value="-1" selected>Any user type</option>
+						<option value="0">Newbie</option>
+						<option value="1">Champ</option>
+						<option value="2">Legend</option>
+					</select>
 				</div>
-				<div class="input-field col s1">
-					<label for="priceFrom">Price From</label> <input id="priceFrom"
-						type="number" placeholder="Price From" min="0" name="priceFrom" />
-				</div>
-				<div class="input-field col s1">
-					<label for="priceTo">Price From</label> <input id="priceTo"
-						type="number" placeholder="Price To" min="0" name="priceTo" />
+				<div class="input-field col s1.5">
+					<select class="browser-default" id="roleSelect">
+						<option value="-1" selected>Any user role</option>
+						<option value="0">Administrator</option>
+						<option value="1">Vendor</option>
+						<option value="2">User</option>
+					</select>
 				</div>
 				<div class="col s2">
 					<button class="btn waves-effect waves-purple right" type="submit"
@@ -92,7 +96,7 @@
 			</form>
 		</div>
 		<div class="row">
-			<table class="highlight centered" id="users">
+			<table class="highlight centered sortable" id="users">
 				<thead style="background-color: #ED6D71;">
 					<tr style="color: white;">
 						<th>Username</th>
@@ -114,4 +118,6 @@
 	<script src="jquery-3.3.1.min.js"></script>
 	<script type="text/javascript" src="js/users.js"></script>
 	<script type="text/javascript" src="js/login.js"></script>
+	<script src="https://www.kryogenix.org/code/browser/sorttable/sorttable.js"></script>
+
 </body>

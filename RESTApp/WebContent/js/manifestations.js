@@ -50,8 +50,6 @@ $(document).ready(function() {
 });
 
 
-
-// TODO 
 $("#filter_manifestations_form").submit(function(event) {
 
 	// Stop form from submitting normally
@@ -100,6 +98,7 @@ $("#filter_manifestations_form").submit(function(event) {
 			$('#manifestaions').empty();
  			console.log(response);
 			for (let manifestation of response) {
+				console.log(manifestation);
 				addManifestationCard(manifestation);
 			}
  			//M.toast({ html: 'Successfully sent data.', classes: 'rounded', panning: 'center' });
