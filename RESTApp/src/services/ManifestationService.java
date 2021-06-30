@@ -99,40 +99,51 @@ public class ManifestationService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Manifestation addNewManifestation(NewManifestationDTO newManifestationDTO) {
 
-		Vendor user = (Vendor) ctx.getAttribute("registeredUser");
-		if (user == null)
+		User maybeUser = (User) ctx.getAttribute("registeredUser");
+		if (maybeUser == null)
 			throw new UserNotFoundException("No user registered");
 
+		if (maybeUser.getRole() != UserRole.VENDOR)
+			throw new UnauthorizedUserException("Unauthorized action");
+
+		Vendor user = (Vendor) maybeUser;
+
 		ManifestationDAO dao = (ManifestationDAO) ctx.getAttribute("manifestationDAO");
-		
-		//TODO: proveriti da li postoji ta lokacija vec
+
+		if (newManifestationDTO.getLat() <= 0 || newManifestationDTO.getLocation().trim() == ""
+				|| newManifestationDTO.getLon() <= 0 || newManifestationDTO.getName().trim() == ""
+				|| newManifestationDTO.getPoster().trim() == "" || newManifestationDTO.getType().trim() == ""
+				|| newManifestationDTO.getDate() == null || newManifestationDTO.getNumSeats() <= 0
+				|| newManifestationDTO.getRegularPrice() <= 0)
+			throw new InvalidInputException("Invalid input, please fill out all fields");
+
 		LocationDAO locationDao = (LocationDAO) ctx.getAttribute("locationDAO");
-		
+
 		int locationID = locationDao.findNextId();
 		Location location = new Location(locationID, newManifestationDTO.getLat(), newManifestationDTO.getLon(),
 				newManifestationDTO.getLocation());
-		locationDao.writeLocation(location);
-		locationDao.addLocation(location);
+
 		if (dao.isManifestationOverlapping(newManifestationDTO.getDate(), location, -1)) {
 			throw new ManifestationExistsException("Manifestation for that date and location exists");
 		}
 
+		locationDao.writeLocation(location);
+		locationDao.addLocation(location);
+
 		List<Manifestation> manifestations = user.getManifestations();
 
 		ManifestationType type = ManifestationType.valueOf(newManifestationDTO.getType());
-		// TODO download image
 
 		Manifestation manifestation = new Manifestation(dao.getNextId(), newManifestationDTO.getName(), type,
 				newManifestationDTO.getNumSeats(), newManifestationDTO.getDate(), newManifestationDTO.getRegularPrice(),
-				ManifestationStatus.UNACTIVE, location, "ticket.png");
+				ManifestationStatus.UNACTIVE, location, newManifestationDTO.getPoster());
 		manifestation.setVendorUsername(user.getUsername());
 		manifestations.add(manifestation);
 		user.setManifestations(manifestations);
 
-		if(dao.writeManifestation(manifestation)) {
+		if (dao.writeManifestation(manifestation)) {
 			return dao.addManifestation(manifestation);
-		}
-		else {
+		} else {
 			return null;
 		}
 	}
@@ -144,9 +155,17 @@ public class ManifestationService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Manifestation editManifestation(EditManifestationDTO editDTO) {
 
-		Vendor user = (Vendor) ctx.getAttribute("registeredUser");
+		User user = (User) ctx.getAttribute("registeredUser");
 		if (user == null)
 			throw new UserNotFoundException("No user registered");
+
+		if (user.getRole() != UserRole.VENDOR)
+			throw new UnauthorizedUserException("Unauthorized action");
+
+		if (editDTO.getId().trim() == "" || editDTO.getLat() <= 0 || editDTO.getLocation().trim() == ""
+				|| editDTO.getLon() <= 0 || editDTO.getName().trim() == "" || editDTO.getPoster().trim() == ""
+				|| editDTO.getType().trim() == "")
+			throw new InvalidInputException("Invalid input, please fill out all fields");
 
 		ManifestationDAO dao = (ManifestationDAO) ctx.getAttribute("manifestationDAO");
 
@@ -171,7 +190,7 @@ public class ManifestationService {
 
 		ManifestationType type = ManifestationType.valueOf(editDTO.getType());
 
-		// TODO download image
+		manifestation.setPoster(editDTO.getPoster());
 		manifestation.setLocation(location);
 		manifestation.setName(editDTO.getName());
 		manifestation.setType(type);
@@ -217,14 +236,17 @@ public class ManifestationService {
 		manifestationDAO.writeAllManifetations();
 		return manifestation;
 	}
-	
+
 	@GET
 	@Path("/searchManifestations/{Name}/{Location}/{DateFrom}/{DateTo}/{PriceFrom}/{PriceTo}/{Type}/{SoldOut}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<Manifestation> searchManifestations(@PathParam("Name") String Name, @PathParam("Location") String Location, @PathParam("DateFrom") String DateFrom,
-			@PathParam("DateTo") String DateTo, @PathParam("PriceFrom") String PriceFrom, @PathParam("PriceTo") String PriceTo, @PathParam("Type") String Type, @PathParam("SoldOut") String SoldOut){  
-		
+	public List<Manifestation> searchManifestations(@PathParam("Name") String Name,
+			@PathParam("Location") String Location, @PathParam("DateFrom") String DateFrom,
+			@PathParam("DateTo") String DateTo, @PathParam("PriceFrom") String PriceFrom,
+			@PathParam("PriceTo") String PriceTo, @PathParam("Type") String Type,
+			@PathParam("SoldOut") String SoldOut) {
+
 //		System.out.println("Searching manifestations...");
 //		System.out.println("Name: "+Name);
 //		System.out.println("Location: "+Location);
@@ -232,53 +254,67 @@ public class ManifestationService {
 //		System.out.println("Date to: "+DateTo);
 //		System.out.println("Price from: "+PriceFrom);
 //		System.out.println("Price to: "+PriceTo);
-		
+
 		String name;
 		String location;
-		if (Name.equals("null")) name="";
-		else name = Name;
-		
-		if (Location.equals("null")) location="";
-		else location = Location;
+		if (Name.equals("null"))
+			name = "";
+		else
+			name = Name;
+
+		if (Location.equals("null"))
+			location = "";
+		else
+			location = Location;
 		LocalDate dateFrom = null;
 		try {
 			dateFrom = LocalDate.parse(DateFrom);
-		}catch (Exception e) {}
+		} catch (Exception e) {
+		}
 		LocalDate dateTo = null;
 		try {
 			dateTo = LocalDate.parse(DateTo);
-		}catch (Exception e) {}
-		
+		} catch (Exception e) {
+		}
+
 		double priceFrom = -1;
 		double priceTo = 1000000;
 		try {
 			priceFrom = Double.valueOf(PriceFrom);
 			priceTo = Double.valueOf(PriceTo);
-		}catch (Exception e) {}
-		
+		} catch (Exception e) {
+		}
+
 		int type = -1;
 		int soldOut = -1;
 		try {
 			type = Integer.parseInt(Type);
 			soldOut = Integer.parseInt(SoldOut);
-		}catch (Exception e) {}
+		} catch (Exception e) {
+		}
 
-		
 		ManifestationDAO dao = (ManifestationDAO) ctx.getAttribute("manifestationDAO");
-		
+
 		List<Manifestation> allManifestations = dao.findAllList();
 		List<Manifestation> filteredManifestations = new ArrayList<Manifestation>();
-		for(Manifestation m : allManifestations) {
-			if(!m.getName().toLowerCase().contains(name.toLowerCase())) continue;   // provera ime
-			if(!m.getLocation().getAddress().toLowerCase().contains(location.toLowerCase())) continue; //provera lokacija
-			if(dateFrom != null && m.getDate().isBefore(LocalDateTime.of(dateFrom, LocalTime.now()))) continue;
-			if(dateTo != null && m.getDate().isAfter(LocalDateTime.of(dateTo, LocalTime.now()))) continue;
-			if(priceFrom > m.getRegularPrice()) continue;
-			if(priceTo < m.getRegularPrice()) continue;
-			if(type != -1 && m.getType().ordinal() != type) continue;
-			if(soldOut != -1 && m.getLeftSeats()<=0) continue;
+		for (Manifestation m : allManifestations) {
+			if (!m.getName().toLowerCase().contains(name.toLowerCase()))
+				continue; // provera ime
+			if (!m.getLocation().getAddress().toLowerCase().contains(location.toLowerCase()))
+				continue; // provera lokacija
+			if (dateFrom != null && m.getDate().isBefore(LocalDateTime.of(dateFrom, LocalTime.now())))
+				continue;
+			if (dateTo != null && m.getDate().isAfter(LocalDateTime.of(dateTo, LocalTime.now())))
+				continue;
+			if (priceFrom > m.getRegularPrice())
+				continue;
+			if (priceTo < m.getRegularPrice())
+				continue;
+			if (type != -1 && m.getType().ordinal() != type)
+				continue;
+			if (soldOut != -1 && m.getLeftSeats() <= 0)
+				continue;
 
-			
 			filteredManifestations.add(m);
 		}
 		return filteredManifestations;

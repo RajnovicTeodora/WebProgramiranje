@@ -2,6 +2,8 @@ var lon;
 var lat;
 var layer;
 
+var img64base;
+
 var attribution = new ol.control.Attribution({
 	collapsible: false
 });
@@ -21,21 +23,29 @@ var map = new ol.Map({
 });
 
 
-function readURL(input) {
-	if (input.files && input.files[0]) {
-		var reader = new FileReader();
+function readURL() {
 
-		reader.onload = function(e) {
-			$('#blah')
-				.attr('src', e.target.result)
+	var filesSelected = document.getElementById("file").files;
+	if (filesSelected.length > 0) {
+		var fileToLoad = filesSelected[0];
+
+		var fileReader = new FileReader();
+
+		fileReader.onload = function(fileLoadedEvent) {
+			var srcData = fileLoadedEvent.target.result; // <--- data: base64
+
+			$('#myImg')
+				.attr('src', srcData)
 				.width(150)
 				.height(200);
-		};
 
-		reader.readAsDataURL(input.files[0]);
+			img64base = srcData.split(',')[1]
+		}
 
+		fileReader.readAsDataURL(fileToLoad);
 	}
 }
+
 
 $("#manifestation_form").submit(function(event) {
 
@@ -43,7 +53,7 @@ $("#manifestation_form").submit(function(event) {
 	event.preventDefault();
 	console.log("Registration...");
 
-	let file = $('input[name="file"]').val();
+	let newImg = img64base;
 	let name = $('input[name="name"]').val();
 	let date = $('input[name="date"]').val();
 	let type = document.getElementById('typeSelect').value; // 
@@ -55,7 +65,7 @@ $("#manifestation_form").submit(function(event) {
 	let city = $('input[name="city"]').val();
 	let country = $('input[name="country"]').val();
 
-	if (!file || !name || !date || !type || !numSeats || !price || !street || !number || !city || !country) {
+	if (!newImg || !name || !date || !type || !numSeats || !price || !street || !number || !city || !country) {
 		$('#error').text('All fields must be filled!');
 		$("#error").show().delay(3000).fadeOut();
 		return;
@@ -88,7 +98,7 @@ $("#manifestation_form").submit(function(event) {
 			location: street + " " + number + ", " + city + ", " + country,
 			lat: lat,
 			lon: lon,
-			poster: file
+			poster: newImg
 		}),
 		contentType: 'application/json',
 		success: function(result) {
