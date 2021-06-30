@@ -219,11 +219,11 @@ public class ManifestationService {
 	}
 	
 	@GET
-	@Path("/searchManifestations/{Name}/{Location}/{DateFrom}/{DateTo}/{PriceFrom}/{PriceTo}")
+	@Path("/searchManifestations/{Name}/{Location}/{DateFrom}/{DateTo}/{PriceFrom}/{PriceTo}/{Type}/{SoldOut}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Manifestation> searchManifestations(@PathParam("Name") String Name, @PathParam("Location") String Location, @PathParam("DateFrom") String DateFrom,
-			@PathParam("DateTo") String DateTo, @PathParam("PriceFrom") String PriceFrom, @PathParam("PriceTo") String PriceTo){  
+			@PathParam("DateTo") String DateTo, @PathParam("PriceFrom") String PriceFrom, @PathParam("PriceTo") String PriceTo, @PathParam("Type") String Type, @PathParam("SoldOut") String SoldOut){  
 		
 //		System.out.println("Searching manifestations...");
 //		System.out.println("Name: "+Name);
@@ -256,7 +256,13 @@ public class ManifestationService {
 			priceTo = Double.valueOf(PriceTo);
 		}catch (Exception e) {}
 		
-		
+		int type = -1;
+		int soldOut = -1;
+		try {
+			type = Integer.parseInt(Type);
+			soldOut = Integer.parseInt(SoldOut);
+		}catch (Exception e) {}
+
 		
 		ManifestationDAO dao = (ManifestationDAO) ctx.getAttribute("manifestationDAO");
 		
@@ -269,6 +275,9 @@ public class ManifestationService {
 			if(dateTo != null && m.getDate().isAfter(LocalDateTime.of(dateTo, LocalTime.now()))) continue;
 			if(priceFrom > m.getRegularPrice()) continue;
 			if(priceTo < m.getRegularPrice()) continue;
+			if(type != -1 && m.getType().ordinal() != type) continue;
+			if(soldOut != -1 && m.getLeftSeats()<=0) continue;
+
 			
 			filteredManifestations.add(m);
 		}
