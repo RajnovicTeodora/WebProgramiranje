@@ -13,6 +13,7 @@ public class UserDTO {
 	private String role;
 	private String customerType;
 	private int points;
+	private String status;
 	
 	public UserDTO(User user) {
 		this.username = user.getUsername();
@@ -79,6 +80,14 @@ public class UserDTO {
 
 	public void setPoints(int points) {
 		this.points = points;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 	
 }

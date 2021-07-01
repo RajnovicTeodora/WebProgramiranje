@@ -199,8 +199,22 @@ public class RegistrationService {
 
 		if (user.getRole() == UserRole.ADMINISTRATOR) {
 			for (User u : dao.findAllList()) {
-				if (!u.getUsername().equals(user.getUsername()))
-					users.add(new UserDTO(u));
+				if (!u.getUsername().equals(user.getUsername())) {
+					UserDTO dto = new UserDTO(u);
+					dto.setStatus("active");
+					users.add(dto);
+				}
+			}
+			for (User u : dao.findAllBlockedList()) {
+				UserDTO dto = new UserDTO(u);
+				dto.setStatus("blocked");
+				users.add(dto);
+			}
+			for (User u : dao.findAllDeletedList()) {
+															
+				UserDTO dto = new UserDTO(u);
+				dto.setStatus("deleted");
+				users.add(dto);
 			}
 		} else if (user.getRole() == UserRole.VENDOR) {
 			for (User u : dao.findAllList()) {

@@ -43,8 +43,8 @@ $("#registration_form").submit(function(event) {
 			$.get({
 				url: 'rest/registration/registeredUser',
 				success: function(user) {
-					if (user.role == "ADMINISTRATOR")
-						window.location.href = "http://localhost:8080/RESTApp/adminUsers.html";
+					if(user.role == "ADMINISTRATOR")
+						window.location.href = "http://localhost:8080/RESTApp/users.html";
 					else
 						window.location.href = "http://localhost:8080/RESTApp/index.html";
 				}
