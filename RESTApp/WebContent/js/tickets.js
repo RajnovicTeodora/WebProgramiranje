@@ -54,6 +54,7 @@ $(document).ready(function() {
 		success: function(u) {
 			user = u
 			if (user.role == "USER") {
+				$("#filter_tickets_form").show();
 				document.getElementById("li_manifestations").innerHTML = ''
 				document.getElementById("li_users").innerHTML = ''
 			}
