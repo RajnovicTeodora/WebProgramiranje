@@ -12,7 +12,6 @@ import beans.Comment;
 import beans.CommentStatus;
 import beans.Manifestation;
 import beans.RegisteredUser;
-import beans.User;
 
 public class CommentDAO {
 
@@ -39,7 +38,7 @@ public class CommentDAO {
 		comments.put(comment.getId(), comment);
 		return comment;
 	}
-	
+
 	public Comment removeComment(Comment comment) {
 		if (!comments.containsKey(comment.getId())) {
 			return null;
@@ -70,7 +69,7 @@ public class CommentDAO {
 			}
 		}
 	}
-	
+
 	public boolean writeComment(Comment comment) {
 		FileWriter writer;
 		try {
@@ -82,15 +81,15 @@ public class CommentDAO {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
-		} 		
+		}
 	}
-	
+
 	public boolean writeAllComments() {
 		FileWriter writer;
 		try {
 			writer = new FileWriter(this.contextPath + "Resources\\csvFiles\\comments.csv", false);
-			
-			for(Comment c : findAllList()) {
+
+			for (Comment c : findAllList()) {
 				writer.write(c.toCsvString());
 			}
 			writer.close();
@@ -99,41 +98,41 @@ public class CommentDAO {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
-		} 
+		}
 	}
-	
+
 	private void loadAll(String contextPath) {
 		BufferedReader bufferedReader = null;
 		try {
 
-			FileReader reader = new FileReader(contextPath + "Resources\\csvFiles\\comments.csv"); 
+			FileReader reader = new FileReader(contextPath + "Resources\\csvFiles\\comments.csv");
 			bufferedReader = new BufferedReader(reader);
 			String line;
-			
-			line =  bufferedReader.readLine();
-			
-			while (line != null){
-				
-				if ( line.charAt(0) == '#') {
+
+			line = bufferedReader.readLine();
+
+			while (line != null) {
+
+				if (line.charAt(0) == '#') {
 					line = bufferedReader.readLine();
 					continue;
 				}
-				
+
 				String[] st = line.split(";");
-				
+
 				int id = Integer.parseInt(st[0].trim());
-				RegisteredUser user = ToiToiDAO.getUser(contextPath, st[1].trim()); 
+				RegisteredUser user = ToiToiDAO.getUser(contextPath, st[1].trim());
 				Manifestation manifestation = ToiToiDAO.getManifestation(contextPath, Integer.parseInt(st[2].trim()));
 				String text = st[3].trim();
 				int rating = Integer.valueOf(st[4]);
 				CommentStatus status = CommentStatus.values()[Integer.parseInt(st[5].trim())];
-				
+
 				// TODO is comment deleted
-				Comment comment = new Comment(id, user, manifestation, text, rating, status, false); 
+				Comment comment = new Comment(id, user, manifestation, text, rating, status, false);
 				addComment(comment);
-				
+
 				line = bufferedReader.readLine();
-			}			
+			}
 			reader.close();
 
 		} catch (Exception ex) {
