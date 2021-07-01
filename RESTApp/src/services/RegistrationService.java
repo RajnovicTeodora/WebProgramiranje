@@ -27,6 +27,7 @@ import beans.User;
 import beans.UserRole;
 import beans.Vendor;
 import dao.CommentDAO;
+import dao.CustomerKindDAO;
 import dao.LocationDAO;
 import dao.ManifestationDAO;
 import dao.RegisteredUserDAO;
@@ -72,6 +73,10 @@ public class RegistrationService {
 		if (ctx.getAttribute("locationDAO") == null) {
 			String contextPath = ctx.getRealPath("");
 			ctx.setAttribute("locationDAO", new LocationDAO(contextPath));
+		}
+		if (ctx.getAttribute("customerKindDAO") == null) {
+			String contextPath = ctx.getRealPath("");
+			ctx.setAttribute("customerKindDAO", new CustomerKindDAO(contextPath));
 		}
 
 	}

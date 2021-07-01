@@ -90,8 +90,6 @@ $("#filter_manifestations_form").submit(function(event) {
 	let dateTo = $('input[name="dateTo"]').val();
 	let pFrom = document.getElementById('priceFrom');
 	let pTo = document.getElementById('priceTo');
-//	let pFrom = $('input[name="priceFrom"]').val();
-//	let pTo = $('input[name="priceTo"]').val();
 
 	let type = document.getElementById('typeSelect').value;
 	let soldOut = document.getElementById('soldOutSelect').value;
