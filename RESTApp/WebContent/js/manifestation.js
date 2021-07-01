@@ -129,16 +129,32 @@ function showComment(comment, user) {
 
 	}
 	else if (user.role == "ADMINISTRATOR") {
+
 		let item = $('<li class="collection-item" id="' + comment.id + '"><div>' +
 			'<span class="title">' + comment.user + " - " + comment.status + '</span>' +
-			'<p>Rating: ' + comment.rating + '<br>Comment: ' + comment.text + ' </p>' +
+			'<p>Rating: ' + comment.rating + '<br>Comment: ' + comment.text + ' <button onclick="deleteComment(' + comment.id + ')" class="secondary-content btn-floating btn-small waves-effect waves-light"><i class="material-icons">delete</i></button></p>' +
 			'</div></li>');
 		$('#comment_list').append(item);
+
 	} else {
 		return
 	}
 }
 
+function deleteComment(id) {
+	$.get({
+		url: 'rest/comments/delete/' + id,
+		success: function(comment) {
+
+			const listItem = document.getElementById(comment.id);
+			listItem.innerHTML = ''
+			M.toast({ html: 'Successfully deleted user comment', classes: 'rounded', panning: 'center' });
+		},
+		error: function() {
+			M.toast({ html: 'Unable to deleted user comment', classes: 'rounded', panning: 'center' });
+		}
+	});
+}
 
 function approve(id) {
 	$.get({

@@ -14,9 +14,11 @@ import javax.ws.rs.core.MediaType;
 
 import beans.Manifestation;
 import beans.ManifestationStatus;
+import beans.Ticket;
 import beans.User;
 import beans.UserRole;
 import dao.ManifestationDAO;
+import dao.TicketDAO;
 import exception.UnauthorizedUserException;
 import exception.UserNotFoundException;
 
@@ -49,13 +51,24 @@ public class AdministratorService {
 		ManifestationDAO manifestationDAO = (ManifestationDAO) ctx.getAttribute("manifestationDAO");
 		LocalDateTime today = LocalDateTime.now();
 
+		TicketDAO ticketDAO = (TicketDAO) ctx.getAttribute("ticketDAO");
+		boolean canDelete = true;
 		List<Manifestation> manifestations = new ArrayList<Manifestation>();
 		for (Manifestation manifestation : manifestationDAO.findAllList()) {
+			
+			// Manifestation doesn't have reserved tickets
+			for (Ticket t : ticketDAO.findAllList()) {
+				if (t.getManifestation().equals(manifestation))
+					canDelete = false;
+			}
+			
 			// Manifestation not active and date is in future
 			if (manifestation.getStatus() == ManifestationStatus.UNACTIVE
-					&& (manifestation.getDate().isEqual(today) || manifestation.getDate().isAfter(today))) {
+					&& (manifestation.getDate().isEqual(today) || manifestation.getDate().isAfter(today)) || canDelete) {
 				manifestations.add(manifestation);
 			}
+			canDelete = true;
+			
 		}
 		return manifestations;
 

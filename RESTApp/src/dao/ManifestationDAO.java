@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,13 +12,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
-import beans.Comment;
-import beans.CommentStatus;
 import beans.Location;
 import beans.Manifestation;
 import beans.ManifestationStatus;
 import beans.ManifestationType;
-import beans.RegisteredUser;
 
 public class ManifestationDAO {
 	private Map<Integer, Manifestation> manifestations = new HashMap<Integer, Manifestation>();
@@ -60,21 +56,28 @@ public class ManifestationDAO {
 		}
 		return manifestationList;
 	}
-	
-	public List<Manifestation> findByVendor(String username){
+
+	public List<Manifestation> findByVendor(String username) {
 		List<Manifestation> manifestationList = new ArrayList<Manifestation>();
 		for (Manifestation manifestation : findAll()) {
-			if(manifestation.getVendorUsername().equals(username)) {
+			if (manifestation.getVendorUsername().equals(username)) {
 				manifestationList.add(manifestation);
-			}		
+			}
 		}
 		return manifestationList;
+	}
+
+	public Manifestation removeManifestation(Manifestation manifestation) {
+		if (!manifestations.containsKey(manifestation.getId())) {
+			return null;
+		}
+		return manifestations.remove(manifestation.getId());
 	}
 
 	public Boolean isManifestationOverlapping(LocalDateTime date, Location location, int id) {
 
 		for (Manifestation manifestation : findAllList()) {
-			if(manifestation.getId() != id) {
+			if (manifestation.getId() != id) {
 				if (manifestation.getDate().toLocalDate().equals(date.toLocalDate()) // if date overlaps
 						&& (manifestation.getLocation().getAddress().equals(location.getAddress()) // and location
 																									// overlaps
@@ -84,35 +87,36 @@ public class ManifestationDAO {
 					return true;
 				}
 			}
-			
+
 		}
 
 		return false;
 	}
-	
+
 	public boolean writeAllManifetations() {
 		FileWriter writer;
 		try {
 			writer = new FileWriter(this.contextPath + "Resources\\csvFiles\\manifestations.csv", false);
-			
-			for(Manifestation m : findAllList()) {
+
+			for (Manifestation m : findAllList()) {
 				writer.write(m.toCsvString());
 			}
 			writer.close();
 			return true;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 			return false;
-		} 
+		}
 	}
-	
+
 	public int getNextId() {
-		if(manifestations.size()==0) return 1;
-		int lastId = (Integer)new TreeSet<Integer>(manifestations.keySet()).last();
-		return lastId+1;
+		if (manifestations.size() == 0)
+			return 1;
+		int lastId = (Integer) new TreeSet<Integer>(manifestations.keySet()).last();
+		return lastId + 1;
 	}
-	
+
 	public boolean writeManifestation(Manifestation manifestation) {
 		FileWriter writer;
 		try {
@@ -121,32 +125,32 @@ public class ManifestationDAO {
 			writer.close();
 			return true;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 			return false;
-		} 		
+		}
 	}
 
 	private void loadManifestations(String contextPath) {
-		
+
 		BufferedReader bufferedReader = null;
 		try {
 
-			FileReader reader = new FileReader(contextPath + "Resources\\csvFiles\\manifestations.csv"); 
+			FileReader reader = new FileReader(contextPath + "Resources\\csvFiles\\manifestations.csv");
 			bufferedReader = new BufferedReader(reader);
 			String line;
-			
-			line =  bufferedReader.readLine();
-			
-			while (line != null){
-				
-				if ( line.charAt(0) == '#') {
+
+			line = bufferedReader.readLine();
+
+			while (line != null) {
+
+				if (line.charAt(0) == '#') {
 					line = bufferedReader.readLine();
 					continue;
 				}
-				
+
 				String[] st = line.split(";");
-				
+
 				int id = Integer.parseInt(st[0].trim());
 				String name = st[1].trim();
 				ManifestationType type = ManifestationType.values()[Integer.valueOf(st[2])];
@@ -158,15 +162,16 @@ public class ManifestationDAO {
 				String poster = st[8].trim();
 				int leftSeats = Integer.valueOf(st[9].trim());
 				String vendorUsername = st[10];
-				
-				Manifestation manifestation = new Manifestation(id, name, type, numSeats, date, price, status, location, poster, leftSeats);
+
+				Manifestation manifestation = new Manifestation(id, name, type, numSeats, date, price, status, location,
+						poster, leftSeats, false); // TODO deleted manifestations
 				manifestation.setVendorUsername(vendorUsername);
 				addManifestation(manifestation);
-				
+
 				line = bufferedReader.readLine();
-			}			
+			}
 			reader.close();
-			
+
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		} finally {
