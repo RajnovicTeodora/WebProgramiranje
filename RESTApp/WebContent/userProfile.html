@@ -42,9 +42,9 @@
 	</nav>
 
 	<div class="container center" id="userProfile">
-		<div class="card  center" style="color: white;">
+		<div class="card center" style="color: white; padding: 40px;">
 			<div class="card-contet teal darken-2 center">
-				<form class="col s12 center" id="profile_form">
+				<form id="profile_form">
 					<div class="row">
 						<div class="input-field col s6">
 							<i class="material-icons prefix">account_circle</i> <input
@@ -55,7 +55,7 @@
 						<div class="input-field col s6">
 							<label for="password" style="color: white;">Password <i
 								class="material-icons right">edit</i>
-							</label> <input id="password" type="password" placeholder="Password"
+							</label> <input id="password" minlength="4" type="password" placeholder="Password"
 								name="password" required style="color: white;" />
 						</div>
 					</div>
@@ -77,23 +77,30 @@
 					</div>
 
 					<div class="row">
-						<div class="input-field col s4">
+						<div class="input-field col s6">
 							<input placeholder="Gender" id="gender" name="gender" type="text"
 								readonly style="color: white;" /> <label for="gender"
 								style="color: white;">Gender</label>
 						</div>
-						<div class="input-field col s4 ">
+						<div class="input-field col s6 ">
 							<label for="birthday" style="color: white;">Date of Birth</label>
 							<input id="birthday" type="text" placeholder="Date of Birth"
 								name="birthday" readonly style="color: white;" />
 						</div>
-						<div class="input-field col s4" hidden id="points_field">
+					</div>
+					
+					<div class="row">
+						<div class="input-field col s6" hidden id="kind_field">
+							<label for="kind" style="color: white;">Type</label> <input
+								type="text" id="kind" placeholder="Type" name="kind"
+								style="color: white;" readonly />
+						</div>
+						<div class="input-field col s6" hidden id="points_field">
 							<label for="points" style="color: white;">Points</label> <input
 								type="text" id="points" placeholder="Points" name="points"
 								style="color: white;" readonly />
 						</div>
 					</div>
-
 
 					<button class="btn waves-effect waves-purple right row"
 						type="submit" name="action">

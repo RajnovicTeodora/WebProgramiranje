@@ -65,7 +65,7 @@ img {
 					</div>
 					<div class="input-field row">
 						<input placeholder="Name" id="name" name="name" type="text"
-							required /> <label for="name">Name <i
+							required /> <label for="name" minlength="3">Name <i
 							class="material-icons right">edit</i></label>
 					</div>
 					<div class="input-field row">
@@ -77,7 +77,7 @@ img {
 							<label for="typeSelect">Manifestation Type <i
 								class="material-icons right">edit</i></label>
 							<div class="input-field">
-								<select class="browser-default" id="typeSelect">
+								<select class="browser-default" id="typeSelect" required>
 									<option value="CONCERT">Concert</option>
 									<option value="FESTIVAL">Festival</option>
 									<option value="THEATER">Theater</option>
@@ -89,12 +89,12 @@ img {
 					<div class="row">
 						<div class="input-field col s6">
 							<input placeholder="Number of seats" id="numSeats"
-								name="numSeats" type="number" min="1" step="1" required readonly />
+								name="numSeats" type="number" readonly />
 							<label for="numSeats">Number of seats</label>
 						</div>
 						<div class="input-field col s6">
 							<input placeholder="Price" id="price" name="price" type="number"
-								required readonly /> <label for="price">Price</label>
+								required readonly/> <label for="price">Price</label>
 						</div>
 					</div>
 
