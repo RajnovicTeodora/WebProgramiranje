@@ -47,13 +47,11 @@ function showInfo(user) {
 	document.getElementById('birthday').value = user.birthday;
 	document.getElementById('gender').value = user.gender.charAt(0).toUpperCase() + user.gender.slice(1).toLowerCase();
 
-	if (user.role == "VENDOR") {
-
-	}
 	if (user.role == "USER") {
 		document.getElementById('points_field').hidden = false;
+		document.getElementById('kind_field').hidden = false;
 		document.getElementById('points').value = user.points;
-
+		document.getElementById('kind').value = user.kind;
 	}
 
 }

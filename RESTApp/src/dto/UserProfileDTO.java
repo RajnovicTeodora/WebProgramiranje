@@ -1,6 +1,5 @@
 package dto;
 
-
 import beans.Gender;
 import beans.RegisteredUser;
 import beans.User;
@@ -15,6 +14,7 @@ public class UserProfileDTO {
 	private String birthday;
 	private String role;
 	private int points;
+	private String kind;
 
 	public UserProfileDTO(User user) {
 		super();
@@ -26,14 +26,18 @@ public class UserProfileDTO {
 		this.birthday = user.getBirthday().toString();
 		this.role = user.getRole().toString();
 
-		if (user.getRole() == UserRole.USER)
+		if (user.getRole() == UserRole.USER) {
 			this.points = ((RegisteredUser) user).getPoints();
-		else
+			this.kind = ((RegisteredUser) user).getCustomerType().toString().substring(0, 1)
+					+ ((RegisteredUser) user).getCustomerType().toString().substring(1).toLowerCase();
+		} else {
 			this.points = 0;
+			this.kind = "";
+		}
 	}
 
 	public UserProfileDTO(String username, String password, String firstName, String lastName, Gender gender,
-			String birthday, String role) {
+			String birthday, String role, String kind) {
 		super();
 		this.username = username;
 		this.password = password;
@@ -42,6 +46,7 @@ public class UserProfileDTO {
 		this.gender = gender;
 		this.birthday = birthday;
 		this.role = role;
+		this.kind = kind;
 	}
 
 	public String getUsername() {
@@ -106,6 +111,14 @@ public class UserProfileDTO {
 
 	public void setPoints(int points) {
 		this.points = points;
+	}
+
+	public String getKind() {
+		return kind;
+	}
+
+	public void setKind(String kind) {
+		this.kind = kind;
 	}
 
 }
