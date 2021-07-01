@@ -39,6 +39,13 @@ public class CommentDAO {
 		comments.put(comment.getId(), comment);
 		return comment;
 	}
+	
+	public Comment removeComment(Comment comment) {
+		if (!comments.containsKey(comment.getId())) {
+			return null;
+		}
+		return comments.remove(comment.getId());
+	}
 
 	public Collection<Comment> findAll() {
 		return comments.values();
@@ -120,8 +127,9 @@ public class CommentDAO {
 				String text = st[3].trim();
 				int rating = Integer.valueOf(st[4]);
 				CommentStatus status = CommentStatus.values()[Integer.parseInt(st[5].trim())];
-
-				Comment comment = new Comment(id, user, manifestation, text, rating, status); 
+				
+				// TODO is comment deleted
+				Comment comment = new Comment(id, user, manifestation, text, rating, status, false); 
 				addComment(comment);
 				
 				line = bufferedReader.readLine();

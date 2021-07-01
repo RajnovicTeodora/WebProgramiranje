@@ -99,7 +99,7 @@ public class CommentService {
 			System.out.println(id + " is not a valid integer number");
 			throw new NumberFormatException();
 		}
-		
+
 		ManifestationDAO manifestationDAO = (ManifestationDAO) ctx.getAttribute("manifestationDAO");
 		Manifestation manifestation = manifestationDAO.findById(intId);
 		if (manifestation == null)
@@ -193,6 +193,40 @@ public class CommentService {
 		return new CommentDTO(comment);
 	}
 
+	@GET
+	@Path("/delete/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public CommentDTO deleteComment(@PathParam("id") String id) {
+
+		User user = (User) ctx.getAttribute("registeredUser");
+		if (user == null)
+			throw new UserNotFoundException("No user registered");
+
+		if (user.getRole() != UserRole.ADMINISTRATOR)
+			throw new UnauthorizedUserException("Unauthorized action");
+
+		CommentDAO commentDAO = (CommentDAO) ctx.getAttribute("commentDAO");
+
+		int intId = -1;
+		try {
+
+			intId = Integer.parseInt(id);
+
+		} catch (NumberFormatException e) {
+			System.out.println(id + " is not a valid integer number");
+			throw new NumberFormatException();
+		}
+
+		Comment comment = commentDAO.findById(intId);
+		if (comment == null)
+			throw new CommentNotFoundException("Comment with the id " + id + " not found");
+
+		comment.setDeleted(true);
+		commentDAO.removeComment(comment);
+		commentDAO.writeAllComments();
+		return new CommentDTO(comment);
+	}
+
 	// Add new comment
 	@POST
 	@Path("/add")
@@ -219,7 +253,7 @@ public class CommentService {
 			throw new InvalidInputException("Invalid inpu");
 
 		Comment comment = new Comment(commentDAO.findId(), (RegisteredUser) user, manifestation, commentDTO.getText(),
-				commentDTO.getRating(), CommentStatus.WAITING);
+				commentDTO.getRating(), CommentStatus.WAITING, false);
 		commentDAO.writeComment(comment);
 		return new CommentDTO(commentDAO.addComment(comment));
 	}
