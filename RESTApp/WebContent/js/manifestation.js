@@ -88,24 +88,9 @@ $("#reserve_form").submit(function(event) {
 	}
 });
 
-function readURL(input) {
-	if (input.files && input.files[0]) {
-		var reader = new FileReader();
-
-		reader.onload = function(e) {
-			$('#blah')
-				.attr('src', e.target.result)
-				.width(150)
-				.height(200);
-		};
-
-		reader.readAsDataURL(input.files[0]);
-	}
-}
-
 function showComment(comment, user) {
 
-	if (!user || user.role == "USER") {
+	if (user == null || user.role == "USER") {
 		let item = $('<li class="collection-item" id="' + comment.id + '"><div>' +
 			'<span class="title">' + comment.user + '</span>' +
 			'<p>Rating: ' + comment.rating + '<br>Comment: ' + comment.text + ' </p>' +
@@ -195,6 +180,9 @@ function reject(id) {
 
 function showManifestation(manifestation, user) {
 
+	var type = manifestation.type.charAt(0) + manifestation.type.toLowerCase().slice(1)
+	var status = manifestation.status.charAt(0) + manifestation.status.toLowerCase().slice(1)
+
 	var reserve = document.getElementById('reserve_form')
 	var tickets = document.getElementById('numSeats')
 
@@ -202,7 +190,7 @@ function showManifestation(manifestation, user) {
 	var today = new Date()
 
 	// Ticket reservation
-	if (user == null || manifestation.leftSeats == 0 || user.role != "USER" || manifestation.status != "ACTIVE" || date >= today)
+	if (user == null || manifestation.leftSeats == 0 || user.role != "USER" || manifestation.status != "ACTIVE" || date <= today)
 		reserve.style.display = "none"
 
 	// Commenting
@@ -212,7 +200,7 @@ function showManifestation(manifestation, user) {
 		$.get({
 			url: 'rest/comments/isCommentingAllowed/' + manifestation.id,
 			success: function(result) {
-				if (manifestation.status != "ACTIVE" || date < today || !result || !user) {
+				if (manifestation.status != "ACTIVE" || date >= today || !result || user == null) {
 					document.getElementById('comment_form').style.display = "none"
 				}
 			},
@@ -223,14 +211,16 @@ function showManifestation(manifestation, user) {
 	}
 
 	// Can user see left comments
-	if (manifestation.status != "ACTIVE" || date < today) {
+	if (manifestation.status != "ACTIVE" || date >= today) {
 		document.getElementById('comment_section').style.display = "none"
 	}
 
 	tickets.max = manifestation.leftSeats
 
-
-	if (new Date(manifestation.date) <= new Date() && manifestation.status == "ACTIVE") {
+	var lat = parseFloat(manifestation.location.latitude) * 1
+	var lon = parseFloat(manifestation.location.longitude) * 1
+	
+	if (new Date(manifestation.date) <= new Date() && manifestation.status === "ACTIVE") {
 		$.get({
 			url: 'rest/manifestations/rating/' + manifestation.id,
 			success: function(rating) {
@@ -242,13 +232,13 @@ function showManifestation(manifestation, user) {
 						'<img src="data:image/png;base64, ' + manifestation.poster + '" alt="Poster"/>' +
 						'</div>' +
 						'<div class="card-content">' +
-						'<span class="card-title">' + manifestation.name + ' - ' + manifestation.type + '</span>' +
+						'<span class="card-title">' + manifestation.name + ' - ' + type + '</span>' +
 						'<p> Date: ' + new Date(manifestation.date).toUTCString() + '</p>' +
 						'<p>Price: ' + manifestation.regularPrice + '</p>' +
-						'<p>Status: ' + manifestation.status + '</p> ' +
+						'<p>Status: ' + status + '</p> ' +
 						'<p> Number of seats: ' + manifestation.numSeats + '</p>' +
 						'<p> Available tickets: ' + manifestation.leftSeats + ' </p> ' +
-						'<p> Address: ' + manifestation.location.address + ' </p>' +
+						'<p> Address: ' + manifestation.location.address + ' (' + lon + ',' + lat + ')</p>' +
 						'<p style="padding-bottom:20px;">Rating:' + rating + ' </p>' +
 						'</div>' +
 						'</div>');
@@ -267,13 +257,13 @@ function showManifestation(manifestation, user) {
 			'<img src="data:image/png;base64, ' + manifestation.poster + '" alt="Poster"/>' +
 			'</div>' +
 			'<div class="card-content">' +
-			'<span class="card-title">' + manifestation.name + ' - ' + manifestation.type + '</span>' +
+			'<span class="card-title">' + manifestation.name + ' - ' + type + '</span>' +
 			'<p> Date: ' + new Date(manifestation.date).toUTCString() + '</p>' +
 			'<p>Price: ' + manifestation.regularPrice + '</p>' +
-			'<p>Status: ' + manifestation.status + '</p> ' +
+			'<p>Status: ' + status + '</p> ' +
 			'<p> Number of seats: ' + manifestation.numSeats + '</p>' +
 			'<p> Available tickets: ' + manifestation.leftSeats + ' </p> ' +
-			'<p style="padding-bottom:20px;"> Address: ' + manifestation.location.address + ' </p>' +
+			'<p style="padding-bottom:20px;"> Address: ' + manifestation.location.address + ' (' + lon + ',' + lat + ')</p>' +
 			'</div>' +
 			'</div>');
 
@@ -281,12 +271,6 @@ function showManifestation(manifestation, user) {
 		document.getElementById('total').value = regular
 		$('#manifestaion').append(basicInfo);
 	}
-
-
-	var lat = parseFloat(manifestation.location.latitude) * 1
-	var lon = parseFloat(manifestation.location.longitude) * 1
-	//var lon = 4.35247
-	//var lat = 50.84673
 
 	var map = new ol.Map({
 		target: 'map',

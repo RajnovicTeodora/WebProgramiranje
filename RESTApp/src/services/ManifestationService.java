@@ -19,6 +19,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
 import beans.Comment;
+import beans.CommentStatus;
 import beans.Location;
 import beans.Manifestation;
 import beans.ManifestationStatus;
@@ -416,7 +417,7 @@ public class ManifestationService {
 		int i = 0;
 
 		for (Comment comment : commentDAO.findAllList()) {
-			if (comment.getManifestation().getId() == manifestation.getId()) {
+			if (comment.getManifestation().getId() == manifestation.getId() && !comment.getDeleted() && comment.getStatus() == CommentStatus.APPROVED) {
 				i++;
 				score += comment.getRating();
 			}

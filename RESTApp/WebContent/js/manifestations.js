@@ -7,7 +7,8 @@ function addManifestationCard(manifestation) {
 			url: 'rest/manifestations/rating/' + manifestation.id,
 			success: function(rating) {
 				if (rating != -1) {
-					console.log(rating)
+					let type =  manifestation.type.charAt(0) + manifestation.type.toLowerCase().slice(1)
+					let status = manifestation.status.charAt(0) + manifestation.status.toLowerCase().slice(1) 
 					let card = $('<div class="col s4">' +
 						'<div class="card">' +
 						'<div class="card-image">' +
@@ -15,9 +16,9 @@ function addManifestationCard(manifestation) {
 						'<a class="btn-floating halfway-fab waves-effect waves-light teal darken-2 ligten" href="http://localhost:8080/RESTApp/manifestation.html?manifestation=' + manifestation.id + '"><i class="material-icons">info</i></a>' +
 						'</div>' +
 						'<div class="card-content">' +
-						'<span class="card-title">' + manifestation.name + ' - ' + manifestation.type + '</span>' +
+						'<span class="card-title">' + manifestation.name + ' - ' + type + '</span>' +
 						'<p> Date: ' + new Date(manifestation.date).toUTCString() + '</p><p>Price: ' +
-						manifestation.regularPrice + '</p><p>Status: ' + manifestation.status + '</p></p>Location: ' + manifestation.location.address + '</p><p>Rating:' + rating +
+						manifestation.regularPrice + '</p><p>Status: ' + status + '</p></p>Location: ' + manifestation.location.address + ' (' + manifestation.location.longitude + ',' + manifestation.location.latitude + ')</p><p>Rating:' + rating +
 						'</p></div></div></div></div>');
 
 					$('#manifestaions').append(card);
@@ -26,6 +27,8 @@ function addManifestationCard(manifestation) {
 			}
 		});
 	}else{
+		let type =  manifestation.type.charAt(0) + manifestation.type.toLowerCase().slice(1)
+		let status = manifestation.status.charAt(0) + manifestation.status.toLowerCase().slice(1) 
 		let card = $('<div class="col s4">' +
 			'<div class="card">' +
 			'<div class="card-image">' +
@@ -33,9 +36,9 @@ function addManifestationCard(manifestation) {
 			'<a class="btn-floating halfway-fab waves-effect waves-light teal darken-2 ligten" href="http://localhost:8080/RESTApp/manifestation.html?manifestation=' + manifestation.id + '"><i class="material-icons">info</i></a>' +
 			'</div>' +
 			'<div class="card-content">' +
-			'<span class="card-title">' + manifestation.name + ' - ' + manifestation.type + '</span>' +
+			'<span class="card-title">' + manifestation.name + ' - ' + type + '</span>' +
 			'<p> Date: ' + new Date(manifestation.date).toUTCString() + '</p><p>Price: ' +
-			manifestation.regularPrice + '</p><p>Status: ' + manifestation.status + '</p></p>Location: ' + manifestation.location.address + '</p>' +
+			manifestation.regularPrice + '</p><p>Status: ' + status + '</p></p>Location: ' + manifestation.location.address  + ' (' + manifestation.location.longitude + ',' + manifestation.location.latitude + ')</p>' +
 			'</div></div></div></div>');
 
 		$('#manifestaions').append(card);
