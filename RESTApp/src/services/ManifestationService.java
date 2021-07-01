@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
@@ -22,12 +23,14 @@ import beans.Location;
 import beans.Manifestation;
 import beans.ManifestationStatus;
 import beans.ManifestationType;
+import beans.Ticket;
 import beans.User;
 import beans.UserRole;
 import beans.Vendor;
 import dao.CommentDAO;
 import dao.LocationDAO;
 import dao.ManifestationDAO;
+import dao.TicketDAO;
 import dto.EditManifestationDTO;
 import dto.NewManifestationDTO;
 import exception.CommentNotFoundException;
@@ -71,6 +74,72 @@ public class ManifestationService {
 		// TODO: sort should be most recent
 		return manifestations;
 
+	}
+
+	@GET
+	@Path("/delete/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Manifestation deleteManifestation(@PathParam("id") String id) {
+
+		User user = (User) ctx.getAttribute("registeredUser");
+		if (user == null)
+			throw new UserNotFoundException("No user registered");
+
+		if (user.getRole() != UserRole.ADMINISTRATOR)
+			throw new UnauthorizedUserException("Unauthorized action");
+
+		ManifestationDAO dao = (ManifestationDAO) ctx.getAttribute("manifestationDAO");
+		int intId = -1;
+		try {
+			intId = Integer.parseInt(id);
+
+		} catch (NumberFormatException e) {
+			throw e;
+		}
+
+		Manifestation manifestation = dao.findById(intId);
+		if (manifestation == null)
+			throw new ManifestationNotFoundException("Manifestation with the id " + id + " not found");
+
+		manifestation.setDeleted(true);
+		dao.removeManifestation(manifestation);
+		dao.writeAllManifetations();
+		return manifestation;
+	}
+
+	@GET
+	@Path("/isDeleteAllowed/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public boolean isMAnifestationDeleteAllowed(@PathParam("id") String id) {
+
+		User user = (User) ctx.getAttribute("registeredUser");
+		if (user == null)
+			throw new UserNotFoundException("No user registered");
+
+		if (user.getRole() != UserRole.ADMINISTRATOR)
+			throw new UnauthorizedUserException("Unauthorized action");
+
+		ManifestationDAO dao = (ManifestationDAO) ctx.getAttribute("manifestationDAO");
+		int intId = -1;
+		try {
+			intId = Integer.parseInt(id);
+
+		} catch (NumberFormatException e) {
+			System.out.println(id + " is not a valid integer number");
+			return false;
+		}
+
+		Manifestation manifestation = dao.findById(intId);
+		if (manifestation == null)
+			throw new ManifestationNotFoundException("Manifestation with the id " + id + " not found");
+
+		TicketDAO ticketDAO = (TicketDAO) ctx.getAttribute("ticketDAO");
+		for (Ticket t : ticketDAO.findAllList()) {
+			if (t.getManifestation().equals(manifestation))
+				return false;
+		}
+
+		return true;
 	}
 
 	@GET
@@ -138,7 +207,7 @@ public class ManifestationService {
 
 		Manifestation manifestation = new Manifestation(dao.getNextId(), newManifestationDTO.getName(), type,
 				newManifestationDTO.getNumSeats(), newManifestationDTO.getDate(), newManifestationDTO.getRegularPrice(),
-				ManifestationStatus.UNACTIVE, location, newManifestationDTO.getPoster());
+				ManifestationStatus.UNACTIVE, location, newManifestationDTO.getPoster(), false);
 		manifestation.setVendorUsername(user.getUsername());
 		manifestations.add(manifestation);
 		user.setManifestations(manifestations);

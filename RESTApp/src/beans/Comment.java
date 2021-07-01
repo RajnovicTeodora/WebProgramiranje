@@ -7,13 +7,14 @@ public class Comment {
 	private String text;
 	private int rating; // 1,2,3,4,5
 	private CommentStatus status;
+	private Boolean deleted;
 
 	public Comment() {
 		super();
 	}
 
 	public Comment(int id, RegisteredUser user, Manifestation manifestation, String text, int rating,
-			CommentStatus status) {
+			CommentStatus status, Boolean deleted) {
 		super();
 		this.id = id;
 		this.user = user;
@@ -21,6 +22,7 @@ public class Comment {
 		this.text = text;
 		this.rating = rating;
 		this.status = status;
+		this.deleted = deleted;
 	}
 
 	public int getId() {
@@ -71,15 +73,24 @@ public class Comment {
 		this.status = status;
 	}
 
+	public Boolean getDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(Boolean deleted) {
+		this.deleted = deleted;
+	}
+
 	@Override
 	public String toString() {
 		return "Comment [user=" + user.getUsername() + ", manifestation=" + manifestation.getName() + ", text=" + text
 				+ ", rating=" + rating + ", status=" + status + "]";
 	}
-	
+
 	public String toCsvString() {
-		String[] elems = {String.valueOf(this.id), user.getUsername(), String.valueOf(manifestation.getId()), this.text, String.valueOf(this.rating), String.valueOf(this.status.ordinal())};
-		return String.join(";", elems)+"\n";	
+		String[] elems = { String.valueOf(this.id), user.getUsername(), String.valueOf(manifestation.getId()),
+				this.text, String.valueOf(this.rating), String.valueOf(this.status.ordinal()) };
+		return String.join(";", elems) + "\n";
 	}
 
 }

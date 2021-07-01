@@ -14,13 +14,14 @@ public class Manifestation {
 	private String poster;
 	private int leftSeats;
 	private String vendorUsername;
+	private Boolean deleted;
 
 	public Manifestation() {
 		super();
 	}
 
-	public Manifestation(int id, String name, ManifestationType type, int numSeats, LocalDateTime date, double regularPrice,
-			ManifestationStatus status, Location location, String poster) {
+	public Manifestation(int id, String name, ManifestationType type, int numSeats, LocalDateTime date,
+			double regularPrice, ManifestationStatus status, Location location, String poster, Boolean deleted) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -31,11 +32,13 @@ public class Manifestation {
 		this.status = status;
 		this.location = location;
 		this.poster = poster;
-		this.leftSeats = numSeats; // TODO
+		this.leftSeats = numSeats;
+		this.deleted = deleted;
 	}
-	
-	public Manifestation(int id, String name, ManifestationType type, int numSeats, LocalDateTime date, double regularPrice,
-			ManifestationStatus status, Location location, String poster, int leftSeats) {
+
+	public Manifestation(int id, String name, ManifestationType type, int numSeats, LocalDateTime date,
+			double regularPrice, ManifestationStatus status, Location location, String poster, int leftSeats,
+			Boolean deleted) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -47,6 +50,7 @@ public class Manifestation {
 		this.location = location;
 		this.poster = poster;
 		this.leftSeats = leftSeats;
+		this.deleted = deleted;
 	}
 
 	public int getId() {
@@ -121,6 +125,14 @@ public class Manifestation {
 		this.poster = poster;
 	}
 
+	public Boolean getDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(Boolean deleted) {
+		this.deleted = deleted;
+	}
+
 	@Override
 	public String toString() {
 		return "Manifestation [name=" + name + ", type=" + type + ", numSeats=" + numSeats + ", date=" + date
@@ -154,7 +166,7 @@ public class Manifestation {
 		Manifestation other = (Manifestation) obj;
 		if (id != other.id)
 			return false;
-		
+
 		return true;
 	}
 
@@ -173,12 +185,15 @@ public class Manifestation {
 	public void setVendorUsername(String vendorUsername) {
 		this.vendorUsername = vendorUsername;
 	}
-	
+
 	public String toCsvString() {
-		//id;name;type;numSeats;date;price;status;location;poster;leftSeats;vendor username
-		String[] elems = {String.valueOf(this.id), this.name, String.valueOf(this.type.ordinal()),String.valueOf(this.numSeats), this.date.toString(), 
-				String.valueOf(this.regularPrice), String.valueOf(this.status.ordinal()), String.valueOf(this.location.getId()), this.poster, String.valueOf(this.leftSeats), this.vendorUsername};
-		return String.join(";", elems)+"\n";	
+		// id;name;type;numSeats;date;price;status;location;poster;leftSeats;vendor
+		// username
+		String[] elems = { String.valueOf(this.id), this.name, String.valueOf(this.type.ordinal()),
+				String.valueOf(this.numSeats), this.date.toString(), String.valueOf(this.regularPrice),
+				String.valueOf(this.status.ordinal()), String.valueOf(this.location.getId()), this.poster,
+				String.valueOf(this.leftSeats), this.vendorUsername };
+		return String.join(";", elems) + "\n";
 	}
 
 }
