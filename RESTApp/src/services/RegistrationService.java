@@ -210,6 +210,12 @@ public class RegistrationService {
 				dto.setStatus("blocked");
 				users.add(dto);
 			}
+			for (User u : dao.findAllDeletedList()) {
+															
+				UserDTO dto = new UserDTO(u);
+				dto.setStatus("deleted");
+				users.add(dto);
+			}
 		} else if (user.getRole() == UserRole.VENDOR) {
 			for (User u : dao.findAllList()) {
 				if (u.getRole() != UserRole.USER || u.getUsername().equals(user.getUsername()))

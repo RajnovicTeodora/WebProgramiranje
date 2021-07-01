@@ -23,6 +23,7 @@ import beans.Vendor;
 public class RegisteredUserDAO {
 	private Map<String, User> registeredUsers = new HashMap<>();
 	private Map<String, User> blockedUsers = new HashMap<>();
+	private Map<String, User> deletedUsers = new HashMap<>();
 	
 	String contextPath = "";
 
@@ -34,6 +35,7 @@ public class RegisteredUserDAO {
 		this.contextPath = contextPath;
 		loadRegisteredUsers(contextPath);
 		loadBlockedUsers(contextPath);
+		loadDeletedUsers(contextPath);
 	}
 
 	public User find(String username, String password) {
@@ -72,6 +74,13 @@ public class RegisteredUserDAO {
 		removeRegisteredUser(blockedUser);
 		return blockedUser;
 	}
+	
+	public User addDeletedUser(User user) {
+		deletedUsers.put(user.getUsername(), user);
+		removeRegisteredUser(user);
+		removeBlockedUser(user);
+		return user;
+	}
 
 	public Collection<User> findAll() {
 		return registeredUsers.values();
@@ -79,6 +88,10 @@ public class RegisteredUserDAO {
 	
 	public Collection<User> findAllBlocked() {
 		return blockedUsers.values();
+	}
+	
+	public Collection<User> findAllDeleted() {
+		return deletedUsers.values();
 	}
 
 	public ArrayList<User> findAllList(){
@@ -97,12 +110,23 @@ public class RegisteredUserDAO {
 		return userList;
 	}
 	
+	public ArrayList<User> findAllDeletedList(){
+		ArrayList<User> userList = new ArrayList<User>();
+		for (User user : findAllDeleted()) {
+			userList.add(user);
+		}
+		return userList;
+	}
+	
 	public ArrayList<User> findAllAdminList(){
 		ArrayList<User> userList = new ArrayList<User>();
 		for (User user : findAll()) {
 			userList.add(user);
 		}
 		for (User user : findAllBlocked()) {
+			userList.add(user);
+		}
+		for (User user : findAllDeleted()) {
 			userList.add(user);
 		}
 		return userList;
@@ -199,6 +223,20 @@ public class RegisteredUserDAO {
 		} 		
 	}
 	
+	public boolean deleteUser(User user) {
+		FileWriter writer;
+		try {
+			writer = new FileWriter(this.contextPath + "Resources\\csvFiles\\deletedUsers.csv", true);
+			writer.write(user.toCsvString());
+			writer.close();
+			return true;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		} 		
+	}
+	
 	public boolean writeAllUsers() {
 		FileWriter writer;
 		try {
@@ -278,6 +316,53 @@ public class RegisteredUserDAO {
 					RegisteredUser u = new RegisteredUser(username, password, firstName, lastName, gender, date, role, kind, tickets, points, false);
 					addBlockedUser(u);
 				}
+				line = bufferedReader.readLine();
+			}			
+			reader.close();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		} finally {
+			if (bufferedReader != null) {
+				try {
+					bufferedReader.close();
+				} catch (Exception e) {
+				}
+			}
+		}
+	}
+	
+	private void loadDeletedUsers(String contextPath) {
+		BufferedReader bufferedReader = null;
+		try {		
+			FileReader reader = new FileReader(contextPath + "Resources\\csvFiles\\deletedUsers.csv"); 
+			bufferedReader = new BufferedReader(reader);
+			String line;
+			
+			line =  bufferedReader.readLine();
+			
+			while (line != null){
+				
+				if ( line.charAt(0) == '#') {
+					line = bufferedReader.readLine();
+					continue;
+				}
+				
+				String[] st = line.split(";");
+				
+				String username = st[0].trim();
+				String password = st[1].trim();
+				String firstName = st[2].trim();
+				String lastName = st[3].trim();
+				Gender gender = Gender.values()[Integer.valueOf(st[4])];
+				LocalDate date = LocalDate.parse(st[5]);				
+				UserRole role = UserRole.values()[Integer.valueOf(st[6])];
+				CustomerKind kind = CustomerKind.values()[Integer.valueOf(st[7])];
+								
+				if(role == UserRole.VENDOR) {
+					Vendor v = new Vendor(username, password, firstName, lastName, gender, date, role, kind);
+					addDeletedUser(v);
+				}
+
 				line = bufferedReader.readLine();
 			}			
 			reader.close();

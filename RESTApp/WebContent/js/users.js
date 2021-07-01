@@ -33,7 +33,25 @@ function blockUser(user) {
 			M.toast({ html: 'Failed to block user!', classes: 'rounded', panning: 'center' });
 		}
 	});
+}
 
+function deleteUser(user) {
+
+	let username = user.id;
+	console.log(username);
+
+	$.ajax({
+		type: 'POST',
+		url: "rest/admin/deleteUser",
+		data: username,
+		contentType: 'application/json',
+		success: function(result) {
+			window.location.reload(false)
+		},
+		error: function() {
+			M.toast({ html: 'Failed to delete user!', classes: 'rounded', panning: 'center' });
+		}
+	});
 }
 
 function addUserTrAdmin(user) {
@@ -51,17 +69,15 @@ function addUserTrAdmin(user) {
 	let tdType = $('<td>' + user.customerType + '</td>');
 	let tdPoints = $('<td>' + user.points + '</td>');
 
-	let delBtn = $('<td><a id="deleteButton" class="btn-floating btn-medium waves-effect waves-light red"><i class="material-icons">delete</i></a></td>');
+	let delBtn = $('<td><a id="deleteButton" onClick="deleteUser('+user.username+')" class="btn-floating btn-medium waves-effect waves-light red"><i class="material-icons">delete</i></a></td>');
 	let blockBtn = $('<td><a id="blockButton" onClick="blockUser('+user.username+')" class="btn-floating btn-medium waves-effect waves-light"><i class="material-icons">block</i></a></td>');
 
-	let statusColor = 'DarkGreen';
-	if(user.status == "deleted"){
-		statusColor = 'DarkRed';
-		delBtn = $('<td></td>');
-	}
 	if(user.status == "blocked"){
-		statusColor = 'Gold';
 		blockBtn = $('<td><a id="blockButton" onClick="blockUser('+user.username+')" class="btn-floating btn-medium waves-effect waves-light grey"><i class="material-icons">block</i></a></td>');
+	}
+	if(user.status == "deleted"){
+		delBtn = $('<td>Deleted user</td>');
+		blockBtn = $('<td></td>');
 	}
 	if(user.role == "Administrator"){
 		blockBtn = $('<td></td>');
@@ -70,6 +86,7 @@ function addUserTrAdmin(user) {
 	if(user.role == "User"){
 		delBtn = $('<td></td>');
 	}
+	
 	
 	tr.append(tdUsername).append(tdName).append(tdSurname).append(tdGender).append(tdBirthday).append(tdRole).append(tdType).append(tdPoints).append(blockBtn).append(delBtn);
 
