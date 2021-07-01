@@ -318,14 +318,6 @@ public class ManifestationService {
 			@PathParam("PriceTo") String PriceTo, @PathParam("Type") String Type,
 			@PathParam("SoldOut") String SoldOut) {
 
-//		System.out.println("Searching manifestations...");
-//		System.out.println("Name: "+Name);
-//		System.out.println("Location: "+Location);
-//		System.out.println("Date from: "+DateFrom);
-//		System.out.println("Date to: "+DateTo);
-//		System.out.println("Price from: "+PriceFrom);
-//		System.out.println("Price to: "+PriceTo);
-
 		String name;
 		String location;
 		if (Name.equals("null"))
@@ -352,6 +344,9 @@ public class ManifestationService {
 		double priceTo = 1000000;
 		try {
 			priceFrom = Double.valueOf(PriceFrom);
+		} catch (Exception e) {
+		}
+		try {
 			priceTo = Double.valueOf(PriceTo);
 		} catch (Exception e) {
 		}
@@ -370,9 +365,9 @@ public class ManifestationService {
 		List<Manifestation> filteredManifestations = new ArrayList<Manifestation>();
 		for (Manifestation m : allManifestations) {
 			if (!m.getName().toLowerCase().contains(name.toLowerCase()))
-				continue; // provera ime
+				continue; 
 			if (!m.getLocation().getAddress().toLowerCase().contains(location.toLowerCase()))
-				continue; // provera lokacija
+				continue; 
 			if (dateFrom != null && m.getDate().isBefore(LocalDateTime.of(dateFrom, LocalTime.now())))
 				continue;
 			if (dateTo != null && m.getDate().isAfter(LocalDateTime.of(dateTo, LocalTime.now())))
