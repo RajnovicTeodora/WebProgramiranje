@@ -10,9 +10,8 @@ function addUserTr(user) {
 	let tdType = $('<td>' + user.customerType + '</td>');
 	let tdPoints = $('<td>' + user.points + '</td>');
 
-	tr.append(tdUsername).append(tdName).append(tdSurname).append(tdGender).append(tdBirthday).append(tdRole).append(tdType).append(tdPoints);
 
-	// TODO ADD DELETE BUTTON ?
+	tr.append(tdUsername).append(tdName).append(tdSurname).append(tdGender).append(tdBirthday).append(tdRole).append(tdType).append(tdPoints);
 
 	$('#users tbody').append(tr);
 }
@@ -39,10 +38,8 @@ function blockUser(user) {
 
 function addUserTrAdmin(user) {
 
-	$("#userStatus").show();
 	$("#blockBtn").show();
 	$("#deleteBtn").show();
-	console.log(":)");
 
 	let tr = $('<tr id="' + user.username + '"></tr>');
 	let tdUsername = $('<td>' + user.username + '</td>');
@@ -60,34 +57,40 @@ function addUserTrAdmin(user) {
 	let statusColor = 'DarkGreen';
 	if(user.status == "deleted"){
 		statusColor = 'DarkRed';
-		delBtn = $('');
+		delBtn = $('<td></td>');
 	}
 	if(user.status == "blocked"){
 		statusColor = 'Gold';
 		blockBtn = $('<td><a id="blockButton" onClick="blockUser('+user.username+')" class="btn-floating btn-medium waves-effect waves-light grey"><i class="material-icons">block</i></a></td>');
 	}
 	if(user.role == "Administrator"){
-		blockBtn = $('<td>hello</td>');
+		blockBtn = $('<td></td>');
+		delBtn = $('<td></td>');
+	}
+	if(user.role == "User"){
+		delBtn = $('<td></td>');
 	}
 	
-	let tdStatus = $('<td style="color: '+statusColor+';">'+user.status+'<td>');
-
-	tr.append(tdUsername).append(tdName).append(tdSurname).append(tdGender).append(tdBirthday).append(tdRole).append(tdType).append(tdPoints).append(tdStatus).append(blockBtn).append(delBtn);
+	tr.append(tdUsername).append(tdName).append(tdSurname).append(tdGender).append(tdBirthday).append(tdRole).append(tdType).append(tdPoints).append(blockBtn).append(delBtn);
 
 	$('#users tbody').append(tr);
 }
 
 function showInfo(user) {
-	if (!user) return;
 
-	$.get({
+	if (!user) return;
+	console.log(user);
+
+	$.ajax({
+		type: 'GET',
 		url: 'rest/registration/users',
 		success: function(users) {
 			if (user.role == "VENDOR")
 				document.getElementById("new_vendor").innerHTML = ''
 			for (let u of users) {
-				if (user.role == "VENDOR")
+				if (user.role == "VENDOR"){
 					addUserTr(u);
+				}
 				else if (user.role == "ADMINISTRATOR")
 					addUserTrAdmin(u);
 			}
@@ -107,6 +110,16 @@ $(document).ready(function() {
 });
 
 $("#filter_users_form").submit(function(event) {
+
+	let userRole = 'admin';
+
+	$.get({
+		url: 'rest/registration/registeredUser',
+		success: function(user) {
+			if (user.role != "ADMINISTRATOR")
+				userRole = 'notAdmin';
+		}
+	});
 
 	event.preventDefault();
 	console.log("Filtering users...");
@@ -130,7 +143,12 @@ $("#filter_users_form").submit(function(event) {
  		success: function(response) {
 			$('#users tbody').empty();
 			for (let user of response) {
-				addUserTr(user);
+				if(userRole == 'admin'){
+					addUserTrAdmin(user);
+				}
+				else{
+					addUserTr(user);
+				}
 			}
  		},
  		error: function() {
