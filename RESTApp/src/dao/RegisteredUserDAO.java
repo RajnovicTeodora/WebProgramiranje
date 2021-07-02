@@ -313,7 +313,7 @@ public class RegisteredUserDAO {
 
 				if (role == UserRole.USER) {
 					List<Ticket> tickets = ToiToiDAO.getUserTickets(contextPath, username);
-					int points = Integer.valueOf(st[8]);
+					double points = Double.valueOf(st[8]);
 					RegisteredUser u = new RegisteredUser(username, password, firstName, lastName, gender, date, role,
 							kind, tickets, points, false);
 					addBlockedUser(u);
