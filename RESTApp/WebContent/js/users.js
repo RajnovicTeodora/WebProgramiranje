@@ -56,6 +56,7 @@ function deleteUser(user) {
 
 function addUserTrAdmin(user) {
 
+	$("#sus").show();
 	$("#blockBtn").show();
 	$("#deleteBtn").show();
 
@@ -69,8 +70,13 @@ function addUserTrAdmin(user) {
 	let tdType = $('<td>' + user.customerType + '</td>');
 	let tdPoints = $('<td>' + user.points + '</td>');
 
+	let susIcon = $('<td></td>');
 	let delBtn = $('<td><a id="deleteButton" onClick="deleteUser('+user.username+')" class="btn-floating btn-medium waves-effect waves-light red"><i class="material-icons">delete</i></a></td>');
 	let blockBtn = $('<td><a id="blockButton" onClick="blockUser('+user.username+')" class="btn-floating btn-medium waves-effect waves-light"><i class="material-icons">block</i></a></td>');
+
+
+	if(user.isSus == "Suspicious")
+		susIcon = $('<td><i class="material-icons medium red-text">error_outline</i></td>');
 
 	if(user.status == "blocked"){
 		blockBtn = $('<td><a id="blockButton" onClick="blockUser('+user.username+')" class="btn-floating btn-medium waves-effect waves-light grey"><i class="material-icons">block</i></a></td>');
@@ -88,7 +94,7 @@ function addUserTrAdmin(user) {
 	}
 	
 	
-	tr.append(tdUsername).append(tdName).append(tdSurname).append(tdGender).append(tdBirthday).append(tdRole).append(tdType).append(tdPoints).append(blockBtn).append(delBtn);
+	tr.append(tdUsername).append(tdName).append(tdSurname).append(tdGender).append(tdBirthday).append(tdRole).append(tdType).append(tdPoints).append(susIcon).append(blockBtn).append(delBtn);
 
 	$('#users tbody').append(tr);
 }

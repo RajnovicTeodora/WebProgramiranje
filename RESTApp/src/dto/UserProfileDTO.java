@@ -13,7 +13,7 @@ public class UserProfileDTO {
 	private Gender gender;
 	private String birthday;
 	private String role;
-	private int points;
+	private double points;
 	private String kind;
 
 	public UserProfileDTO(User user) {
@@ -105,11 +105,11 @@ public class UserProfileDTO {
 		this.role = role;
 	}
 
-	public int getPoints() {
+	public double getPoints() {
 		return points;
 	}
 
-	public void setPoints(int points) {
+	public void setPoints(double points) {
 		this.points = points;
 	}
 
