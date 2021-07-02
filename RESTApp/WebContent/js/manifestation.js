@@ -127,7 +127,9 @@ function showComment(comment, user) {
 }
 
 function deleteComment(id) {
-	$.get({
+	$.ajax({
+		type: 'GET',
+		contentType: 'application/json',
 		url: 'rest/comments/delete/' + id,
 		success: function(comment) {
 
@@ -142,7 +144,9 @@ function deleteComment(id) {
 }
 
 function approve(id) {
-	$.get({
+	$.ajax({
+		type: 'GET',
+		contentType: 'application/json',
 		url: 'rest/comments/approve/' + id,
 		success: function(comment) {
 			let item = '<div>' +
@@ -160,7 +164,9 @@ function approve(id) {
 }
 
 function reject(id) {
-	$.get({
+	$.ajax({
+		type: 'GET',
+		contentType: 'application/json',
 		url: 'rest/comments/reject/' + id,
 		success: function(comment) {
 			let item = '<div>' +
@@ -197,7 +203,9 @@ function showManifestation(manifestation, user) {
 	if (user == null || user.role != "USER") {
 		document.getElementById('comment_form').style.display = "none"
 	} else {
-		$.get({
+		$.ajax({
+			type: 'GET',
+			contentType: 'application/json',
 			url: 'rest/comments/isCommentingAllowed/' + manifestation.id,
 			success: function(result) {
 				if (manifestation.status != "ACTIVE" || date >= today || !result || user == null) {
@@ -219,9 +227,11 @@ function showManifestation(manifestation, user) {
 
 	var lat = parseFloat(manifestation.location.latitude) * 1
 	var lon = parseFloat(manifestation.location.longitude) * 1
-	
+
 	if (new Date(manifestation.date) <= new Date() && manifestation.status === "ACTIVE") {
-		$.get({
+		$.ajax({
+			type: 'GET',
+			contentType: 'application/json',
 			url: 'rest/manifestations/rating/' + manifestation.id,
 			success: function(rating) {
 				if (rating != -1) {
@@ -309,7 +319,9 @@ function showManifestation(manifestation, user) {
 	map.addLayer(layer);
 
 
-	$.get({
+	$.ajax({
+		type: 'GET',
+		contentType: 'application/json',
 		url: 'rest/comments/list/' + manifestation.id,
 		success: function(result) {
 			for (let c of result)
@@ -326,19 +338,33 @@ $(document).ready(function() {
 	const urlParams = new URLSearchParams(queryString);
 	const id = urlParams.get('manifestation')
 
-	$.get({
+	$.ajax({
+		type: 'GET',
+		contentType: 'application/json',
 		url: 'rest/manifestations/' + id,
 		success: function(manifestaton) {
-			$.get({
+			$.ajax({
+				type: 'GET',
+				contentType: 'application/json',
 				url: 'rest/registration/registeredUser',
 				success: function(user) {
-					if (user.role == "USER") {
-						document.getElementById("li_manifestations").innerHTML = ''
-						document.getElementById("li_users").innerHTML = ''
+					if (user != null) {
+						if (user.role == "USER") {
+							document.getElementById("li_manifestations").innerHTML = ''
+							document.getElementById("li_users").innerHTML = ''
+						}
+						document.getElementById("li_registration").innerHTML = ''
+						document.getElementById("li_login").innerHTML = ''
+						showManifestation(manifestaton, user)
 					}
-					document.getElementById("li_registration").innerHTML = ''
-					document.getElementById("li_login").innerHTML = ''
-					showManifestation(manifestaton, user)
+					else {
+						document.getElementById("li_users").innerHTML = ''
+						document.getElementById("li_my_profile").innerHTML = ''
+						document.getElementById("li_tickets").innerHTML = ''
+						document.getElementById("li_manifestations").innerHTML = ''
+						document.getElementById("li_logout").innerHTML = ''
+						showManifestation(manifestaton, null)
+					}
 				},
 				error: function() {
 					document.getElementById("li_users").innerHTML = ''
