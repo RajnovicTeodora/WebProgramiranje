@@ -4,7 +4,7 @@ function cancelTicket(ticket) {
 		contentType: 'application/json',
 		url: 'rest/tickets/cancel/' + ticket.id,
 		success: function() {
-			document.getElementById(ticket.id).outerHTML = ''
+			document.getElementById(ticket.id).innerHTML = ''
 			M.toast({ html: 'Successfully canceled ticket', classes: 'rounded', panning: 'center' });
 		},
 		error: function() {
