@@ -66,8 +66,7 @@ $("#manifestation_form").submit(function(event) {
 	let country = $('input[name="country"]').val();
 
 	if (!newImg || !name || !date || !type || !numSeats || !price || !street || !number || !city || !country) {
-		$('#error').text('All fields must be filled!');
-		$("#error").show().delay(3000).fadeOut();
+		M.toast({ html: 'All fields must be filled!', classes: 'rounded', panning: 'center' });
 		return;
 	}
 

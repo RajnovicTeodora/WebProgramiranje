@@ -12,15 +12,13 @@ $("#registration_form").submit(function(event) {
 	let birthday = $('input[name="date"]').val();
 
 	if (!username || !password || !name || !surname || !gender || !birthday) {
-		$('#error').text('All fields must be filled!');
-		$("#error").show().delay(3000).fadeOut();
+		M.toast({ html: 'All fields must be filled!', classes: 'rounded', panning: 'center' });
 		return;
 	}
 
 	var today = new Date().toISOString().split("T")[0];
 	if (birthday >= today) {
-		$('#error').text('Date of birth must be before today\'s date');
-		$("#error").show().delay(3000).fadeOut();
+		M.toast({ html: 'Date of birth must be before today\'s date', classes: 'rounded', panning: 'center' });
 		return;
 	}
 	$.ajax({
@@ -53,8 +51,11 @@ $("#registration_form").submit(function(event) {
 			});
 
 		},
-		error: function() {
-			M.toast({ html: 'Invalid input', classes: 'rounded', panning: 'center' });
+		error: function(err) {
+			if (err.status == 403)
+				M.toast({ html: 'Username already exists', classes: 'rounded', panning: 'center' });
+			else
+				M.toast({ html: 'Invalid input', classes: 'rounded', panning: 'center' });
 		}
 	});
 });
@@ -89,7 +90,8 @@ $(document).ready(function() {
 			}
 
 		},
-		error: function() {s
+		error: function() {
+
 			document.getElementById("li_users").innerHTML = ''
 			document.getElementById("li_my_profile").innerHTML = ''
 			document.getElementById("li_tickets").innerHTML = ''

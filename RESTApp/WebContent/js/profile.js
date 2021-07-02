@@ -10,8 +10,7 @@ $("#profile_form").submit(function(event) {
 	let surname = $('input[name="surname"]').val();
 
 	if (!password || !name || !surname) {
-		$('#error').text('All fields must be filled!');
-		$("#error").show().delay(3000).fadeOut();
+		M.toast({ html: 'All fields must be filled!', classes: 'rounded', panning: 'center' });
 		return;
 	}
 

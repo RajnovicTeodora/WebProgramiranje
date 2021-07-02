@@ -1,6 +1,8 @@
 package exception;
 
-public class UserExistsException extends RuntimeException {
+import javax.ws.rs.ForbiddenException;
+
+public class UserExistsException extends ForbiddenException {
 
     private static final long serialVersionUID = 1L;
 
