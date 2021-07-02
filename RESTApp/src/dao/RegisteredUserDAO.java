@@ -11,7 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import beans.Administrator;
-import beans.Comment;
 import beans.CustomerKind;
 import beans.Gender;
 import beans.RegisteredUser;
@@ -24,11 +23,11 @@ public class RegisteredUserDAO {
 	private Map<String, User> registeredUsers = new HashMap<>();
 	private Map<String, User> blockedUsers = new HashMap<>();
 	private Map<String, User> deletedUsers = new HashMap<>();
-	
+
 	String contextPath = "";
 
 	public RegisteredUserDAO() {
-		
+
 	}
 
 	public RegisteredUserDAO(String contextPath) {
@@ -50,15 +49,15 @@ public class RegisteredUserDAO {
 	}
 
 	public User findByUsername(String username) {
-		if (registeredUsers.containsKey(username)) {  
+		if (registeredUsers.containsKey(username)) {
 			return registeredUsers.get(username);
 		}
-		if(blockedUsers.containsKey(username)) {
+		if (blockedUsers.containsKey(username)) {
 			return blockedUsers.get(username);
 		}
 		return null;
 	}
-	
+
 	public User updateUser(User user) {
 		return registeredUsers.replace(user.getUsername(), user);
 	}
@@ -68,13 +67,13 @@ public class RegisteredUserDAO {
 		removeBlockedUser(registeredUser);
 		return registeredUser;
 	}
-	
+
 	public User addBlockedUser(User blockedUser) {
 		blockedUsers.put(blockedUser.getUsername(), blockedUser);
 		removeRegisteredUser(blockedUser);
 		return blockedUser;
 	}
-	
+
 	public User addDeletedUser(User user) {
 		deletedUsers.put(user.getUsername(), user);
 		removeRegisteredUser(user);
@@ -85,40 +84,40 @@ public class RegisteredUserDAO {
 	public Collection<User> findAll() {
 		return registeredUsers.values();
 	}
-	
+
 	public Collection<User> findAllBlocked() {
 		return blockedUsers.values();
 	}
-	
+
 	public Collection<User> findAllDeleted() {
 		return deletedUsers.values();
 	}
 
-	public ArrayList<User> findAllList(){
+	public ArrayList<User> findAllList() {
 		ArrayList<User> userList = new ArrayList<User>();
 		for (User user : findAll()) {
 			userList.add(user);
 		}
 		return userList;
 	}
-	
-	public ArrayList<User> findAllBlockedList(){
+
+	public ArrayList<User> findAllBlockedList() {
 		ArrayList<User> userList = new ArrayList<User>();
 		for (User user : findAllBlocked()) {
 			userList.add(user);
 		}
 		return userList;
 	}
-	
-	public ArrayList<User> findAllDeletedList(){
+
+	public ArrayList<User> findAllDeletedList() {
 		ArrayList<User> userList = new ArrayList<User>();
 		for (User user : findAllDeleted()) {
 			userList.add(user);
 		}
 		return userList;
 	}
-	
-	public ArrayList<User> findAllAdminList(){
+
+	public ArrayList<User> findAllAdminList() {
 		ArrayList<User> userList = new ArrayList<User>();
 		for (User user : findAll()) {
 			userList.add(user);
@@ -131,71 +130,73 @@ public class RegisteredUserDAO {
 		}
 		return userList;
 	}
-	
+
 	public void removeRegisteredUser(User user) {
-		if(registeredUsers.containsKey(user.getUsername())) {
+		if (registeredUsers.containsKey(user.getUsername())) {
 			registeredUsers.remove(user.getUsername());
 		}
 	}
-	
+
 	public void removeBlockedUser(User user) {
-		if(blockedUsers.containsKey(user.getUsername())) {
+		if (blockedUsers.containsKey(user.getUsername())) {
 			blockedUsers.remove(user.getUsername());
 		}
 	}
-	
+
 	public boolean isUserBlocked(User user) {
-		if(blockedUsers.containsKey(user.getUsername())) return true;
+		if (blockedUsers.containsKey(user.getUsername()))
+			return true;
 		return false;
 	}
-	
+
 	private void loadRegisteredUsers(String contextPath) {
 		BufferedReader bufferedReader = null;
-		try {		
-			FileReader reader = new FileReader(contextPath + "Resources\\csvFiles\\users.csv"); 
+		try {
+			FileReader reader = new FileReader(contextPath + "Resources\\csvFiles\\users.csv");
 			bufferedReader = new BufferedReader(reader);
 			String line;
-			
-			line =  bufferedReader.readLine();
-			
-			while (line != null){
-				
-				if ( line.charAt(0) == '#') {
+
+			line = bufferedReader.readLine();
+
+			while (line != null) {
+
+				if (line.charAt(0) == '#') {
 					line = bufferedReader.readLine();
 					continue;
 				}
-				
+
 				String[] st = line.split(";");
-				
+
 				String username = st[0].trim();
 				String password = st[1].trim();
 				String firstName = st[2].trim();
 				String lastName = st[3].trim();
 				Gender gender = Gender.values()[Integer.valueOf(st[4])];
-				LocalDate date = LocalDate.parse(st[5]);				
+				LocalDate date = LocalDate.parse(st[5]);
 				UserRole role = UserRole.values()[Integer.valueOf(st[6])];
 				CustomerKind kind = CustomerKind.values()[Integer.valueOf(st[7])];
-				
-			
-				if(role == UserRole.ADMINISTRATOR) {
-					Administrator admin = new Administrator(username, password, firstName, lastName, gender, date, role, kind);
+
+				if (role == UserRole.ADMINISTRATOR) {
+					Administrator admin = new Administrator(username, password, firstName, lastName, gender, date, role,
+							kind);
 					addRegisteredUser(admin);
 				}
-				
-				if(role == UserRole.VENDOR) {
+
+				if (role == UserRole.VENDOR) {
 					Vendor v = new Vendor(username, password, firstName, lastName, gender, date, role, kind);
 					v.setManifestations(ToiToiDAO.getVendorManifestations(contextPath, username));
 					addRegisteredUser(v);
 				}
-				
-				if(role == UserRole.USER) {
+
+				if (role == UserRole.USER) {
 					List<Ticket> tickets = ToiToiDAO.getUserTickets(contextPath, username);
-					int points = Integer.valueOf(st[8]);
-					RegisteredUser u = new RegisteredUser(username, password, firstName, lastName, gender, date, role, kind, tickets, points, false);
+					double points = Double.valueOf(st[8]);
+					RegisteredUser u = new RegisteredUser(username, password, firstName, lastName, gender, date, role,
+							kind, tickets, points, false);
 					addRegisteredUser(u);
 				}
 				line = bufferedReader.readLine();
-			}			
+			}
 			reader.close();
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -220,9 +221,9 @@ public class RegisteredUserDAO {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
-		} 		
+		}
 	}
-	
+
 	public boolean deleteUser(User user) {
 		FileWriter writer;
 		try {
@@ -234,15 +235,15 @@ public class RegisteredUserDAO {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
-		} 		
+		}
 	}
-	
+
 	public boolean writeAllUsers() {
 		FileWriter writer;
 		try {
 			writer = new FileWriter(this.contextPath + "Resources\\csvFiles\\users.csv", false);
-			
-			for(User u : findAllList()) {
+
+			for (User u : findAllList()) {
 				writer.write(u.toCsvString());
 			}
 			writer.close();
@@ -251,15 +252,15 @@ public class RegisteredUserDAO {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
-		} 
+		}
 	}
-	
+
 	public boolean writeBlockedUsers() {
 		FileWriter writer;
 		try {
 			writer = new FileWriter(this.contextPath + "Resources\\csvFiles\\blockedUsers.csv", false);
-			
-			for(User u : findAllBlockedList()) {
+
+			for (User u : findAllBlockedList()) {
 				writer.write(u.toCsvString());
 			}
 			writer.close();
@@ -268,56 +269,57 @@ public class RegisteredUserDAO {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
-		} 
+		}
 	}
-	
+
 	private void loadBlockedUsers(String contextPath) {
 		BufferedReader bufferedReader = null;
-		try {		
-			FileReader reader = new FileReader(contextPath + "Resources\\csvFiles\\blockedUsers.csv"); 
+		try {
+			FileReader reader = new FileReader(contextPath + "Resources\\csvFiles\\blockedUsers.csv");
 			bufferedReader = new BufferedReader(reader);
 			String line;
-			
-			line =  bufferedReader.readLine();
-			
-			while (line != null){
-				
-				if ( line.charAt(0) == '#') {
+
+			line = bufferedReader.readLine();
+
+			while (line != null) {
+
+				if (line.charAt(0) == '#') {
 					line = bufferedReader.readLine();
 					continue;
 				}
-				
+
 				String[] st = line.split(";");
-				
+
 				String username = st[0].trim();
 				String password = st[1].trim();
 				String firstName = st[2].trim();
 				String lastName = st[3].trim();
 				Gender gender = Gender.values()[Integer.valueOf(st[4])];
-				LocalDate date = LocalDate.parse(st[5]);				
+				LocalDate date = LocalDate.parse(st[5]);
 				UserRole role = UserRole.values()[Integer.valueOf(st[6])];
 				CustomerKind kind = CustomerKind.values()[Integer.valueOf(st[7])];
-				
-			
-				if(role == UserRole.ADMINISTRATOR) {
-					Administrator admin = new Administrator(username, password, firstName, lastName, gender, date, role, kind);
+
+				if (role == UserRole.ADMINISTRATOR) {
+					Administrator admin = new Administrator(username, password, firstName, lastName, gender, date, role,
+							kind);
 					addBlockedUser(admin);
 				}
-				
-				if(role == UserRole.VENDOR) {
+
+				if (role == UserRole.VENDOR) {
 					Vendor v = new Vendor(username, password, firstName, lastName, gender, date, role, kind);
 					v.setManifestations(ToiToiDAO.getVendorManifestations(contextPath, username));
 					addBlockedUser(v);
 				}
-				
-				if(role == UserRole.USER) {
+
+				if (role == UserRole.USER) {
 					List<Ticket> tickets = ToiToiDAO.getUserTickets(contextPath, username);
 					int points = Integer.valueOf(st[8]);
-					RegisteredUser u = new RegisteredUser(username, password, firstName, lastName, gender, date, role, kind, tickets, points, false);
+					RegisteredUser u = new RegisteredUser(username, password, firstName, lastName, gender, date, role,
+							kind, tickets, points, false);
 					addBlockedUser(u);
 				}
 				line = bufferedReader.readLine();
-			}			
+			}
 			reader.close();
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -330,41 +332,41 @@ public class RegisteredUserDAO {
 			}
 		}
 	}
-	
+
 	private void loadDeletedUsers(String contextPath) {
 		BufferedReader bufferedReader = null;
-		try {		
-			FileReader reader = new FileReader(contextPath + "Resources\\csvFiles\\deletedUsers.csv"); 
+		try {
+			FileReader reader = new FileReader(contextPath + "Resources\\csvFiles\\deletedUsers.csv");
 			bufferedReader = new BufferedReader(reader);
 			String line;
-			
-			line =  bufferedReader.readLine();
-			
-			while (line != null){
-				
-				if ( line.charAt(0) == '#') {
+
+			line = bufferedReader.readLine();
+
+			while (line != null) {
+
+				if (line.charAt(0) == '#') {
 					line = bufferedReader.readLine();
 					continue;
 				}
-				
+
 				String[] st = line.split(";");
-				
+
 				String username = st[0].trim();
 				String password = st[1].trim();
 				String firstName = st[2].trim();
 				String lastName = st[3].trim();
 				Gender gender = Gender.values()[Integer.valueOf(st[4])];
-				LocalDate date = LocalDate.parse(st[5]);				
+				LocalDate date = LocalDate.parse(st[5]);
 				UserRole role = UserRole.values()[Integer.valueOf(st[6])];
 				CustomerKind kind = CustomerKind.values()[Integer.valueOf(st[7])];
-								
-				if(role == UserRole.VENDOR) {
+
+				if (role == UserRole.VENDOR) {
 					Vendor v = new Vendor(username, password, firstName, lastName, gender, date, role, kind);
 					addDeletedUser(v);
 				}
 
 				line = bufferedReader.readLine();
-			}			
+			}
 			reader.close();
 		} catch (Exception ex) {
 			ex.printStackTrace();
