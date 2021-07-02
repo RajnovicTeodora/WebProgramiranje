@@ -14,7 +14,7 @@ public class RegisteredUser extends User {
 	}
 
 	public RegisteredUser(String username, String password, String firstName, String lastName, Gender gender,
-			LocalDate birthday, UserRole role, CustomerKind customerType, List<Ticket> tickets, int points,
+			LocalDate birthday, UserRole role, CustomerKind customerType, List<Ticket> tickets, double points,
 			Boolean deleted) {
 		super(username, password, firstName, lastName, gender, birthday, role, customerType);
 		this.deleted = deleted;

@@ -91,6 +91,9 @@ public class TicketService {
 		CustomerKind newCustomerKind = customerKindDAO.getKindFromPoints(user.getPoints());
 		user.setCustomerType(newCustomerKind);
 
+		// Update manifestation seat number
+		ticket.getManifestation().setLeftSeats(ticket.getManifestation().getLeftSeats() + 1);
+		
 		dao.addTicket(ticket);
 		dao.writeAllTickets();
 		return ticket;

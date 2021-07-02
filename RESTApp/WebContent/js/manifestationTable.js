@@ -86,7 +86,9 @@ function deleteManifestation(id) {
 }
 
 function approve(id) {
-	$.get({
+	$.ajax({
+		type: 'GET',
+		contentType: 'application/json',
 		url: 'rest/manifestations/approve/' + id,
 		success: function(manifestation) {
 			document.getElementById(manifestation.id).innerHTML = ''
@@ -100,7 +102,9 @@ function approve(id) {
 function showInfo(user) {
 	if (!user) return;
 	if (user.role == "VENDOR") {
-		$.get({
+		$.ajax({
+			type: 'GET',
+			contentType: 'application/json',
 			url: 'rest/vendor/manifestations',
 			success: function(manifestations) {
 				$("#vendor_manifestations").show();
@@ -110,7 +114,9 @@ function showInfo(user) {
 			}
 		});
 	} else if (user.role == "ADMINISTRATOR") {
-		$.get({
+		$.ajax({
+			type: 'GET',
+			contentType: 'application/json',
 			url: 'rest/admin/manifestations',
 			success: function(manifestations) {
 				$("#admin_manifestations").show();
@@ -126,10 +132,13 @@ function showInfo(user) {
 }
 
 $(document).ready(function() {
-	$.get({
+	$.ajax({
+		type: 'GET',
+		contentType: 'application/json',
 		url: 'rest/registration/registeredUser',
 		success: function(user) {
-			showInfo(user);
+			if(user != null)
+				showInfo(user);
 
 		}
 	});

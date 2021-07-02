@@ -57,14 +57,25 @@ function showInfo(user) {
 }
 
 $(document).ready(function() {
-	$.get({
+	$.ajax({
+		type: 'GET',
+		contentType: 'application/json',
 		url: 'rest/registration/registeredUser',
 		success: function(user) {
-			if (user.role == "USER") {
-				document.getElementById("li_manifestations").innerHTML = ''
+			if (user != null) {
+				if (user.role == "USER") {
+					document.getElementById("li_manifestations").innerHTML = ''
+					document.getElementById("li_users").innerHTML = ''
+				}
+				showInfo(user);
+			} else {
 				document.getElementById("li_users").innerHTML = ''
+				document.getElementById("li_my_profile").innerHTML = ''
+				document.getElementById("li_tickets").innerHTML = ''
+				document.getElementById("li_manifestations").innerHTML = ''
+				document.getElementById("li_logout").innerHTML = ''
 			}
-			showInfo(user);
+
 		},
 		error: function() {
 			document.getElementById("li_users").innerHTML = ''
