@@ -101,7 +101,22 @@
 						Submit <i class="material-icons right">search</i>
 					</button>
 				</div>
+				<div class="input-field col s1.5">
+					<!-- <label for="sortSelect">Sort manifestations</label>  -->
+					<select class="browser-default" id="sortSelect">
+						<option value="0" selected>Sort by..</option>
+						<option value="1">name (A-Z)</option>
+						<option value="2">name (Z-A)</option>
+						<option value="3">date (most recent)</option>
+						<option value="4">date (least recent)</option>
+						<option value="5">price (low-high)</option>
+						<option value="6">price (high-low)</option>
+						<option value="7">location (A-Z)</option>
+						<option value="8">location (Z-A)</option>
+					</select>
+				</div>
 			</div>
+		
 		</form>
 		<div class="container" id="manifestaions"></div>
 	</div>

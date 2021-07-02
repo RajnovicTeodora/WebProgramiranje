@@ -310,14 +310,14 @@ public class ManifestationService {
 	}
 
 	@GET
-	@Path("/searchManifestations/{Name}/{Location}/{DateFrom}/{DateTo}/{PriceFrom}/{PriceTo}/{Type}/{SoldOut}")
+	@Path("/searchManifestations/{Name}/{Location}/{DateFrom}/{DateTo}/{PriceFrom}/{PriceTo}/{Type}/{SoldOut}/{Sort}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<Manifestation> searchManifestations(@PathParam("Name") String Name,
 			@PathParam("Location") String Location, @PathParam("DateFrom") String DateFrom,
 			@PathParam("DateTo") String DateTo, @PathParam("PriceFrom") String PriceFrom,
 			@PathParam("PriceTo") String PriceTo, @PathParam("Type") String Type,
-			@PathParam("SoldOut") String SoldOut) {
+			@PathParam("SoldOut") String SoldOut, @PathParam("Sort") String Sort) {
 
 		String name;
 		String location;
@@ -359,6 +359,12 @@ public class ManifestationService {
 			soldOut = Integer.parseInt(SoldOut);
 		} catch (Exception e) {
 		}
+		
+		int sortBy = 0;
+		try {
+			sortBy = Integer.parseInt(Sort);
+		} catch (Exception e) {
+		}
 
 		ManifestationDAO dao = (ManifestationDAO) ctx.getAttribute("manifestationDAO");
 
@@ -384,6 +390,74 @@ public class ManifestationService {
 
 			filteredManifestations.add(m);
 		}
+		
+		switch(sortBy) {
+			case 1:
+				filteredManifestations.sort(new Comparator<Manifestation>() {
+					@Override
+					public int compare(Manifestation o1, Manifestation o2) {
+						return o1.getName().compareTo(o2.getName());
+					}
+				});
+				break;
+			case 2:
+				filteredManifestations.sort(new Comparator<Manifestation>() {
+					@Override
+					public int compare(Manifestation o1, Manifestation o2) {
+						return o2.getName().compareTo(o1.getName());
+					}
+				});
+				break;
+			case 3:
+				filteredManifestations.sort(new Comparator<Manifestation>() {
+					@Override
+					public int compare(Manifestation o1, Manifestation o2) {
+						return o1.getDate().compareTo(o2.getDate());
+					}
+				});
+				break;
+			case 4:
+				filteredManifestations.sort(new Comparator<Manifestation>() {
+					@Override
+					public int compare(Manifestation o1, Manifestation o2) {
+						return o2.getDate().compareTo(o1.getDate());
+					}
+				});
+				break;
+			case 5:
+				filteredManifestations.sort(new Comparator<Manifestation>() {
+					@Override
+					public int compare(Manifestation o1, Manifestation o2) {
+						return Double.valueOf(o1.getRegularPrice()).compareTo(Double.valueOf(o2.getRegularPrice()));
+					}
+				});
+				break;
+			case 6:
+				filteredManifestations.sort(new Comparator<Manifestation>() {
+					@Override
+					public int compare(Manifestation o1, Manifestation o2) {
+						return Double.valueOf(o2.getRegularPrice()).compareTo(Double.valueOf(o1.getRegularPrice()));
+					}
+				});
+				break;
+			case 7:
+				filteredManifestations.sort(new Comparator<Manifestation>() {
+					@Override
+					public int compare(Manifestation o1, Manifestation o2) {
+						return o1.getLocation().getAddress().compareTo(o2.getLocation().getAddress());
+					}
+				});
+				break;
+			case 8:
+				filteredManifestations.sort(new Comparator<Manifestation>() {
+					@Override
+					public int compare(Manifestation o1, Manifestation o2) {
+						return o2.getLocation().getAddress().compareTo(o1.getLocation().getAddress());
+					}
+				});
+				break;
+		}
+		
 		return filteredManifestations;
 	}
 

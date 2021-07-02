@@ -1,7 +1,6 @@
 
 function addManifestationCard(manifestation) {
 
-
 	if (new Date(manifestation.date) <= new Date() && manifestation.status == "ACTIVE") {
 		$.get({
 			url: 'rest/manifestations/rating/' + manifestation.id,
@@ -71,7 +70,6 @@ $(document).ready(function() {
 	$.get({
 		url: 'rest/manifestations/list',
 		success: function(manifestatons) {
-			console.log(manifestatons)
 			for (let manifestation of manifestatons) {
 				addManifestationCard(manifestation);
 			}
@@ -96,7 +94,7 @@ $("#filter_manifestations_form").submit(function(event) {
 
 	let type = document.getElementById('typeSelect').value;
 	let soldOut = document.getElementById('soldOutSelect').value;
-
+	let sortBy = document.getElementById('sortSelect').value;
 
 	if (dateFrom !== "" && dateTo !== "") {
 		if (dateFrom > dateTo) {
@@ -126,16 +124,13 @@ $("#filter_manifestations_form").submit(function(event) {
 	console.log("Sending request...");
 	$.ajax({
 		type: 'GET',
-		url: "rest/manifestations/searchManifestations/" + manifestationName + "/" + location + "/" + dateFrom + "/" + dateTo + "/" + priceFrom + "/" + priceTo + "/" + type + "/" + soldOut,
+		url: "rest/manifestations/searchManifestations/" + manifestationName + "/" + location + "/" + dateFrom + "/" + dateTo + "/" + priceFrom + "/" + priceTo + "/" + type + "/" + soldOut + "/" + sortBy,
 		contentType: 'application/json',
 		success: function(response) {
 			$('#manifestaions').empty();
-			console.log(response);
 			for (let manifestation of response) {
-				console.log(manifestation);
 				addManifestationCard(manifestation);
 			}
-			//M.toast({ html: 'Successfully sent data.', classes: 'rounded', panning: 'center' });
 
 		},
 		error: function() {
