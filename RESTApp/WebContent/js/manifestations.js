@@ -3,12 +3,14 @@ function addManifestationCard(manifestation) {
 
 
 	if (new Date(manifestation.date) <= new Date() && manifestation.status == "ACTIVE") {
-		$.get({
+		$.ajax({
+			type: 'GET',
+			contentType: 'application/json',
 			url: 'rest/manifestations/rating/' + manifestation.id,
 			success: function(rating) {
 				if (rating != -1) {
-					let type =  manifestation.type.charAt(0) + manifestation.type.toLowerCase().slice(1)
-					let status = manifestation.status.charAt(0) + manifestation.status.toLowerCase().slice(1) 
+					let type = manifestation.type.charAt(0) + manifestation.type.toLowerCase().slice(1)
+					let status = manifestation.status.charAt(0) + manifestation.status.toLowerCase().slice(1)
 					let card = $('<div class="col s4">' +
 						'<div class="card">' +
 						'<div class="card-image">' +
@@ -26,9 +28,9 @@ function addManifestationCard(manifestation) {
 
 			}
 		});
-	}else{
-		let type =  manifestation.type.charAt(0) + manifestation.type.toLowerCase().slice(1)
-		let status = manifestation.status.charAt(0) + manifestation.status.toLowerCase().slice(1) 
+	} else {
+		let type = manifestation.type.charAt(0) + manifestation.type.toLowerCase().slice(1)
+		let status = manifestation.status.charAt(0) + manifestation.status.toLowerCase().slice(1)
 		let card = $('<div class="col s4">' +
 			'<div class="card">' +
 			'<div class="card-image">' +
@@ -38,7 +40,7 @@ function addManifestationCard(manifestation) {
 			'<div class="card-content">' +
 			'<span class="card-title">' + manifestation.name + ' - ' + type + '</span>' +
 			'<p> Date: ' + new Date(manifestation.date).toUTCString() + '</p><p>Price: ' +
-			manifestation.regularPrice + '</p><p>Status: ' + status + '</p></p>Location: ' + manifestation.location.address  + ' (' + manifestation.location.longitude + ',' + manifestation.location.latitude + ')</p>' +
+			manifestation.regularPrice + '</p><p>Status: ' + status + '</p></p>Location: ' + manifestation.location.address + ' (' + manifestation.location.longitude + ',' + manifestation.location.latitude + ')</p>' +
 			'</div></div></div></div>');
 
 		$('#manifestaions').append(card);
@@ -48,15 +50,26 @@ function addManifestationCard(manifestation) {
 
 $(document).ready(function() {
 
-	$.get({
+	$.ajax({
+		type: 'GET',
+		contentType: 'application/json',
 		url: 'rest/registration/registeredUser',
 		success: function(user) {
-			if (user.role == "USER") {
-				document.getElementById("li_manifestations").innerHTML = ''
+			if (user != null) {
+				if (user.role == "USER") {
+					document.getElementById("li_manifestations").innerHTML = ''
+					document.getElementById("li_users").innerHTML = ''
+				}
+				document.getElementById("li_registration").innerHTML = ''
+				document.getElementById("li_login").innerHTML = ''
+			} else {
 				document.getElementById("li_users").innerHTML = ''
+				document.getElementById("li_my_profile").innerHTML = ''
+				document.getElementById("li_tickets").innerHTML = ''
+				document.getElementById("li_manifestations").innerHTML = ''
+				document.getElementById("li_logout").innerHTML = ''
 			}
-			document.getElementById("li_registration").innerHTML = ''
-			document.getElementById("li_login").innerHTML = ''
+
 		},
 		error: function() {
 			document.getElementById("li_users").innerHTML = ''
@@ -68,7 +81,9 @@ $(document).ready(function() {
 	});
 
 
-	$.get({
+	$.ajax({
+		type: 'GET',
+		contentType: 'application/json',
 		url: 'rest/manifestations/list',
 		success: function(manifestatons) {
 			console.log(manifestatons)

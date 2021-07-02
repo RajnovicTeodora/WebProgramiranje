@@ -217,7 +217,9 @@ $(document).ready(function() {
 	const urlParams = new URLSearchParams(queryString);
 	const id = urlParams.get('manifestation')
 
-	$.get({
+	$.ajax({
+		type: 'GET',
+		contentType: 'application/json',
 		url: 'rest/manifestations/' + id,
 		success: function(manifestaton) {
 

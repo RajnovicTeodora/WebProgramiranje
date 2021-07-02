@@ -6,7 +6,6 @@ $("#logout-click").click(function(event) {
 		url: "rest/registration/logout",
 		contentType: 'application/json',
 		success: function(result) {
-			console.log(result);
 			M.toast({ html: 'Successfully logged out', classes: 'rounded', panning: 'center' });
 			window.location.href = "http://localhost:8080/RESTApp/index.html";
 
