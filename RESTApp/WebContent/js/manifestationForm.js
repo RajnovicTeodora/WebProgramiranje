@@ -102,8 +102,8 @@ $("#manifestation_form").submit(function(event) {
 		}),
 		contentType: 'application/json',
 		success: function(result) {
-			console.log(result);
 			M.toast({ html: 'Successfully created a new manifestation', classes: 'rounded', panning: 'center' });
+			window.location.href = "http://localhost:8080/RESTApp/index.html";
 
 		},
 		error: function() {
