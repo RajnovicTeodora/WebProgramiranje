@@ -203,10 +203,12 @@ public class TicketService {
 		user.setPoints(user.getPoints() + price / 1000 * 133 * numTickets);
 		CustomerKind newCustomerKind = customerKindDAO.getKindFromPoints(user.getPoints());
 		user.setCustomerType(newCustomerKind);
+		
+		double onePrice = price/numTickets;
 
 		while (numTickets > 0) {
 			String ticketId = ticketDao.findId();
-			Ticket ticket = new Ticket(ticketId, manifestation, manifestation.getDate(), price, buyer,
+			Ticket ticket = new Ticket(ticketId, manifestation, manifestation.getDate(), onePrice, buyer,
 					TicketStatus.RESERVED, ticketType);
 			ticket.setBuyerUsername(user.getUsername());
 			tickets.add(ticket);
