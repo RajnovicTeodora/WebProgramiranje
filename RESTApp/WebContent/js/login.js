@@ -47,7 +47,7 @@ $("#login_form").submit(function(event) {
 		},
 		error: function() {
 
-			M.toast({ html: 'Invalid username or password.' + request, classes: 'rounded', panning: 'center' });
+			M.toast({ html: 'Invalid username or password.', classes: 'rounded', panning: 'center' });
 		}
 	});
 });
