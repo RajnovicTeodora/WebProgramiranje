@@ -158,8 +158,10 @@ $("#filter_manifestations_form").submit(function(event) {
 	let dateTo = $('input[name="dateTo"]').val();
 	let priceFrom = $('input[name="priceFrom"]').val();
 	let priceTo = $('input[name="priceTo"]').val();
+	
+	let type = document.getElementById('typeSelect').value;
+	let soldOut = document.getElementById('soldOutSelect').value;
 
-	console.log(dateFrom);
 
 	if (dateFrom !== "" && dateTo !== "") {
 		if (dateFrom > dateTo) {
@@ -186,7 +188,7 @@ $("#filter_manifestations_form").submit(function(event) {
 	console.log("Sending request...");
 	$.ajax({
 		type: 'GET',
-		url: "rest/manifestations/searchManifestations/" + manifestationName + "/" + location + "/" + dateFrom + "/" + dateTo + "/" + priceFrom + "/" + priceTo,
+		url: "rest/manifestations/searchManifestations/" + manifestationName + "/" + location + "/" + dateFrom + "/" + dateTo + "/" + priceFrom + "/" + priceTo + "/" + type + "/" + soldOut,
 		contentType: 'application/json',
 		success: function(response) {
 			$('vendor_manifestations').empty();

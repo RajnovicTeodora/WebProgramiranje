@@ -23,10 +23,12 @@ import beans.Gender;
 import beans.Manifestation;
 import beans.RegisteredUser;
 import beans.Ticket;
+import beans.TicketStatus;
 import beans.User;
 import beans.UserRole;
 import beans.Vendor;
 import dao.CommentDAO;
+import dao.CustomerKindDAO;
 import dao.LocationDAO;
 import dao.ManifestationDAO;
 import dao.RegisteredUserDAO;
@@ -72,6 +74,10 @@ public class RegistrationService {
 		if (ctx.getAttribute("locationDAO") == null) {
 			String contextPath = ctx.getRealPath("");
 			ctx.setAttribute("locationDAO", new LocationDAO(contextPath));
+		}
+		if (ctx.getAttribute("customerKindDAO") == null) {
+			String contextPath = ctx.getRealPath("");
+			ctx.setAttribute("customerKindDAO", new CustomerKindDAO(contextPath));
 		}
 
 	}
@@ -201,6 +207,8 @@ public class RegistrationService {
 			for (User u : dao.findAllList()) {
 				if (!u.getUsername().equals(user.getUsername())) {
 					UserDTO dto = new UserDTO(u);
+					if(isUserSus(u))
+						dto.setIsSus("Suspicious");
 					dto.setStatus("active");
 					users.add(dto);
 				}
@@ -234,6 +242,24 @@ public class RegistrationService {
 		}
 
 		return users;
+	}
+	
+	private boolean isUserSus(User user) {
+		if(user.getRole() != UserRole.USER)
+			return false;
+		
+		int canceledTickets = 0;
+		for (Ticket t : ((RegisteredUser)user).getTickets()) {
+			if(t.getStatus() == TicketStatus.CANCELED) {
+				if(t.getManifestation().getDate() == LocalDateTime.now() || t.getManifestation().getDate().isAfter(LocalDateTime.now().minusDays(30))) {
+					canceledTickets += 1;
+				}
+			}
+		}
+		if(canceledTickets >= 5)
+			return true;
+		
+		return false;
 	}
 
 	@POST

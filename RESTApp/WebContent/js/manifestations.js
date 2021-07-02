@@ -106,8 +106,8 @@ $("#filter_manifestations_form").submit(function(event) {
 	let location = $('input[name="location"]').val();
 	let dateFrom = $('input[name="dateFrom"]').val();
 	let dateTo = $('input[name="dateTo"]').val();
-	let priceFrom = $('input[name="priceFrom"]').val();
-	let priceTo = $('input[name="priceTo"]').val();
+	let pFrom = document.getElementById('priceFrom');
+	let pTo = document.getElementById('priceTo');
 
 	let type = document.getElementById('typeSelect').value;
 	let soldOut = document.getElementById('soldOutSelect').value;
@@ -120,13 +120,16 @@ $("#filter_manifestations_form").submit(function(event) {
 		}
 	}
 
-	if (priceFrom !== "" && priceTo !== "") {
-		if (priceFrom > priceTo) {
+	if (pFrom !== "" && pTo !== "") {
+		if (pFrom > pTo) {
 			M.toast({ html: 'Price from must be leser than price to.', classes: 'rounded', panning: 'center' });
 			return;
 		}
 	}
 
+	let priceFrom = $('input[name="priceFrom"]').val();
+	let priceTo = $('input[name="priceTo"]').val();
+	
 	if (manifestationName === "") manifestationName = "null";
 	if (location === "") location = "null";
 	if (dateFrom === "") dateFrom = "null";

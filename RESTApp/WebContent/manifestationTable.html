@@ -73,6 +73,20 @@
 					<label for="priceTo">Price To</label> <input id="priceTo"
 						type="number" placeholder="Price To" min="0" name="priceTo" />
 				</div>
+				<div class="input-field col s1.5">
+					<select class="browser-default" id="typeSelect">
+						<option value="-1" selected>Any manifestation type</option>
+						<option value="0">Concert</option>
+						<option value="1">Festival</option>
+						<option value="2">Theater</option>
+					</select>
+				</div>
+				<div class="input-field col s1.5">
+					<select class="browser-default" id="soldOutSelect">
+						<option value="-1" selected>All manifestations</option>
+						<option value="0">Not sold out</option>
+					</select>
+				</div>
 				<div class="col s2">
 					<button class="btn waves-effect waves-purple right" type="submit"
 						name="action" action>
