@@ -99,13 +99,11 @@ function approve(id) {
 }
 function showInfo(user) {
 	if (!user) return;
-
 	if (user.role == "VENDOR") {
 		$.get({
 			url: 'rest/vendor/manifestations',
 			success: function(manifestations) {
-
-				document.getElementById("admin_manifestations").style.display = "none"
+				$("#vendor_manifestations").show();
 				for (let manifestation of manifestations) {
 					addManifestationTrVendor(manifestation);
 				}
@@ -115,7 +113,8 @@ function showInfo(user) {
 		$.get({
 			url: 'rest/admin/manifestations',
 			success: function(manifestations) {
-				document.getElementById("vendor_manifestations").style.display = "none"
+				$("#admin_manifestations").show();
+				console.log(manifestations);
 				document.getElementById("new_manifestation_button").style.display = "none"
 				for (let manifestation of manifestations) {
 					addManifestationTrAdmin(manifestation);
@@ -182,7 +181,7 @@ $("#filter_manifestations_form").submit(function(event) {
 		url: "rest/manifestations/searchManifestations/" + manifestationName + "/" + location + "/" + dateFrom + "/" + dateTo + "/" + priceFrom + "/" + priceTo + "/" + type + "/" + soldOut,
 		contentType: 'application/json',
 		success: function(response) {
-			$('vendor_manifestations').empty();
+			$('#vendor_manifestations tbody').empty();
 			console.log(response);
 			for (let manifestation of response) {
 				addManifestationTrVendor(manifestation);
