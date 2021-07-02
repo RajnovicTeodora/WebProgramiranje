@@ -121,6 +121,7 @@ public class RegistrationService {
 			userRole = UserRole.VENDOR;
 			Vendor user = new Vendor(username, password, name, surname, gender, date, userRole,
 					CustomerKind.NEWBIE);
+			user.setManifestations(new ArrayList<Manifestation>());
 			dao.addUser(user);
 			return (Vendor) dao.addRegisteredUser(user);
 		}
@@ -134,9 +135,7 @@ public class RegistrationService {
 			else {
 				return null;
 			}
-			
 		}
-		
 	}
 
 	// Returns the currently registered user
