@@ -88,6 +88,8 @@ public class TicketService {
 
 		// Set user points and kind
 		user.setPoints(user.getPoints() - ticket.getPrice() / 1000 * 133 * 4);
+		if(user.getPoints()<0)
+			user.setPoints(0);
 		CustomerKind newCustomerKind = customerKindDAO.getKindFromPoints(user.getPoints());
 		user.setCustomerType(newCustomerKind);
 
@@ -238,13 +240,6 @@ public class TicketService {
 
 		TicketDAO ticketsDao = (TicketDAO) ctx.getAttribute("ticketDAO");
 
-//		System.out.println("Searching tickets...");
-//		System.out.println("Name: "+Name);
-//		System.out.println("Date from: "+DateFrom);
-//		System.out.println("Date to: "+DateTo);
-//		System.out.println("Price from: "+PriceFrom);
-//		System.out.println("Price to: "+PriceTo);
-
 		String name;
 		if (Name.equals("null"))
 			name = "";
@@ -266,20 +261,26 @@ public class TicketService {
 		double priceTo = 1000000;
 		try {
 			priceFrom = Double.valueOf(PriceFrom);
-			priceTo = Double.valueOf(PriceTo);
 		} catch (Exception e) {
 		}
+		try {
+			priceTo = Double.valueOf(PriceTo);
+		} catch (Exception e) {
+			
+		}
+		
 
 		int type = -1;
 		int status = -1;
 		try {
 			type = Integer.parseInt(Type);
+		} catch (Exception e) {
+		}
+		try {
 			status = Integer.parseInt(Status);
 		} catch (Exception e) {
 		}
 
-		// ManifestationDAO dao = (ManifestationDAO)
-		// ctx.getAttribute("manifestationDAO");
 
 		List<Ticket> allTickets = ticketsDao.getUserTickets(user.getUsername());
 		List<TicketDTO> filteredTickets = new ArrayList<TicketDTO>();

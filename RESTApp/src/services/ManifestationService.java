@@ -356,6 +356,10 @@ public class ManifestationService {
 		int soldOut = -1;
 		try {
 			type = Integer.parseInt(Type);
+		} catch (Exception e) {
+		}
+		
+		try {
 			soldOut = Integer.parseInt(SoldOut);
 		} catch (Exception e) {
 		}

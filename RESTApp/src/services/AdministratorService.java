@@ -22,7 +22,6 @@ import beans.UserRole;
 import beans.Vendor;
 import dao.ManifestationDAO;
 import dao.RegisteredUserDAO;
-import dto.ReservationDTO;
 import dao.TicketDAO;
 import exception.UnauthorizedUserException;
 import exception.UserNotFoundException;
