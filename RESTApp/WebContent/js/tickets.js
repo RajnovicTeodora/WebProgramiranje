@@ -15,7 +15,6 @@ function cancelTicket(ticket) {
 }
 
 function addTicketTr(ticket, role) {
-
 	var cancel = document.getElementById('cancel_th');
 
 	let tr = $('<tr id="' + ticket.id + '"></tr>');
@@ -89,10 +88,9 @@ $(document).ready(function() {
 				contentType: 'application/json',
 				url: 'rest/registration/registeredUser',
 				success: function(registeredUser) {
-					if (user != null) {
-						var user = registeredUser;
+					if (registeredUser != null) {
 						for (let ticket of tickets) {
-							addTicketTr(ticket, user.role);
+							addTicketTr(ticket, registeredUser.role);
 						}
 					} else {
 						for (let ticket of tickets) {
@@ -103,7 +101,7 @@ $(document).ready(function() {
 				ererror: function() {
 
 					for (let ticket of tickets) {
-						addTicketTr(ticket, " ");
+						addTicketTr(ticket, "x");
 					}
 				}
 			});
