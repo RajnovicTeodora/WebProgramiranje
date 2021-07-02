@@ -6,10 +6,10 @@ function addManifestationTrVendor(manifestation) {
 
 	let tr = $('<tr id="' + manifestation.id + '"></tr>');
 	let tdName = $('<td>' + manifestation.name + '</td>');
-	let tdType = $('<td>' + manifestation.type + '</td>');
+	let tdType = $('<td>' + manifestation.type.charAt(0) + manifestation.type.toLowerCase().slice(1) + '</td>');
 	let tdDate = $('<td>' + new Date(manifestation.date).toUTCString() + '</td>');
 	let tdPrice = $('<td>' + manifestation.regularPrice + '</td>');
-	let tdStatus = $('<td>' + manifestation.status + '</td>');
+	let tdStatus = $('<td>' + manifestation.status.charAt(0) + manifestation.status.toLowerCase().slice(1) + '</td>');
 	let tdSeats = $('<td>' + manifestation.numSeats + '</td>');
 	let tdLeft = $('<td>' + manifestation.leftSeats + '</td>');
 	let tdAddress = $('<td>' + manifestation.location.address + '</td>');
@@ -39,7 +39,7 @@ function addManifestationTrAdmin(manifestation) {
 		success: function(response) {
 			let tr = $('<tr id="' + manifestation.id + '"></tr>');
 			let tdName = $('<td>' + manifestation.name + '</td>');
-			let tdType = $('<td>' + manifestation.type + '</td>');
+			let tdType = $('<td>' + manifestation.type.charAt(0) + manifestation.type.toLowerCase().slice(1) + '</td>');
 			let tdDate = $('<td>' + new Date(manifestation.date).toUTCString() + '</td>');
 			let tdPrice = $('<td>' + manifestation.regularPrice + '</td>');
 			let tdSeats = $('<td>' + manifestation.numSeats + '</td>');
