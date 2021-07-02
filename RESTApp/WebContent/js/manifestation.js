@@ -52,6 +52,8 @@ function changed() {
 	}
 }
 
+var discount;
+
 $("#reserve_form").submit(function(event) {
 
 	event.preventDefault();
@@ -60,8 +62,12 @@ $("#reserve_form").submit(function(event) {
 	var select = document.getElementById('typeSelect')
 	var numSeats = document.getElementById('numSeats').value
 	var total = document.getElementById('total').value
-
-	var answer = window.confirm("Confirm reservation of " + numSeats + " " + select.innerText + " ticket(s) for " + total + "?");
+	var dicounted = total
+	if(discount && discount > 0){
+		dicounted = total - total*discount/100
+	}
+	
+	var answer = window.confirm("Confirm reservation of " + numSeats + " " + select.innerText + " ticket(s) for a (discounted) price of " + dicounted + "$?");
 	if (answer) {
 		const queryString = window.location.search;
 		const urlParams = new URLSearchParams(queryString);
@@ -219,7 +225,7 @@ function showManifestation(manifestation, user) {
 
 	var lat = parseFloat(manifestation.location.latitude) * 1
 	var lon = parseFloat(manifestation.location.longitude) * 1
-	
+
 	if (new Date(manifestation.date) <= new Date() && manifestation.status === "ACTIVE") {
 		$.get({
 			url: 'rest/manifestations/rating/' + manifestation.id,
@@ -325,6 +331,19 @@ $(document).ready(function() {
 	const queryString = window.location.search;
 	const urlParams = new URLSearchParams(queryString);
 	const id = urlParams.get('manifestation')
+
+
+	$.ajax({
+		type: 'GET',
+		url: "rest/tickets/discount",
+		contentType: 'application/json',
+		success: function(result) {
+			console.log(result);
+			discount = result
+
+		}
+	});
+
 
 	$.get({
 		url: 'rest/manifestations/' + id,

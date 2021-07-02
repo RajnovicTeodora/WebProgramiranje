@@ -12,7 +12,7 @@ public class UserDTO {
 	private String birthday;
 	private String role;
 	private String customerType;
-	private int points;
+	private double points;
 	private String status;
 	private String isSus;
 	
@@ -75,11 +75,11 @@ public class UserDTO {
 		this.customerType = customerType;
 	}
 
-	public int getPoints() {
+	public double getPoints() {
 		return points;
 	}
 
-	public void setPoints(int points) {
+	public void setPoints(double points) {
 		this.points = points;
 	}
 

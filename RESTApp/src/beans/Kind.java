@@ -1,16 +1,16 @@
 package beans;
 
 public class Kind {
-	
+
 	private CustomerKind name;
-	private int points;
-	private double discount;
-	
+	private double points;
+	private int discount;
+
 	public Kind() {
 		super();
 	}
 
-	public Kind(CustomerKind name, int points, double discount) {
+	public Kind(CustomerKind name, double points, int discount) {
 		super();
 		this.name = name;
 		this.points = points;
@@ -25,22 +25,25 @@ public class Kind {
 		this.name = name;
 	}
 
-	public int getPoints() {
+	public double getPoints() {
 		return points;
 	}
 
-	public void setPoints(int points) {
+	public void setPoints(double points) {
 		this.points = points;
 	}
 
-	public double getDiscount() {
+	public int getDiscount() {
 		return discount;
 	}
 
-	public void setDiscount(double discount) {
+	public void setDiscount(int discount) {
 		this.discount = discount;
 	}
-	
-	
+
+	@Override
+	public String toString() {
+		return "Kind [name=" + name + ", points=" + points + ", discount=" + discount + "]";
+	}
 
 }

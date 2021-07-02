@@ -6,7 +6,7 @@ import java.util.List;
 public class RegisteredUser extends User {
 
 	private List<Ticket> tickets;
-	private int points;
+	private double points;
 	private Boolean deleted;
 
 	public RegisteredUser() {
@@ -37,11 +37,11 @@ public class RegisteredUser extends User {
 		this.tickets = tickets;
 	}
 
-	public int getPoints() {
+	public double getPoints() {
 		return points;
 	}
 
-	public void setPoints(int points) {
+	public void setPoints(double points) {
 		this.points = points;
 	}
 
