@@ -22,7 +22,7 @@ import beans.Vendor;
 public class RegisteredUserDAO {
 	private Map<String, User> registeredUsers = new HashMap<>();
 	private Map<String, User> blockedUsers = new HashMap<>();
-	private Map<String, User> deletedUsers = new HashMap<>();
+	private List<User> deletedUsers = new ArrayList<User>();
 
 	String contextPath = "";
 
@@ -75,7 +75,7 @@ public class RegisteredUserDAO {
 	}
 
 	public User addDeletedUser(User user) {
-		deletedUsers.put(user.getUsername(), user);
+		deletedUsers.add(user);
 		removeRegisteredUser(user);
 		removeBlockedUser(user);
 		return user;
@@ -90,7 +90,7 @@ public class RegisteredUserDAO {
 	}
 
 	public Collection<User> findAllDeleted() {
-		return deletedUsers.values();
+		return deletedUsers;
 	}
 
 	public ArrayList<User> findAllList() {
