@@ -140,7 +140,7 @@ public class RegistrationService {
 	public UserProfileDTO getRegisteredUser() {
 		User user = (User) ctx.getAttribute("registeredUser");
 		if (user == null)
-			throw new UserNotFoundException("No user registered");
+			return null;
 		UserProfileDTO userDAO = new UserProfileDTO(user);
 		return userDAO;
 

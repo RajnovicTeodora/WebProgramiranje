@@ -69,25 +69,25 @@ function addUserTrAdmin(user) {
 	let tdType = $('<td>' + user.customerType + '</td>');
 	let tdPoints = $('<td>' + user.points + '</td>');
 
-	let delBtn = $('<td><a id="deleteButton" onClick="deleteUser('+user.username+')" class="btn-floating btn-medium waves-effect waves-light red"><i class="material-icons">delete</i></a></td>');
-	let blockBtn = $('<td><a id="blockButton" onClick="blockUser('+user.username+')" class="btn-floating btn-medium waves-effect waves-light"><i class="material-icons">block</i></a></td>');
+	let delBtn = $('<td><a id="deleteButton" onClick="deleteUser(' + user.username + ')" class="btn-floating btn-medium waves-effect waves-light red"><i class="material-icons">delete</i></a></td>');
+	let blockBtn = $('<td><a id="blockButton" onClick="blockUser(' + user.username + ')" class="btn-floating btn-medium waves-effect waves-light"><i class="material-icons">block</i></a></td>');
 
-	if(user.status == "blocked"){
-		blockBtn = $('<td><a id="blockButton" onClick="blockUser('+user.username+')" class="btn-floating btn-medium waves-effect waves-light grey"><i class="material-icons">block</i></a></td>');
+	if (user.status == "blocked") {
+		blockBtn = $('<td><a id="blockButton" onClick="blockUser(' + user.username + ')" class="btn-floating btn-medium waves-effect waves-light grey"><i class="material-icons">block</i></a></td>');
 	}
-	if(user.status == "deleted"){
+	if (user.status == "deleted") {
 		delBtn = $('<td>Deleted user</td>');
 		blockBtn = $('<td></td>');
 	}
-	if(user.role == "Administrator"){
+	if (user.role == "Administrator") {
 		blockBtn = $('<td></td>');
 		delBtn = $('<td></td>');
 	}
-	if(user.role == "User"){
+	if (user.role == "User") {
 		delBtn = $('<td></td>');
 	}
-	
-	
+
+
 	tr.append(tdUsername).append(tdName).append(tdSurname).append(tdGender).append(tdBirthday).append(tdRole).append(tdType).append(tdPoints).append(blockBtn).append(delBtn);
 
 	$('#users tbody').append(tr);
@@ -105,7 +105,7 @@ function showInfo(user) {
 			if (user.role == "VENDOR")
 				document.getElementById("new_vendor").innerHTML = ''
 			for (let u of users) {
-				if (user.role == "VENDOR"){
+				if (user.role == "VENDOR") {
 					addUserTr(u);
 				}
 				else if (user.role == "ADMINISTRATOR")
@@ -117,11 +117,15 @@ function showInfo(user) {
 }
 
 $(document).ready(function() {
-	$.get({
+	$.ajax({
+		type: 'GET',
+		contentType: 'application/json',
 		url: 'rest/registration/registeredUser',
 		success: function(user) {
-			if (user.role == "ADMINISTRATOR" || user.role == "VENDOR")
-				showInfo(user);
+			if (user != null) {
+				if (user.role == "ADMINISTRATOR" || user.role == "VENDOR")
+					showInfo(user);
+			}
 		}
 	});
 });
@@ -130,17 +134,22 @@ $("#filter_users_form").submit(function(event) {
 
 	let userRole = 'admin';
 
-	$.get({
+	$.ajax({
+		type: 'GET',
+		contentType: 'application/json',
 		url: 'rest/registration/registeredUser',
 		success: function(user) {
-			if (user.role != "ADMINISTRATOR")
-				userRole = 'notAdmin';
+			if (user != null) {
+				if (user.role != "ADMINISTRATOR")
+					userRole = 'notAdmin';
+			}
+
 		}
 	});
 
 	event.preventDefault();
 	console.log("Filtering users...");
-	
+
 	let firstName = $('input[name="firstName"]').val();
 	let lastName = $('input[name="lastName"]').val();
 	let username = $('input[name="username"]').val();
@@ -148,28 +157,28 @@ $("#filter_users_form").submit(function(event) {
 	let type = document.getElementById('typeSelect').value;
 	let role = document.getElementById('roleSelect').value;
 
-	
-	if(firstName==="") firstName="null";
-	if(lastName==="") lastName="null";
-	if(username==="") username="null";
-	
+
+	if (firstName === "") firstName = "null";
+	if (lastName === "") lastName = "null";
+	if (username === "") username = "null";
+
 	$.ajax({
- 		type: 'GET',
- 		url: "rest/registration/searchUsers/"+firstName+"/"+lastName+"/"+username+"/"+type+"/"+role,
+		type: 'GET',
+		url: "rest/registration/searchUsers/" + firstName + "/" + lastName + "/" + username + "/" + type + "/" + role,
 		contentType: 'application/json',
- 		success: function(response) {
+		success: function(response) {
 			$('#users tbody').empty();
 			for (let user of response) {
-				if(userRole == 'admin'){
+				if (userRole == 'admin') {
 					addUserTrAdmin(user);
 				}
-				else{
+				else {
 					addUserTr(user);
 				}
 			}
- 		},
- 		error: function() {
- 			M.toast({ html: 'Failed to send data', classes: 'rounded', panning: 'center' });
- 		}
-	});	
- });
+		},
+		error: function() {
+			M.toast({ html: 'Failed to send data', classes: 'rounded', panning: 'center' });
+		}
+	});
+});
