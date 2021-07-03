@@ -104,6 +104,8 @@ $("#filter_manifestations_form").submit(function(event) {
 	let location = $('input[name="location"]').val();
 	let dateFrom = $('input[name="dateFrom"]').val();
 	let dateTo = $('input[name="dateTo"]').val();
+	let priceFrom = $('input[name="priceFrom"]').val();
+	let priceTo = $('input[name="priceTo"]').val();
 	let pFrom = Number(priceFrom);
 	let pTo = Number(priceTo);
 
@@ -125,8 +127,6 @@ $("#filter_manifestations_form").submit(function(event) {
 		}
 	}
 
-	let priceFrom = $('input[name="priceFrom"]').val();
-	let priceTo = $('input[name="priceTo"]').val();
 	
 	if (manifestationName === "") manifestationName = "null";
 	if (location === "") location = "null";
