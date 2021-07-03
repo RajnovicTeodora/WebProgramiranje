@@ -200,7 +200,7 @@ public class TicketService {
 		manifestation.setLeftSeats(manifestation.getLeftSeats() - numTickets);
 
 		// Set user points and kind
-		user.setPoints(user.getPoints() + price / 1000 * 133 * numTickets);
+		user.setPoints(user.getPoints() + (price/numTickets) / 1000 * 133 * numTickets);
 		CustomerKind newCustomerKind = customerKindDAO.getKindFromPoints(user.getPoints());
 		user.setCustomerType(newCustomerKind);
 		
