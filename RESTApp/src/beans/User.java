@@ -29,6 +29,12 @@ public class User {
 		this.role = role;
 		this.customerType = customerType;
 	}
+	
+	public String toCsvString() {
+		String[] elems = {this.getUsername(),this.getPassword(),this.getFirstName(),this.getLastName(),String.valueOf(this.getGender().ordinal()),this.getBirthday().toString(),
+				String.valueOf(this.getRole().ordinal()), String.valueOf(this.getCustomerType().ordinal())};
+		return String.join(";",elems)+"\n";
+	}
 
 
 	public String getUsername() {

@@ -1,29 +1,44 @@
 package beans;
 
 public class Comment {
-	private User commentUser; //user who left the comment
+	private int id;
+	private RegisteredUser user; // user who left the comment
 	private Manifestation manifestation;
 	private String text;
-	private int mark; //1,2,3,4,5
-	
+	private int rating; // 1,2,3,4,5
+	private CommentStatus status;
+	private Boolean deleted;
+
 	public Comment() {
 		super();
 	}
 
-	public Comment(User commentUser, Manifestation manifestation, String text, int mark) {
+	public Comment(int id, RegisteredUser user, Manifestation manifestation, String text, int rating,
+			CommentStatus status, Boolean deleted) {
 		super();
-		this.commentUser = commentUser;
+		this.id = id;
+		this.user = user;
 		this.manifestation = manifestation;
 		this.text = text;
-		this.mark = mark;
+		this.rating = rating;
+		this.status = status;
+		this.deleted = deleted;
 	}
 
-	public User getCommentUser() {
-		return commentUser;
+	public int getId() {
+		return id;
 	}
 
-	public void setCommentUser(User commentUser) {
-		this.commentUser = commentUser;
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public RegisteredUser getUser() {
+		return user;
+	}
+
+	public void setUser(RegisteredUser user) {
+		this.user = user;
 	}
 
 	public Manifestation getManifestation() {
@@ -42,60 +57,40 @@ public class Comment {
 		this.text = text;
 	}
 
-	public int getMark() {
-		return mark;
+	public int getRating() {
+		return rating;
 	}
 
-	public void setMark(int mark) {
-		this.mark = mark;
+	public void setRating(int rating) {
+		this.rating = rating;
+	}
+
+	public CommentStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(CommentStatus status) {
+		this.status = status;
+	}
+
+	public Boolean getDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(Boolean deleted) {
+		this.deleted = deleted;
 	}
 
 	@Override
 	public String toString() {
-		return "Comment [commentUser=" + commentUser + ", manifestation=" + manifestation + ", text=" + text + ", mark="
-				+ mark + "]";
+		return "Comment [user=" + user.getUsername() + ", manifestation=" + manifestation.getName() + ", text=" + text
+				+ ", rating=" + rating + ", status=" + status + "]";
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((commentUser == null) ? 0 : commentUser.hashCode());
-		result = prime * result + ((manifestation == null) ? 0 : manifestation.hashCode());
-		result = prime * result + mark;
-		result = prime * result + ((text == null) ? 0 : text.hashCode());
-		return result;
+	public String toCsvString() {
+		String[] elems = { String.valueOf(this.id), user.getUsername(), String.valueOf(manifestation.getId()),
+				this.text, String.valueOf(this.rating), String.valueOf(this.status.ordinal()) };
+		return String.join(";", elems) + "\n";
 	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Comment other = (Comment) obj;
-		if (commentUser == null) {
-			if (other.commentUser != null)
-				return false;
-		} else if (!commentUser.equals(other.commentUser))
-			return false;
-		if (manifestation == null) {
-			if (other.manifestation != null)
-				return false;
-		} else if (!manifestation.equals(other.manifestation))
-			return false;
-		if (mark != other.mark)
-			return false;
-		if (text == null) {
-			if (other.text != null)
-				return false;
-		} else if (!text.equals(other.text))
-			return false;
-		return true;
-	}
-	
-	
 
 }

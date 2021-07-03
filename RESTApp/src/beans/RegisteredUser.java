@@ -6,7 +6,7 @@ import java.util.List;
 public class RegisteredUser extends User {
 
 	private List<Ticket> tickets;
-	private int points;
+	private double points;
 	private Boolean deleted;
 
 	public RegisteredUser() {
@@ -14,14 +14,21 @@ public class RegisteredUser extends User {
 	}
 
 	public RegisteredUser(String username, String password, String firstName, String lastName, Gender gender,
-			LocalDate birthday, UserRole role, CustomerKind customerType, List<Ticket> tickets, int points,
+			LocalDate birthday, UserRole role, CustomerKind customerType, List<Ticket> tickets, double points,
 			Boolean deleted) {
 		super(username, password, firstName, lastName, gender, birthday, role, customerType);
 		this.deleted = deleted;
 		this.points = points;
 		this.tickets = tickets;
 	}
-
+	
+	@Override
+	public String toCsvString() {
+		String[] elems = {this.getUsername(),this.getPassword(),this.getFirstName(),this.getLastName(),String.valueOf(this.getGender().ordinal()),this.getBirthday().toString(),
+				String.valueOf(this.getRole().ordinal()), String.valueOf(this.getCustomerType().ordinal()), String.valueOf(points)};
+		return String.join(";",elems)+"\n";
+	}
+	
 	public List<Ticket> getTickets() {
 		return tickets;
 	}
@@ -30,11 +37,11 @@ public class RegisteredUser extends User {
 		this.tickets = tickets;
 	}
 
-	public int getPoints() {
+	public double getPoints() {
 		return points;
 	}
 
-	public void setPoints(int points) {
+	public void setPoints(double points) {
 		this.points = points;
 	}
 
