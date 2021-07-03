@@ -78,37 +78,39 @@ $("#manifestation_form").submit(function(event) {
 		success: function(result) {
 			if (result.length <= 0) {
 				M.toast({ html: 'Address not found', classes: 'rounded', panning: 'center' });
-				return;
+				return
+			} else {
+				lon = result[0].lon * 1
+				lat = result[0].lat * 1
+				$.ajax({
+					type: 'POST',
+					url: "rest/manifestations/add",
+					data: JSON.stringify({
+						name: name,
+						type: type,
+						numSeats: numSeats,
+						date: date,
+						regularPrice: price,
+						location: street + " " + number + ", " + city + ", " + country,
+						lat: lat,
+						lon: lon,
+						poster: newImg
+					}),
+					contentType: 'application/json',
+					success: function(result) {
+					
+						window.location.href = "http://localhost:8080/RESTApp/index.html";
+						M.toast({ html: 'Successfully created a new manifestation', classes: 'rounded', panning: 'center' });
+					},
+					error: function() {
+						M.toast({ html: 'Failed to create a new manifestation', classes: 'rounded', panning: 'center' });
+					}
+				});
 			}
-			lon = result[0].lon * 1
-			lat = result[0].lat * 1
+
 		}
 	});
 
-	$.ajax({
-		type: 'POST',
-		url: "rest/manifestations/add",
-		data: JSON.stringify({
-			name: name,
-			type: type,
-			numSeats: numSeats,
-			date: date,
-			regularPrice: price,
-			location: street + " " + number + ", " + city + ", " + country,
-			lat: lat,
-			lon: lon,
-			poster: newImg
-		}),
-		contentType: 'application/json',
-		success: function(result) {
-			M.toast({ html: 'Successfully created a new manifestation', classes: 'rounded', panning: 'center' });
-			window.location.href = "http://localhost:8080/RESTApp/index.html";
-
-		},
-		error: function() {
-			M.toast({ html: 'Failed to create a new manifestation', classes: 'rounded', panning: 'center' });
-		}
-	});
 });
 
 

@@ -84,6 +84,7 @@ $("#reserve_form").submit(function(event) {
 			contentType: 'application/json',
 			success: function(result) {
 				console.log(result);
+				window.location.href = "http://localhost:8080/RESTApp/manifestation.html?manifestation=" + urlParams.get('manifestation');
 				M.toast({ html: 'Successfully reserved ticket', classes: 'rounded', panning: 'center' });
 
 			},

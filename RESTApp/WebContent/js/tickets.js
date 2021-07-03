@@ -29,7 +29,8 @@ function addTicketTr(ticket, role) {
 		var date = new Date(ticket.date);
 		var today = new Date();
 		today.setDate(today.getDate() + 7);
-		if (date > today) {
+		console.log(ticket.status)
+		if (date > today && ticket.status != "Canceled") {
 
 			var btn = document.createElement('input');
 			btn.type = "button";

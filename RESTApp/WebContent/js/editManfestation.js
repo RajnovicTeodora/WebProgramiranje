@@ -100,35 +100,35 @@ $("#manifestation_form").submit(function(event) {
 			if (result.length <= 0) {
 				M.toast({ html: 'Address not found', classes: 'rounded', panning: 'center' });
 				return;
+			} else {
+				lon = result[0].lon * 1
+				lat = result[0].lat * 1
+				$.ajax({
+					type: 'POST',
+					url: "rest/manifestations/edit",
+					data: JSON.stringify({
+						id: id,
+						name: newName,
+						type: newType,
+						location: newStreet + " " + newNumber + ", " + newCity + ", " + newCountry,
+						lat: lat,
+						lon: lon,
+						poster: newImg
+					}),
+					contentType: 'application/json',
+					success: function(result) {
+						window.location.href = "http://localhost:8080/RESTApp/manifestationTable.html";
+						M.toast({ html: 'Successfully edited the manifestation', classes: 'rounded', panning: 'center' });
+					},
+					error: function() {
+						M.toast({ html: 'Failed to edit the manifestation', classes: 'rounded', panning: 'center' });
+					}
+				});
 			}
-			lon = result[0].lon * 1
-			lat = result[0].lat * 1
+
 		}
 	});
 
-	$.ajax({
-		type: 'POST',
-		url: "rest/manifestations/edit",
-		data: JSON.stringify({
-			id: id,
-			name: newName,
-			type: newType,
-			location: newStreet + " " + newNumber + ", " + newCity + ", " + newCountry,
-			lat: lat,
-			lon: lon,
-			poster: newImg
-		}),
-		contentType: 'application/json',
-		success: function(result) {
-			console.log(result);
-			M.toast({ html: 'Successfully edited the manifestation', classes: 'rounded', panning: 'center' });
-			window.location.href = "http://localhost:8080/RESTApp/manifestationTable.html";
-
-		},
-		error: function() {
-			M.toast({ html: 'Failed to edit the manifestation', classes: 'rounded', panning: 'center' });
-		}
-	});
 });
 
 function readURL() {
