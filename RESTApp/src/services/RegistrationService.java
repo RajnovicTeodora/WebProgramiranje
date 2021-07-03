@@ -307,6 +307,11 @@ public class RegistrationService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<UserDTO> searchUsers(@PathParam("FirstName") String FirstName, @PathParam("LastName") String LastName, @PathParam("Username") String Username,
 			@PathParam("Type") String Type, @PathParam("Role") String Role){  
+		
+		User user = (User) ctx.getAttribute("registeredUser");
+
+		if (user == null)
+			throw new UserNotFoundException("User not registered");
 				
 		String fistName;
 		String lastName;
@@ -333,6 +338,7 @@ public class RegistrationService {
 		List<User> allUsers = dao.findAllList();
 		List<UserDTO> filteredUsers = new ArrayList<UserDTO>();
 		for(User u : allUsers) {
+			if(user.getUsername().equalsIgnoreCase(u.getUsername())) continue;
 			if(!u.getFirstName().toLowerCase().contains(fistName.toLowerCase())) continue;   // provera ime
 			if(!u.getLastName().toLowerCase().contains(lastName.toLowerCase())) continue; //provera lokacija
 			if(!u.getUsername().toLowerCase().contains(username.toLowerCase())) continue;
