@@ -124,6 +124,9 @@ $("#filter_tickets_form").submit(function(event) {
 	let dateTo = $('input[name="dateTo"]').val();
 	let priceFrom = $('input[name="priceFrom"]').val();
 	let priceTo = $('input[name="priceTo"]').val();
+	let pFrom = Number(priceFrom);
+	let pTo = Number(priceTo);
+
 
 	let type = document.getElementById('typeSelect').value;
 	let status = document.getElementById('statusSelect').value;
@@ -135,8 +138,8 @@ $("#filter_tickets_form").submit(function(event) {
 		}
 	}
 
-	if (priceFrom !== "" && priceTo !== "") {
-		if (priceFrom > priceTo) {
+	if (pFrom !== "" && pTo !== "") {
+		if (pFrom > pTo) {
 			M.toast({ html: 'Price from must be leser than price to.', classes: 'rounded', panning: 'center' });
 			return;
 		}
@@ -157,7 +160,6 @@ $("#filter_tickets_form").submit(function(event) {
 		success: function(response) {
 			$("#tickets tbody").empty()
 			for (let ticket of response) {
-				console.log(ticket);
 				addTicketTr(ticket, "USER");
 			}
 			//M.toast({ html: 'Successfully sent data.', classes: 'rounded', panning: 'center' });

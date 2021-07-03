@@ -271,7 +271,6 @@ public class TicketService {
 			
 		}
 		
-
 		int type = -1;
 		int status = -1;
 		try {
@@ -294,9 +293,9 @@ public class TicketService {
 				continue;
 			if (dateTo != null && t.getManifestation().getDate().isAfter(LocalDateTime.of(dateTo, LocalTime.now())))
 				continue;
-			if (priceFrom > t.getManifestation().getRegularPrice())
+			if (priceFrom > t.getPrice())
 				continue;
-			if (priceTo < t.getManifestation().getRegularPrice())
+			if (priceTo < t.getPrice())
 				continue;
 			if (type != -1 && t.getType().ordinal() != type)
 				continue;

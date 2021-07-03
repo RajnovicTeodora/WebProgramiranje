@@ -338,7 +338,7 @@ public class RegistrationService {
 		List<User> allUsers = dao.findAllList();
 		List<UserDTO> filteredUsers = new ArrayList<UserDTO>();
 		for(User u : allUsers) {
-			if(user.getUsername().equalsIgnoreCase(u.getUsername())) continue;
+			if(user.getUsername().equals(u.getUsername())) continue;
 			if(!u.getFirstName().toLowerCase().contains(fistName.toLowerCase())) continue;   // provera ime
 			if(!u.getLastName().toLowerCase().contains(lastName.toLowerCase())) continue; //provera lokacija
 			if(!u.getUsername().toLowerCase().contains(username.toLowerCase())) continue;
